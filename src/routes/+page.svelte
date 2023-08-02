@@ -5,9 +5,14 @@
   import { onMount } from 'svelte';
   import IconMoon from '$lib/components/icons/IconMoon.svelte';
 
-  let darkMode = false;
+  let darkMode: boolean;
 
-  $: if (browser) {
+  onMount(() => {
+    const darkModeLocal = localStorage.getItem('dark_mode');
+    darkMode = darkModeLocal ? JSON.parse(darkModeLocal) : false;
+  });
+
+  $: if (browser && darkMode !== undefined) {
     localStorage.setItem('dark_mode', JSON.stringify(darkMode));
 
     if (darkMode) {
@@ -16,11 +21,6 @@
       document.documentElement.classList.remove('dark');
     }
   }
-
-  onMount(() => {
-    const darkModeLocal = localStorage.getItem('dark_mode');
-    darkMode = darkModeLocal ? JSON.parse(darkModeLocal) : false;
-  });
 </script>
 
 <div class="mx-5 flex flex-col gap-5 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
