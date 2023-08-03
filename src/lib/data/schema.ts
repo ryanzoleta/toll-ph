@@ -1,5 +1,4 @@
 import {
-  bigint,
   boolean,
   int,
   mysqlEnum,
@@ -10,15 +9,16 @@ import {
 } from 'drizzle-orm/mysql-core';
 
 export const expressway = mysqlTable('expressway', {
-  id: varchar('id', { length: 100 }).primaryKey(),
-  name: varchar('task', { length: 500 })
+  id: int('id').primaryKey().autoincrement(),
+  abbr: varchar('abbr', { length: 100 }),
+  name: varchar('name', { length: 500 })
 });
 
 export const point = mysqlTable('point', {
   id: int('id').primaryKey().autoincrement(),
-  name: varchar('task', { length: 500 }),
-  descriptor: varchar('task', { length: 500 }),
-  expresswayId: varchar('expresway_id', { length: 100 }).references(() => expressway.id),
+  name: varchar('name', { length: 500 }),
+  descriptor: varchar('descriptor', { length: 500 }),
+  expresswayId: int('expresway_id').references(() => expressway.id),
   paid: boolean('paid'),
   entryable: boolean('entryable')
 });
