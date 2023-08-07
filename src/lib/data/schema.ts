@@ -3,6 +3,7 @@ import {
   int,
   mysqlEnum,
   mysqlTable,
+  primaryKey,
   serial,
   unique,
   varchar
@@ -26,12 +27,11 @@ export const point = mysqlTable('point', {
 export const link = mysqlTable(
   'link',
   {
-    id: serial('id').primaryKey(),
     originId: int('origin_point_id').references(() => point.id),
     nextId: int('next_point_id').references(() => point.id),
     direction: mysqlEnum('direction', ['north', 'south'])
   },
   (t) => ({
-    unq: unique().on(t.originId, t.nextId, t.direction)
+    pk: primaryKey(t.originId, t.nextId, t.direction)
   })
 );
