@@ -1,13 +1,4 @@
-import {
-  boolean,
-  int,
-  mysqlEnum,
-  mysqlTable,
-  primaryKey,
-  serial,
-  unique,
-  varchar
-} from 'drizzle-orm/mysql-core';
+import { boolean, int, mysqlEnum, mysqlTable, primaryKey, varchar } from 'drizzle-orm/mysql-core';
 
 export const expressway = mysqlTable('expressway', {
   id: int('id').primaryKey().autoincrement(),
