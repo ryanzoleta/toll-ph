@@ -11,11 +11,13 @@
 <div
   class="absolute top-full z-10 mt-1 flex w-full flex-col rounded-md bg-gray-200"
   transition:fade={{ duration: 50 }}>
-  {#each results as point}
+  {#each results as point, index}
     <div
-      class="flex place-content-between place-items-center py-1 {point.id === selectedPointId
+      class="flex place-content-between place-items-center px-2 py-2 {point.id === selectedPointId
         ? 'bg-gray-300'
-        : ''}">
+        : ''}
+        {index === 0 ? 'rounded-t-md' : ''}
+        {index === results.length - 1 ? 'rounded-b-md' : ''}">
       <div class="flex place-items-center gap-1">
         <p class="font-bold">{capitalize(point.name)}</p>
         <p class="text-sm font-extralight italic">{stringifyEnum(point.descriptor)}</p>
