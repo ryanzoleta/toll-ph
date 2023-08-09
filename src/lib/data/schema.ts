@@ -1,3 +1,4 @@
+import type { InferModel } from 'drizzle-orm';
 import { boolean, int, mysqlEnum, mysqlTable, primaryKey, varchar } from 'drizzle-orm/mysql-core';
 
 export const expressway = mysqlTable('expressway', {
@@ -25,3 +26,7 @@ export const link = mysqlTable(
     pk: primaryKey(t.originPointId, t.nextPointId, t.direction)
   })
 );
+
+export type Expressway = InferModel<typeof expressway, 'select'>;
+export type Point = InferModel<typeof point, 'select'>;
+export type Link = InferModel<typeof link, 'select'>;

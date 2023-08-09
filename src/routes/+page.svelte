@@ -4,6 +4,17 @@
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
   import IconMoon from '$lib/components/icons/IconMoon.svelte';
+  import type { Point } from '$lib/data/schema';
+  import { fade } from 'svelte/transition';
+  import { capitalize, stringifyEnum } from '$lib/utils.js';
+  import ResultsSelector from '$lib/components/ui/ResultsSelector.svelte';
+
+  export let data;
+
+  let inputOrigin: string;
+  let inputDestination: string;
+  let originSearchResults: Point[] = [];
+  let destinationSearchResults: Point[] = [];
 
   let darkMode: boolean;
 
@@ -20,6 +31,24 @@
     } else {
       document.documentElement.classList.remove('dark');
     }
+  }
+
+  $: if (inputOrigin) {
+    originSearchResults =
+      data.points.filter((p) => {
+        return p.name?.toUpperCase().startsWith(inputOrigin.toUpperCase()) && p.entryable;
+      }) ?? [];
+  } else {
+    originSearchResults = [];
+  }
+
+  $: if (inputDestination) {
+    destinationSearchResults =
+      data.points.filter((p) => {
+        return p.name?.toUpperCase().startsWith(inputDestination.toUpperCase()) && p.exitable;
+      }) ?? [];
+  } else {
+    destinationSearchResults = [];
   }
 </script>
 
@@ -42,18 +71,31 @@
   <div class="flex flex-col gap-5">
     <div class="flex flex-col gap-2">
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Origin</h3>
-      <input
-        type="text"
-        class="w-full rounded-md bg-gray-100 px-3 py-3 text-slate-700 outline-none dark:bg-gray-800 dark:text-slate-300 placeholder:dark:text-slate-600"
-        placeholder="Enter point of origin" />
+      <div class="relative">
+        <input
+          type="text"
+          class="w-full rounded-md bg-gray-100 px-3 py-3 text-slate-700 outline-none dark:bg-gray-800 dark:text-slate-300 placeholder:dark:text-slate-600"
+          placeholder="Enter point of origin"
+          bind:value={inputOrigin} />
+        {#if originSearchResults.length > 0}
+          <ResultsSelector results={originSearchResults} />
+        {/if}
+      </div>
     </div>
 
     <div class="flex flex-col gap-2">
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Destination</h3>
-      <input
-        type="text"
-        class="w-full rounded-md bg-gray-100 px-3 py-3 text-slate-700 outline-none dark:bg-gray-800 dark:text-slate-300 placeholder:dark:text-slate-600"
-        placeholder="Enter point of destination" />
+      <div class="relative">
+        <input
+          type="text"
+          class="w-full rounded-md bg-gray-100 px-3 py-3 text-slate-700 outline-none dark:bg-gray-800 dark:text-slate-300 placeholder:dark:text-slate-600"
+          placeholder="Enter point of destination"
+          bind:value={inputDestination} />
+
+        {#if destinationSearchResults.length > 0}
+          <ResultsSelector results={destinationSearchResults} />
+        {/if}
+      </div>
     </div>
   </div>
 
