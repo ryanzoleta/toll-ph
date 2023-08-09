@@ -15,6 +15,8 @@
   let inputDestination: string;
   let originSearchResults: Point[] = [];
   let destinationSearchResults: Point[] = [];
+  let displayOriginSearchResults = false;
+  let displayDestinationSearchResults = false;
 
   let darkMode: boolean;
 
@@ -46,11 +48,23 @@
     originSearchResults = [];
   }
 
+  $: if (originSearchResults.length > 0) {
+    displayOriginSearchResults = true;
+  } else if (originSearchResults.length === 0) {
+    displayOriginSearchResults = false;
+  }
+
   $: if (inputDestination) {
     destinationSearchResults =
       data.points.filter((p) => matches(inputDestination, p) && p.exitable) ?? [];
   } else {
     destinationSearchResults = [];
+  }
+
+  $: if (destinationSearchResults.length > 0) {
+    displayDestinationSearchResults = true;
+  } else if (originSearchResults.length === 0) {
+    displayDestinationSearchResults = false;
   }
 </script>
 
@@ -78,8 +92,15 @@
           type="text"
           class="w-full rounded-md bg-gray-100 px-3 py-3 text-slate-700 outline-none dark:bg-gray-800 dark:text-slate-300 placeholder:dark:text-slate-600"
           placeholder="Enter point of origin"
-          bind:value={inputOrigin} />
-        {#if originSearchResults.length > 0}
+          bind:value={inputOrigin}
+          on:focus={() => {
+            if (inputOrigin.length > 0) displayOriginSearchResults = true;
+          }}
+          on:blur={() => {
+            displayOriginSearchResults = false;
+          }} />
+
+        {#if displayOriginSearchResults}
           <ResultsSelector results={originSearchResults} />
         {/if}
       </div>
@@ -92,9 +113,15 @@
           type="text"
           class="w-full rounded-md bg-gray-100 px-3 py-3 text-slate-700 outline-none dark:bg-gray-800 dark:text-slate-300 placeholder:dark:text-slate-600"
           placeholder="Enter point of destination"
-          bind:value={inputDestination} />
+          bind:value={inputDestination}
+          on:focus={() => {
+            if (inputDestination.length > 0) displayDestinationSearchResults = true;
+          }}
+          on:blur={() => {
+            displayDestinationSearchResults = false;
+          }} />
 
-        {#if destinationSearchResults.length > 0}
+        {#if displayDestinationSearchResults}
           <ResultsSelector results={destinationSearchResults} />
         {/if}
       </div>
