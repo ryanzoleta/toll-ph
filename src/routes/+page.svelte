@@ -6,12 +6,15 @@
   import IconMoon from '$lib/components/icons/IconMoon.svelte';
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
   import type { Point } from '$lib/data/schema';
+  import type { Action } from '$lib/types';
+  import { capitalize, generateActions, stringifyEnum } from '$lib/utils.js';
 
   export let data;
 
   let darkMode: boolean;
   let pointOrigin: Point;
   let pointDestination: Point;
+  let actions: Action[] = [];
 
   onMount(() => {
     const darkModeLocal = localStorage.getItem('dark_mode');
@@ -69,8 +72,19 @@
     <button
       class="rounded-md bg-green-300 py-3 font-bold text-green-800 transition duration-100 hover:bg-green-400 dark:bg-green-800 dark:text-green-200 dark:hover:bg-green-700"
       on:click={() => {
-        console.log(pointOrigin);
-        console.log(pointDestination);
+        actions = generateActions(pointOrigin, pointDestination);
       }}>Calculate</button>
   </div>
+
+  {#if actions.length > 0}
+    {#each actions as action}
+      <div class="p-1">
+        <p>
+          {capitalize(action.action)}
+          {capitalize(action.point.name)}
+          {stringifyEnum(action.point.descriptor)}
+        </p>
+      </div>
+    {/each}
+  {/if}
 </div>
