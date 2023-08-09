@@ -5,8 +5,6 @@
   import { onMount } from 'svelte';
   import IconMoon from '$lib/components/icons/IconMoon.svelte';
   import type { Point } from '$lib/data/schema';
-  import { fade } from 'svelte/transition';
-  import { capitalize, stringifyEnum } from '$lib/utils.js';
   import ResultsSelector from '$lib/components/ui/ResultsSelector.svelte';
 
   export let data;
