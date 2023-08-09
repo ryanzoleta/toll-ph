@@ -11,7 +11,7 @@
   $: searchResults = input ? points.filter((p) => matches(input, p)) ?? [] : [];
   $: displaySearchResults = searchResults.length > 0;
   let selectedIndex = -1;
-  let setPoint: Point | null = null;
+  export let setPoint: Point | null = null;
 
   let inputElement: HTMLElement;
 

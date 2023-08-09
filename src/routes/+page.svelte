@@ -5,10 +5,13 @@
   import { onMount } from 'svelte';
   import IconMoon from '$lib/components/icons/IconMoon.svelte';
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
+  import type { Point } from '$lib/data/schema';
 
   export let data;
 
   let darkMode: boolean;
+  let pointOrigin: Point;
+  let pointDestination: Point;
 
   onMount(() => {
     const darkModeLocal = localStorage.getItem('dark_mode');
@@ -45,18 +48,29 @@
   <div class="flex flex-col gap-5">
     <div class="flex flex-col gap-2">
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Origin</h3>
-      <PointSelector points={data.points} kind="ENTRY" placeholder="Enter point of origin" />
+      <PointSelector
+        points={data.points}
+        kind="ENTRY"
+        placeholder="Enter point of origin"
+        bind:setPoint={pointOrigin} />
     </div>
 
     <div class="flex flex-col gap-2">
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Destination</h3>
-      <PointSelector points={data.points} kind="EXIT" placeholder="Enter point of destination" />
+      <PointSelector
+        points={data.points}
+        kind="EXIT"
+        placeholder="Enter point of destination"
+        bind:setPoint={pointDestination} />
     </div>
   </div>
 
   <div class="flex flex-col gap-3">
     <button
       class="rounded-md bg-green-300 py-3 font-bold text-green-800 transition duration-100 hover:bg-green-400 dark:bg-green-800 dark:text-green-200 dark:hover:bg-green-700"
-      >Calculate</button>
+      on:click={() => {
+        console.log(pointOrigin);
+        console.log(pointDestination);
+      }}>Calculate</button>
   </div>
 </div>
