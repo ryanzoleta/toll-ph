@@ -8,12 +8,16 @@
   import type { Point } from '$lib/data/schema';
   import type { Action } from '$lib/types';
   import { capitalize, generateActions, stringifyEnum } from '$lib/utils.js';
+  import first from '$lib/assets/images/first.png';
+  import last from '$lib/assets/images/last.png';
+  import line from '$lib/assets/images/line.png';
+  import middle from '$lib/assets/images/middle.png';
 
   export let data;
 
   let darkMode: boolean;
-  let pointOrigin: Point;
-  let pointDestination: Point;
+  let pointOrigin: Point = data.points[0];
+  let pointDestination: Point = data.points[1];
   let actions: Action[] = [];
 
   onMount(() => {
@@ -30,6 +34,8 @@
       document.documentElement.classList.remove('dark');
     }
   }
+
+  actions = generateActions(pointOrigin, pointDestination);
 </script>
 
 <div class="mx-5 flex flex-col gap-10 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
@@ -77,14 +83,36 @@
   </div>
 
   {#if actions.length > 0}
-    {#each actions as action}
-      <div class="p-1">
-        <p>
-          {capitalize(action.action)}
-          {capitalize(action.point.name)}
-          {stringifyEnum(action.point.descriptor)}
-        </p>
-      </div>
-    {/each}
+    <div class="flex flex-col rounded-lg bg-gray-200 p-5">
+      <h2 class="mb-2 text-xl font-bold">Route</h2>
+      {#each actions as action, index}
+        <div class="flex gap-2 {index === 0 ? 'place-items-end' : 'place-items-start'}">
+          <div class="h-5 w-5">
+            {#if index === 0}
+              <img src={first} alt="first action" />
+            {:else if index === actions.length - 1}
+              <img src={last} alt="last action" />
+            {:else}
+              <img src={middle} alt="middle action" />
+            {/if}
+          </div>
+          <p>
+            {capitalize(action.action)}
+            <span class="font-bold">
+              {capitalize(action.point.name)}
+            </span>
+            {stringifyEnum(action.point.descriptor)}
+          </p>
+        </div>
+
+        {#if index !== actions.length - 1}
+          <div class="flex place-items-end">
+            <div class="flex h-5 w-5 flex-col place-items-center">
+              <img src={line} alt="first action" />
+            </div>
+          </div>
+        {/if}
+      {/each}
+    </div>
   {/if}
 </div>
