@@ -7,11 +7,12 @@
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
   import type { Point } from '$lib/data/schema';
   import type { Action } from '$lib/types';
-  import { capitalize, generateActions, stringifyEnum } from '$lib/utils.js';
+  import { capitalize, stringifyEnum } from '$lib/utils.js';
   import first from '$lib/assets/images/first.png';
   import last from '$lib/assets/images/last.png';
   import line from '$lib/assets/images/line.png';
   import middle from '$lib/assets/images/middle.png';
+  import { generateActions } from '$lib/brain.js';
 
   export let data;
 
