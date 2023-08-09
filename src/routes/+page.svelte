@@ -45,12 +45,12 @@
   <div class="flex flex-col gap-5">
     <div class="flex flex-col gap-2">
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Origin</h3>
-      <PointSelector points={data.points} kind="ENTRY" />
+      <PointSelector points={data.points} kind="ENTRY" placeholder="Enter point of origin" />
     </div>
 
     <div class="flex flex-col gap-2">
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Destination</h3>
-      <PointSelector points={data.points} kind="EXIT" />
+      <PointSelector points={data.points} kind="EXIT" placeholder="Enter point of destination" />
     </div>
   </div>
 

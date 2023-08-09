@@ -5,6 +5,7 @@
 
   export let points: Point[];
   export let kind: 'ENTRY' | 'EXIT';
+  export let placeholder: string;
 
   let input = '';
   $: searchResults = input ? points.filter((p) => matches(input, p)) ?? [] : [];
@@ -30,7 +31,7 @@
 {#if setPoint}
   <div>
     <button
-      class="flex w-full place-content-between place-items-center rounded-md bg-gray-200 px-3 py-3 text-left font-bold text-slate-700 outline-none dark:bg-gray-800 dark:text-slate-300 placeholder:dark:text-slate-600"
+      class="flex w-full place-content-between place-items-center rounded-md bg-gray-200 px-3 py-3 text-left font-bold text-slate-700 outline-none dark:bg-gray-700 dark:text-slate-100 placeholder:dark:text-slate-600"
       on:click={() => {
         input = setPoint?.name ?? '';
         setPoint = null;
@@ -51,7 +52,7 @@
   <input
     type="text"
     class="w-full rounded-md bg-gray-100 px-3 py-3 text-slate-700 outline-none dark:bg-gray-800 dark:text-slate-300 placeholder:dark:text-slate-600"
-    placeholder="Enter point of origin"
+    {placeholder}
     bind:this={inputElement}
     bind:value={input}
     on:focus={() => {
@@ -80,12 +81,12 @@
 
   {#if displaySearchResults}
     <div
-      class="absolute top-full z-10 mt-1 flex w-full flex-col rounded-md border border-gray-300 bg-gray-100"
+      class="absolute top-full z-10 mt-1 flex w-full flex-col rounded-md border border-gray-300 bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
       transition:fade={{ duration: 50 }}>
       {#each searchResults as point, index}
         <button
           class="flex place-content-between place-items-center px-2 py-2 {index === selectedIndex
-            ? 'bg-gray-200'
+            ? 'bg-gray-200 dark:bg-gray-800'
             : ''}
         {index === 0 ? 'rounded-t-md' : ''}
         {index === searchResults.length - 1 ? 'rounded-b-md' : ''}"
