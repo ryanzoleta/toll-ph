@@ -7,10 +7,10 @@
 </script>
 
 <div
-  class="absolute top-full mt-1 w-full rounded-md bg-gray-200 px-3 py-2"
+  class="absolute top-full z-10 mt-1 flex w-full flex-col rounded-md bg-gray-200 px-3 py-1"
   transition:fade={{ duration: 50 }}>
   {#each results as point}
-    <div class="flex place-content-between place-items-center">
+    <div class="flex place-content-between place-items-center py-1">
       <div class="flex place-items-center gap-1">
         <p class="font-bold">{capitalize(point.name)}</p>
         <p class="text-sm font-extralight italic">{stringifyEnum(point.descriptor)}</p>

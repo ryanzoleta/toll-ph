@@ -33,20 +33,22 @@
     }
   }
 
+  function matches(query: string, point: Point) {
+    return (
+      point.name?.toUpperCase().startsWith(query.toUpperCase()) ||
+      (point.expresswayId?.toUpperCase().startsWith(query.toUpperCase()) && query.length > 1)
+    );
+  }
+
   $: if (inputOrigin) {
-    originSearchResults =
-      data.points.filter((p) => {
-        return p.name?.toUpperCase().startsWith(inputOrigin.toUpperCase()) && p.entryable;
-      }) ?? [];
+    originSearchResults = data.points.filter((p) => matches(inputOrigin, p) && p.entryable) ?? [];
   } else {
     originSearchResults = [];
   }
 
   $: if (inputDestination) {
     destinationSearchResults =
-      data.points.filter((p) => {
-        return p.name?.toUpperCase().startsWith(inputDestination.toUpperCase()) && p.exitable;
-      }) ?? [];
+      data.points.filter((p) => matches(inputDestination, p) && p.exitable) ?? [];
   } else {
     destinationSearchResults = [];
   }
