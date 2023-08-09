@@ -11,8 +11,8 @@
 
   export let data;
 
-  let inputOrigin: string;
-  let inputDestination: string;
+  let inputOrigin = '';
+  let inputDestination = '';
   let originSearchResults: Point[] = [];
   let destinationSearchResults: Point[] = [];
   let displayOriginSearchResults = false;
