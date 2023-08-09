@@ -5,8 +5,7 @@
   import { onMount } from 'svelte';
   import IconMoon from '$lib/components/icons/IconMoon.svelte';
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
-  import type { Point } from '$lib/data/schema';
-  import type { Action } from '$lib/types';
+  import type { Action, Point } from '$lib/types';
   import { capitalize, stringifyEnum } from '$lib/utils.js';
   import first from '$lib/assets/images/first.png';
   import last from '$lib/assets/images/last.png';
@@ -35,8 +34,6 @@
       document.documentElement.classList.remove('dark');
     }
   }
-
-  actions = generateActions(pointOrigin, pointDestination);
 </script>
 
 <div class="mx-5 flex flex-col gap-10 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
@@ -79,7 +76,7 @@
     <button
       class="rounded-md bg-green-300 py-3 font-bold text-green-800 transition duration-100 hover:bg-green-400 dark:bg-green-800 dark:text-green-200 dark:hover:bg-green-700"
       on:click={() => {
-        actions = generateActions(pointOrigin, pointDestination);
+        actions = generateActions(pointOrigin, pointDestination, data.points);
       }}>Calculate</button>
   </div>
 
