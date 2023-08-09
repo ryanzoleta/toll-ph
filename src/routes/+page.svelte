@@ -61,7 +61,7 @@
 
   $: if (destinationSearchResults.length > 0) {
     displayDestinationSearchResults = true;
-  } else if (originSearchResults.length === 0) {
+  } else if (destinationSearchResults.length === 0) {
     displayDestinationSearchResults = false;
   }
 </script>
