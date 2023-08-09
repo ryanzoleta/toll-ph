@@ -7,8 +7,8 @@
   export let kind: 'ENTRY' | 'EXIT';
 
   let input = '';
-  let displaySearchResults = false;
-  let searchResults: Point[] = [];
+  $: searchResults = input ? points.filter((p) => matches(input, p)) ?? [] : [];
+  $: displaySearchResults = searchResults.length > 0;
   let selectedIndex = -1;
   let setPoint: Point | null = null;
 
@@ -22,23 +22,9 @@
     );
   }
 
-  $: if (input) {
-    searchResults = points.filter((p) => matches(input, p)) ?? [];
-  } else {
-    searchResults = [];
-  }
-
-  $: if (searchResults.length > 0) {
-    displaySearchResults = true;
-  } else if (searchResults.length === 0) {
-    displaySearchResults = false;
-  }
-
   $: if (!displaySearchResults) {
     selectedIndex = -1;
   }
-
-  $: console.log(setPoint);
 </script>
 
 {#if setPoint}
@@ -103,8 +89,6 @@
             : ''}
         {index === 0 ? 'rounded-t-md' : ''}
         {index === searchResults.length - 1 ? 'rounded-b-md' : ''}"
-          role="textbox"
-          tabindex="0"
           on:mouseenter={() => {
             selectedIndex = index;
           }}
