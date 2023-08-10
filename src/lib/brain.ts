@@ -1,32 +1,49 @@
 import type { Point as OriginalPoint } from './data/schema';
 import type { Point } from './types';
 
-export function generateActions(originPoint: Point, destinationPoint: Point, allPoints: Point[]) {
-  const visited: number[] = [];
-  const stack: number[] = [];
+let globalAllPoints: Point[] = [];
 
-  let current: Point | undefined = originPoint;
+function dfs(point: Point, destination: Point, path: Point[]): Point | null {
+  console.log('Traversing point', point.name);
 
-  while (current.id !== destinationPoint.id) {
-    if (current.nextNorthIds.length > 0) {
-      stack.push(...current.nextNorthIds);
-    }
-
-    if (current.nextSouthIds.length > 0) {
-      stack.push(...current.nextSouthIds);
-    }
-
-    visited.push(current.id);
-
-    const nextId = stack.pop();
-    current = allPoints.find((p) => {
-      return p.id === nextId;
-    });
-
-    if (current === undefined) break;
+  if (point.id === destination.id) {
+    return point;
   }
 
-  console.log(current?.name);
+  path.push(point);
+
+  const nextIds = [...point.nextNorthIds, ...point.nextSouthIds];
+
+  for (const nextId of nextIds) {
+    if (
+      !path
+        .map((p) => {
+          return p.id;
+        })
+        .includes(nextId)
+    ) {
+      const nextPoint = globalAllPoints.find((p) => {
+        return p.id === nextId;
+      }) as Point;
+
+      const result = dfs(nextPoint, destination, path);
+      if (result) {
+        return result;
+      }
+    }
+  }
+
+  path.pop();
+  return null;
+}
+
+export function generateActions(originPoint: Point, destinationPoint: Point, allPoints: Point[]) {
+  globalAllPoints = allPoints;
+  const path: Point[] = [];
+
+  const result = dfs(originPoint, destinationPoint, path);
+  console.log(path);
+  console.log(result?.name);
 
   return [
     {
