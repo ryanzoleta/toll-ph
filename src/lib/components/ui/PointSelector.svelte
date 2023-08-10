@@ -31,7 +31,7 @@
 {#if setPoint}
   <div>
     <button
-      class="flex w-full place-content-between place-items-center rounded-md bg-gray-200 px-3 py-3 text-left font-bold text-slate-700 outline-none dark:bg-gray-700 dark:text-slate-100 placeholder:dark:text-slate-600"
+      class="flex w-full place-content-between place-items-center rounded-md bg-gray-200 px-3 py-3 text-left font-bold text-slate-700 dark:bg-gray-700 dark:text-slate-100 placeholder:dark:text-slate-600"
       on:click={() => {
         input = setPoint?.name ?? '';
         setPoint = null;
@@ -51,7 +51,7 @@
 <div class="relative {setPoint ? 'hidden' : 'block'}">
   <input
     type="text"
-    class="w-full rounded-md bg-gray-100 px-3 py-3 text-slate-700 outline-none dark:bg-gray-800 dark:text-slate-300 placeholder:dark:text-slate-600"
+    class="w-full rounded-md bg-gray-100 px-3 py-3 text-slate-700 dark:bg-gray-800 dark:text-slate-300 placeholder:dark:text-slate-600"
     {placeholder}
     bind:this={inputElement}
     bind:value={input}
