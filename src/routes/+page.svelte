@@ -23,6 +23,7 @@
   let pointOrigin: Point = data.points[0];
   let pointDestination: Point = data.points[4];
   let actions: Action[] = [];
+  let tollFee = 0;
 
   onMount(() => {
     const darkModeLocal = localStorage.getItem('dark_mode');
@@ -41,6 +42,12 @@
 
   async function calculate() {
     actions = generateActions(pointOrigin, pointDestination);
+
+    tollFee = 0;
+
+    actions.forEach((a) => {
+      if (a.amount) tollFee += a.amount;
+    });
   }
 </script>
 
@@ -87,6 +94,30 @@
   </div>
 
   {#if actions.length > 0}
+    <div class="flex flex-col rounded-lg bg-gray-200 p-5 dark:bg-gray-800 dark:text-gray-200">
+      <div class="flex flex-col gap-5">
+        <div>
+          <p class="text-gray-400">Total Toll Fees</p>
+          <p class="text-4xl font-extrabold tracking-tight text-gray-900">
+            {formatAmountToCurrency(tollFee)}
+          </p>
+        </div>
+        <div>
+          <p class="text-gray-400">Toll gates</p>
+          {#each actions as action}
+            {#if action.amount}
+              <div class="flex place-content-between">
+                <p>{capitalize(action.point.name)}</p>
+                <p class="font-extrabold tracking-tight text-gray-700">
+                  {formatAmountToCurrency(action.amount)}
+                </p>
+              </div>
+            {/if}
+          {/each}
+        </div>
+      </div>
+    </div>
+
     <div class="flex flex-col rounded-lg bg-gray-200 p-5 dark:bg-gray-800 dark:text-gray-200">
       <h2 class="mb-2 text-xl font-bold">Route</h2>
       {#each actions as action, index}
