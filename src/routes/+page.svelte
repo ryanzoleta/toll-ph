@@ -17,7 +17,7 @@
 
   let darkMode: boolean;
   let pointOrigin: Point = data.points[0];
-  let pointDestination: Point = data.points[1];
+  let pointDestination: Point = data.points[4];
   let actions: Action[] = [];
 
   onMount(() => {

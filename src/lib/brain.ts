@@ -1,7 +1,12 @@
+import type { index } from 'drizzle-orm/mysql-core';
 import type { Point as OriginalPoint } from './data/schema';
-import type { Point } from './types';
+import type { Action, Point } from './types';
 
 let globalAllPoints: Point[] = [];
+
+function checkIfMustPay(tollDeterminants: Point[]) {
+  return true;
+}
 
 function dfs(point: Point, destination: Point, path: Point[]): Point | null {
   console.log('Traversing point', point.name);
@@ -42,17 +47,42 @@ export function generateActions(originPoint: Point, destinationPoint: Point, all
   const path: Point[] = [];
 
   const result = dfs(originPoint, destinationPoint, path);
+
+  path.push(destinationPoint);
+
   console.log(path);
   console.log(result?.name);
 
-  return [
-    {
-      action: 'Enter',
-      point: originPoint
-    },
-    {
-      action: 'Pay toll fee at ',
-      point: destinationPoint
+  const actions: Action[] = [];
+  const tollDeterminants: Point[] = [];
+
+  path.forEach((p, index) => {
+    let action: 'ENTER' | 'EXIT' | 'PAY' = 'ENTER';
+    if (p.descriptor === 'ENTRANCE_RAMP') {
+      action = 'ENTER';
+    } else if (p.descriptor === 'EXIT_RAMP') {
+      action = 'EXIT';
+    } else if (p.descriptor === 'TOLL_GATE') {
+      if (index === 0) {
+        tollDeterminants.push(p);
+      } else if (index !== path.length - 1) {
+        if (path[index + 1].descriptor === 'EXIT_RAMP') {
+          tollDeterminants.push(p);
+        }
+      } else if (index === path.length) {
+        tollDeterminants.push(p);
+      }
+
+      if (checkIfMustPay(tollDeterminants)) {
+        action = 'PAY';
+      }
     }
-  ];
+
+    actions.push({
+      action,
+      point: p
+    });
+  });
+
+  return actions;
 }
