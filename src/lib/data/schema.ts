@@ -2,8 +2,6 @@ import type { InferModel } from 'drizzle-orm';
 import {
   boolean,
   decimal,
-  double,
-  float,
   int,
   mysqlEnum,
   mysqlTable,

@@ -5,7 +5,6 @@
   import FormCreateButton from '$lib/components/admin/FormCreateButton.svelte';
   import FormField from '$lib/components/admin/FormField.svelte';
   import Scroller from '$lib/components/admin/Scroller.svelte';
-  import { tollNetwork } from '$lib/data/schema.js';
 
   export let data;
 </script>
