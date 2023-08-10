@@ -6,7 +6,7 @@
   import IconMoon from '$lib/components/icons/IconMoon.svelte';
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
   import type { Action, Point } from '$lib/types';
-  import { capitalize, stringifyEnum } from '$lib/utils.js';
+  import { capitalize, formatAmountToCurrency, stringifyEnum } from '$lib/utils.js';
   import first from '$lib/assets/images/first.png';
   import last from '$lib/assets/images/last.png';
   import line from '$lib/assets/images/line.png';
@@ -87,7 +87,7 @@
   </div>
 
   {#if actions.length > 0}
-    <div class="flex flex-col rounded-lg bg-gray-200 p-5">
+    <div class="flex flex-col rounded-lg bg-gray-200 p-5 dark:bg-gray-800 dark:text-gray-200">
       <h2 class="mb-2 text-xl font-bold">Route</h2>
       {#each actions as action, index}
         <div class="flex gap-2 {index === 0 ? 'place-items-end' : 'place-items-start'}">
@@ -100,13 +100,22 @@
               <img src={middle} alt="middle action" />
             {/if}
           </div>
-          <p>
-            {capitalize(action.action)}
-            <span class="font-bold">
-              {capitalize(action.point.name)}
-            </span>
-            {stringifyEnum(action.point.descriptor)}
-          </p>
+          {#if action.action === 'PAY' && action.amount}
+            <p class="text-gray-400">
+              {capitalize(action.action.toLowerCase())}
+              <span class="font-bold text-gray-100">{formatAmountToCurrency(action.amount)}</span>
+              toll fee at
+              <span class="font-bold text-gray-100">{capitalize(action.point.name)}</span>
+              {stringifyEnum(action.point.descriptor)}
+            </p>
+          {:else if action.action === 'ENTER'}
+            <p class="text-gray-400">
+              {capitalize(action.action.toLowerCase())}
+              {action.point.expresswayId}
+              at <span class="font-bold text-gray-100">{capitalize(action.point.name)}</span>
+              {stringifyEnum(action.point.descriptor)}
+            </p>
+          {/if}
         </div>
 
         {#if index !== actions.length - 1}

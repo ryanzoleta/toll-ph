@@ -17,7 +17,7 @@ const MOCK_TOLL_MATRIX = [
   }
 ];
 
-function checkIfMustPay(tollDeterminants: Point[]) {
+function calculateToll(tollDeterminants: Point[]) {
   const determinants = tollDeterminants
     .map((p) => {
       return p.id;
@@ -25,15 +25,13 @@ function checkIfMustPay(tollDeterminants: Point[]) {
     .sort()
     .join(',');
 
-  console.log(determinants);
-
   for (const t of MOCK_TOLL_MATRIX) {
     if (t.determinants === determinants) {
-      return true;
+      return t.fee;
     }
   }
 
-  return false;
+  return null;
 }
 
 function getExpressway(id: string) {
@@ -78,14 +76,13 @@ export function generateActions(originPoint: Point, destinationPoint: Point) {
 
   const path: Point[] = [];
 
-  const result = dfs(originPoint, destinationPoint, path);
+  dfs(originPoint, destinationPoint, path);
 
   path.push(destinationPoint);
 
-  console.log(result?.name);
-
   const actions: Action[] = [];
   let tollDeterminants: Point[] = [];
+  let tollFee: number | null = null;
 
   path.forEach((p, index) => {
     let action: '' | 'ENTER' | 'EXIT' | 'PAY' = '';
@@ -113,7 +110,9 @@ export function generateActions(originPoint: Point, destinationPoint: Point) {
         tollDeterminants.push(p);
       }
 
-      if (checkIfMustPay(tollDeterminants)) {
+      tollFee = calculateToll(tollDeterminants);
+
+      if (tollFee !== null) {
         action = 'PAY';
         tollDeterminants = [];
       } else if (!enPassant) {
@@ -122,10 +121,18 @@ export function generateActions(originPoint: Point, destinationPoint: Point) {
     }
 
     if (action) {
-      actions.push({
-        action,
-        point: p
-      });
+      if (tollFee) {
+        actions.push({
+          action,
+          amount: tollFee,
+          point: p
+        });
+      } else {
+        actions.push({
+          action,
+          point: p
+        });
+      }
     }
   });
 
