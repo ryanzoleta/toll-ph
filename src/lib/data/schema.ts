@@ -1,5 +1,15 @@
 import type { InferModel } from 'drizzle-orm';
-import { boolean, int, mysqlEnum, mysqlTable, primaryKey, varchar } from 'drizzle-orm/mysql-core';
+import {
+  boolean,
+  decimal,
+  double,
+  float,
+  int,
+  mysqlEnum,
+  mysqlTable,
+  primaryKey,
+  varchar
+} from 'drizzle-orm/mysql-core';
 
 export const tollNetwork = mysqlTable('toll_network', {
   id: varchar('id', { length: 50 }).primaryKey(),
@@ -33,6 +43,19 @@ export const link = mysqlTable(
   })
 );
 
+export const tollMatrix = mysqlTable(
+  'toll_matrix',
+  {
+    entryPointId: int('entry_point_id').references(() => point.id),
+    exitPointId: int('exit_point_id').references(() => point.id),
+    fee: decimal('fee', { precision: 10, scale: 2 })
+  },
+  (t) => ({
+    pk: primaryKey(t.entryPointId, t.exitPointId)
+  })
+);
+
 export type Expressway = InferModel<typeof expressway, 'select'>;
 export type Point = InferModel<typeof point, 'select'>;
 export type Link = InferModel<typeof link, 'select'>;
+export type TollMatrix = InferModel<typeof tollMatrix, 'select'>;

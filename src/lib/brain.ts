@@ -1,21 +1,11 @@
-import type { Action, Point } from './types';
-import { expressways, points } from './stores';
+import type { Action, Point, TollFeeMatrix } from './types';
+import { expressways, points, tollFeeMatrix } from './stores';
 import { get } from 'svelte/store';
 import type { Expressway } from './data/schema';
 
 let allPoints: Point[] = [];
 let allExpressways: Expressway[] = [];
-
-const MOCK_TOLL_MATRIX = [
-  {
-    determinants: '1,5',
-    fee: 84
-  },
-  {
-    determinants: '4,5',
-    fee: 34
-  }
-];
+let tollMatrix: TollFeeMatrix[] = [];
 
 function calculateToll(tollDeterminants: Point[]) {
   const determinants = tollDeterminants
@@ -25,7 +15,7 @@ function calculateToll(tollDeterminants: Point[]) {
     .sort()
     .join(',');
 
-  for (const t of MOCK_TOLL_MATRIX) {
+  for (const t of tollMatrix) {
     if (t.determinants === determinants) {
       return t.fee;
     }
@@ -73,6 +63,7 @@ function dfs(point: Point, destination: Point, path: Point[]): Point | null {
 export function generateActions(originPoint: Point, destinationPoint: Point) {
   allPoints = get(points);
   allExpressways = get(expressways);
+  tollMatrix = get(tollFeeMatrix);
 
   const path: Point[] = [];
 

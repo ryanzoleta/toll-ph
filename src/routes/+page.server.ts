@@ -1,7 +1,7 @@
 import { db } from '$lib/data/db';
 import type { Point as OriginalPoint } from '$lib/data/schema';
-import { expressway, link, point } from '$lib/data/schema';
-import type { Point } from '$lib/types';
+import { expressway, link, point, tollMatrix } from '$lib/data/schema';
+import type { Point, TollFeeMatrix } from '$lib/types';
 import { and, eq } from 'drizzle-orm';
 
 export async function load() {
@@ -35,8 +35,26 @@ export async function load() {
 
   const expressways = await db.select().from(expressway);
 
+  const matrix = await db.select().from(tollMatrix);
+  const tollFeeMatrix: TollFeeMatrix[] = [];
+
+  for (const t of matrix) {
+    const determinantList = [];
+
+    determinantList.push(t.entryPointId);
+    if (t.exitPointId) determinantList.push(t.exitPointId);
+
+    const determinants = determinantList.sort().join(',');
+
+    tollFeeMatrix.push({
+      determinants: determinants,
+      fee: parseFloat(t.fee as string)
+    });
+  }
+
   return {
     points: pointsExpanded,
-    expressways
+    expressways,
+    tollFeeMatrix
   };
 }
