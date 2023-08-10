@@ -1,16 +1,46 @@
 import type { Action, Point } from './types';
-import { points } from './stores/points';
+import { expressways, points } from './stores';
 import { get } from 'svelte/store';
+import type { Expressway } from './data/schema';
 
-let globalAllPoints: Point[] = [];
+let allPoints: Point[] = [];
+let allExpressways: Expressway[] = [];
+
+const MOCK_TOLL_MATRIX = [
+  {
+    determinants: '1,5',
+    fee: 84
+  },
+  {
+    determinants: '4,5',
+    fee: 34
+  }
+];
 
 function checkIfMustPay(tollDeterminants: Point[]) {
-  return true;
+  const determinants = tollDeterminants
+    .map((p) => {
+      return p.id;
+    })
+    .sort()
+    .join(',');
+
+  console.log(determinants);
+
+  for (const t of MOCK_TOLL_MATRIX) {
+    if (t.determinants === determinants) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function getExpressway(id: string) {
+  return allExpressways.find((e) => e.id === id);
 }
 
 function dfs(point: Point, destination: Point, path: Point[]): Point | null {
-  console.log('Traversing point', point.name);
-
   if (point.id === destination.id) {
     return point;
   }
@@ -27,7 +57,7 @@ function dfs(point: Point, destination: Point, path: Point[]): Point | null {
         })
         .includes(nextId)
     ) {
-      const nextPoint = globalAllPoints.find((p) => {
+      const nextPoint = allPoints.find((p) => {
         return p.id === nextId;
       }) as Point;
 
@@ -43,7 +73,8 @@ function dfs(point: Point, destination: Point, path: Point[]): Point | null {
 }
 
 export function generateActions(originPoint: Point, destinationPoint: Point) {
-  globalAllPoints = get(points);
+  allPoints = get(points);
+  allExpressways = get(expressways);
 
   const path: Point[] = [];
 
@@ -51,14 +82,15 @@ export function generateActions(originPoint: Point, destinationPoint: Point) {
 
   path.push(destinationPoint);
 
-  console.log(path);
   console.log(result?.name);
 
   const actions: Action[] = [];
-  const tollDeterminants: Point[] = [];
+  let tollDeterminants: Point[] = [];
 
   path.forEach((p, index) => {
-    let action: 'ENTER' | 'EXIT' | 'PAY' = 'ENTER';
+    let action: '' | 'ENTER' | 'EXIT' | 'PAY' = '';
+    let enPassant = false;
+
     if (p.descriptor === 'ENTRANCE_RAMP') {
       action = 'ENTER';
     } else if (p.descriptor === 'EXIT_RAMP') {
@@ -69,20 +101,32 @@ export function generateActions(originPoint: Point, destinationPoint: Point) {
       } else if (index !== path.length - 1) {
         if (path[index + 1].descriptor === 'EXIT_RAMP') {
           tollDeterminants.push(p);
+        } else if (
+          getExpressway(p.expresswayId as string)?.tollNetworkId !==
+          getExpressway(path[index + 1].expresswayId as string)?.tollNetworkId
+        ) {
+          tollDeterminants.push(p);
+        } else {
+          enPassant = true;
         }
-      } else if (index === path.length) {
+      } else if (index === path.length - 1) {
         tollDeterminants.push(p);
       }
 
       if (checkIfMustPay(tollDeterminants)) {
         action = 'PAY';
+        tollDeterminants = [];
+      } else if (!enPassant) {
+        action = 'ENTER';
       }
     }
 
-    actions.push({
-      action,
-      point: p
-    });
+    if (action) {
+      actions.push({
+        action,
+        point: p
+      });
+    }
   });
 
   return actions;

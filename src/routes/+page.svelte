@@ -12,11 +12,12 @@
   import line from '$lib/assets/images/line.png';
   import middle from '$lib/assets/images/middle.png';
   import { generateActions } from '$lib/brain.js';
-  import { points } from '$lib/stores/points.js';
+  import { expressways, points } from '$lib/stores.js';
 
   export let data;
 
   $points = data.points;
+  $expressways = data.expressways;
 
   let darkMode: boolean;
   let pointOrigin: Point = data.points[0];

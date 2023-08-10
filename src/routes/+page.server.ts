@@ -1,6 +1,6 @@
 import { db } from '$lib/data/db';
 import type { Point as OriginalPoint } from '$lib/data/schema';
-import { link, point } from '$lib/data/schema';
+import { expressway, link, point } from '$lib/data/schema';
 import type { Point } from '$lib/types';
 import { and, eq } from 'drizzle-orm';
 
@@ -33,7 +33,10 @@ export async function load() {
     pointsExpanded.push(newPoint);
   }
 
+  const expressways = await db.select().from(expressway);
+
   return {
-    points: pointsExpanded
+    points: pointsExpanded,
+    expressways
   };
 }
