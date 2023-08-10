@@ -1,6 +1,6 @@
-import type { index } from 'drizzle-orm/mysql-core';
-import type { Point as OriginalPoint } from './data/schema';
 import type { Action, Point } from './types';
+import { points } from './stores/points';
+import { get } from 'svelte/store';
 
 let globalAllPoints: Point[] = [];
 
@@ -42,8 +42,9 @@ function dfs(point: Point, destination: Point, path: Point[]): Point | null {
   return null;
 }
 
-export function generateActions(originPoint: Point, destinationPoint: Point, allPoints: Point[]) {
-  globalAllPoints = allPoints;
+export function generateActions(originPoint: Point, destinationPoint: Point) {
+  globalAllPoints = get(points);
+
   const path: Point[] = [];
 
   const result = dfs(originPoint, destinationPoint, path);

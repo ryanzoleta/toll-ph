@@ -12,8 +12,11 @@
   import line from '$lib/assets/images/line.png';
   import middle from '$lib/assets/images/middle.png';
   import { generateActions } from '$lib/brain.js';
+  import { points } from '$lib/stores/points.js';
 
   export let data;
+
+  $points = data.points;
 
   let darkMode: boolean;
   let pointOrigin: Point = data.points[0];
@@ -33,6 +36,10 @@
     } else {
       document.documentElement.classList.remove('dark');
     }
+  }
+
+  async function calculate() {
+    actions = generateActions(pointOrigin, pointDestination);
   }
 </script>
 
@@ -75,9 +82,7 @@
   <div class="flex flex-col gap-3">
     <button
       class="rounded-md bg-green-300 py-3 font-bold text-green-800 transition duration-100 hover:bg-green-400 dark:bg-green-800 dark:text-green-200 dark:hover:bg-green-700"
-      on:click={() => {
-        actions = generateActions(pointOrigin, pointDestination, data.points);
-      }}>Calculate</button>
+      on:click={calculate}>Calculate</button>
   </div>
 
   {#if actions.length > 0}
