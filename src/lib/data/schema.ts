@@ -1,9 +1,15 @@
 import type { InferModel } from 'drizzle-orm';
 import { boolean, int, mysqlEnum, mysqlTable, primaryKey, varchar } from 'drizzle-orm/mysql-core';
 
-export const expressway = mysqlTable('expressway', {
+export const tollNetwork = mysqlTable('toll_network', {
   id: varchar('id', { length: 50 }).primaryKey(),
   name: varchar('name', { length: 500 })
+});
+
+export const expressway = mysqlTable('expressway', {
+  id: varchar('id', { length: 50 }).primaryKey(),
+  name: varchar('name', { length: 500 }),
+  tollNetworkId: varchar('id', { length: 50 })
 });
 
 export const point = mysqlTable('point', {
