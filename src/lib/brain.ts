@@ -130,3 +130,44 @@ export function generateActions(originPoint: Point, destinationPoint: Point) {
 
   return actions;
 }
+
+function dfs2(point: Point, path: Point[], direction: 'NORTH' | 'SOUTH'): Point | null {
+  path.push(point);
+
+  const nextIds = direction === 'NORTH' ? [...point.nextNorthIds] : [...point.nextSouthIds];
+
+  for (const nextId of nextIds) {
+    if (
+      !path
+        .map((p) => {
+          return p.id;
+        })
+        .includes(nextId)
+    ) {
+      const nextPoint = allPoints.find((p) => {
+        return p.id === nextId;
+      }) as Point;
+
+      const result = dfs2(nextPoint, path, direction);
+      if (result) {
+        return result;
+      }
+    }
+  }
+
+  return null;
+}
+
+export function getReachables(originPoint: Point) {
+  allPoints = get(points);
+  allExpressways = get(expressways);
+  tollMatrix = get(tollFeeMatrix);
+
+  const northPath: Point[] = [];
+  dfs2(originPoint, northPath, 'NORTH');
+
+  const southPath: Point[] = [];
+  dfs2(originPoint, southPath, 'SOUTH');
+
+  return [...northPath, ...southPath];
+}

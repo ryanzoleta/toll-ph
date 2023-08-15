@@ -7,7 +7,7 @@
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
   import type { Action, Point } from '$lib/types';
   import { capitalize, formatAmountToCurrency, stringifyEnum } from '$lib/utils.js';
-  import { generateActions } from '$lib/brain.js';
+  import { generateActions, getReachables } from '$lib/brain.js';
   import { expressways, points, tollFeeMatrix } from '$lib/stores.js';
 
   export let data;
@@ -19,6 +19,7 @@
   let darkMode: boolean;
   let pointOrigin: Point | null = data.points[0];
   let pointDestination: Point | null = data.points[4];
+  $: reachables = pointOrigin ? (getReachables(pointOrigin) as Point[]) : [];
   let actions: Action[] = [];
   let tollFee = 0;
 
@@ -82,7 +83,8 @@
         points={data.points}
         kind="EXIT"
         placeholder="Enter point of destination"
-        bind:setPoint={pointDestination} />
+        bind:setPoint={pointDestination}
+        {reachables} />
     </div>
   </div>
 
