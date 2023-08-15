@@ -102,7 +102,7 @@
       </div>
 
       <div class="flex flex-col rounded-lg bg-gray-200 p-5 dark:bg-gray-800 dark:text-gray-200">
-        <h2 class="mb-2 text-xl font-bold text-gray-500">Pay at these toll gates</h2>
+        <!-- <h2 class="mb-2 text-xl font-bold text-gray-500">Pay at these toll gates</h2> -->
         <div class="flex flex-col gap-5">
           <div>
             {#each actions as action}
