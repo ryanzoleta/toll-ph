@@ -39,12 +39,14 @@ export async function load() {
   const tollFeeMatrix: TollFeeMatrix[] = [];
 
   for (const t of matrix) {
-    const determinantList = [];
+    let determinantList = [];
 
     determinantList.push(t.entryPointId);
     if (t.entryPointId !== t.exitPointId) determinantList.push(t.exitPointId);
+    if (t.entryPointId !== 99999 && t.exitPointId !== 99999)
+      determinantList = determinantList.sort();
 
-    const determinants = determinantList.sort().join(',');
+    const determinants = determinantList.join(',');
 
     tollFeeMatrix.push({
       determinants: determinants,

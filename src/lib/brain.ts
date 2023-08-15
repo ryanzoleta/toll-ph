@@ -7,13 +7,14 @@ let allPoints: Point[] = [];
 let allExpressways: Expressway[] = [];
 let tollMatrix: TollFeeMatrix[] = [];
 
-function calculateToll(tollDeterminants: Point[]) {
-  const determinants = tollDeterminants
-    .map((p) => {
-      return p.id;
-    })
-    .sort()
-    .join(',');
+function calculateToll(tollDeterminants: TollDeterminant) {
+  let determinantList = [tollDeterminants.entry, tollDeterminants.exit];
+
+  if (tollDeterminants.entry !== 99999 && tollDeterminants.exit !== 99999) {
+    determinantList = determinantList.sort();
+  }
+
+  const determinants = determinantList.join(',');
 
   for (const t of tollMatrix) {
     if (t.determinants === determinants) {
@@ -60,6 +61,11 @@ function dfs(point: Point, destination: Point, path: Point[]): Point | null {
   return null;
 }
 
+type TollDeterminant = {
+  entry: number;
+  exit: number;
+};
+
 export function generateActions(originPoint: Point, destinationPoint: Point) {
   allPoints = get(points);
   allExpressways = get(expressways);
@@ -72,7 +78,10 @@ export function generateActions(originPoint: Point, destinationPoint: Point) {
   path.push(destinationPoint);
 
   const actions: Action[] = [];
-  let tollDeterminants: Point[] = [];
+  let tollDeterminants: TollDeterminant = {
+    entry: 99999,
+    exit: 99999
+  };
   let tollFee: number | null = null;
 
   path.forEach((p, index) => {
@@ -85,27 +94,27 @@ export function generateActions(originPoint: Point, destinationPoint: Point) {
       action = 'EXIT';
     } else if (p.descriptor === 'TOLL_GATE') {
       if (index === 0) {
-        tollDeterminants.push(p);
+        tollDeterminants.entry = p.id;
       } else if (index !== path.length - 1) {
         if (path[index + 1].descriptor === 'EXIT_RAMP') {
-          tollDeterminants.push(p);
+          tollDeterminants.exit = p.id;
         } else if (
           getExpressway(p.expresswayId as string)?.tollNetworkId !==
           getExpressway(path[index + 1].expresswayId as string)?.tollNetworkId
         ) {
-          tollDeterminants.push(p);
+          tollDeterminants.exit = p.id;
         } else {
           enPassant = true;
         }
       } else if (index === path.length - 1) {
-        tollDeterminants.push(p);
+        tollDeterminants.exit = p.id;
       }
 
       tollFee = calculateToll(tollDeterminants);
 
       if (tollFee !== null) {
         action = 'PAY';
-        tollDeterminants = [];
+        tollDeterminants = { entry: 99999, exit: 99999 };
       } else if (!enPassant) {
         action = 'ENTER';
       }
