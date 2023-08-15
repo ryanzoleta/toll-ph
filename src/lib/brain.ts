@@ -153,9 +153,7 @@ function dfs2(point: Point, path: Point[], direction: 'NORTH' | 'SOUTH'): Point 
         })
         .includes(nextId)
     ) {
-      const nextPoint = allPoints.find((p) => {
-        return p.id === nextId;
-      }) as Point;
+      const nextPoint = allPoints.find((p) => p.id === nextId) as Point;
 
       const result = dfs2(nextPoint, path, direction);
       if (result) {
