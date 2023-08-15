@@ -23,6 +23,9 @@
   let actions: Action[] = [];
   let tollFee = 0;
 
+  let pointOriginInput = '';
+  let pointDestinationInput = '';
+
   onMount(() => {
     const darkModeLocal = localStorage.getItem('dark_mode');
     darkMode = darkModeLocal ? JSON.parse(darkModeLocal) : false;
@@ -71,6 +74,7 @@
     <div class="flex flex-col gap-2">
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Origin</h3>
       <PointSelector
+        bind:input={pointOriginInput}
         points={data.points}
         kind="ENTRY"
         placeholder="Enter point of origin"
@@ -80,6 +84,7 @@
     <div class="flex flex-col gap-2">
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Destination</h3>
       <PointSelector
+        bind:input={pointDestinationInput}
         points={data.points}
         kind="EXIT"
         placeholder="Enter point of destination"
@@ -97,6 +102,8 @@
       on:click={() => {
         pointOrigin = null;
         pointDestination = null;
+        pointOriginInput = '';
+        pointDestinationInput = '';
         actions = [];
       }}>Clear</button>
   </div>

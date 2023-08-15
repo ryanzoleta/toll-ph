@@ -7,8 +7,8 @@
   export let kind: 'ENTRY' | 'EXIT';
   export let placeholder: string;
   export let reachables: Point[] = [];
+  export let input = '';
 
-  let input = '';
   $: searchResults = points.filter((p) => matches(input, p));
   let displaySearchResults = false;
   let selectedIndex = -1;
