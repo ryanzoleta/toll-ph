@@ -88,6 +88,12 @@
     <button
       class="rounded-md bg-green-300 py-3 font-bold text-green-800 transition duration-100 hover:bg-green-400 dark:bg-green-800 dark:text-green-200 dark:hover:bg-green-700"
       on:click={calculate}>Calculate</button>
+    <button
+      class="rounded-md bg-gray-200 py-3 font-bold text-gray-600 transition duration-100 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+      on:click={() => {
+        pointOrigin = null;
+        pointDestination = null;
+      }}>Clear</button>
   </div>
 
   {#if actions.length > 0}

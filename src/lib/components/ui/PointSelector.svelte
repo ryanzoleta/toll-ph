@@ -8,19 +8,24 @@
   export let placeholder: string;
 
   let input = '';
-  $: searchResults = input ? points.filter((p) => matches(input, p)) : points;
-  $: displaySearchResults = searchResults.length > 0;
+  $: searchResults = points.filter((p) => matches(input, p));
+  let displaySearchResults = false;
   let selectedIndex = -1;
   export let setPoint: Point | null = null;
 
   let inputElement: HTMLElement;
 
   function matches(query: string, point: Point) {
-    return (
-      (point.name?.toUpperCase().startsWith(query.toUpperCase()) ||
-        (point.expresswayId?.toUpperCase().startsWith(query.toUpperCase()) && query.length > 1)) &&
-      ((kind === 'ENTRY' && point.entryable) || (kind === 'EXIT' && point.exitable))
-    );
+    if (query) {
+      return (
+        (point.name?.toUpperCase().startsWith(query.toUpperCase()) ||
+          (point.expresswayId?.toUpperCase().startsWith(query.toUpperCase()) &&
+            query.length > 1)) &&
+        ((kind === 'ENTRY' && point.entryable) || (kind === 'EXIT' && point.exitable))
+      );
+    } else {
+      return (kind === 'ENTRY' && point.entryable) || (kind === 'EXIT' && point.exitable);
+    }
   }
 
   $: if (!displaySearchResults) {
@@ -92,7 +97,7 @@
     </div>
   {/if}
 
-  {#if displaySearchResults}
+  {#if displaySearchResults && searchResults.length > 0}
     <div
       class="absolute top-full z-10 mt-1 flex max-h-[500px] w-full flex-col overflow-scroll rounded-md border border-gray-300 bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
       transition:fade={{ duration: 50 }}>
