@@ -61,6 +61,9 @@
     on:blur={() => {
       setTimeout(() => {
         displaySearchResults = false;
+        if (searchResults.length === 1) {
+          setPoint = searchResults[0];
+        }
       }, 100);
     }}
     on:keydown={(e) => {
