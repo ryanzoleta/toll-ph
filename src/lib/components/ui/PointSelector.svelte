@@ -8,7 +8,7 @@
   export let placeholder: string;
 
   let input = '';
-  $: searchResults = input ? points.filter((p) => matches(input, p)) ?? [] : [];
+  $: searchResults = input ? points.filter((p) => matches(input, p)) : points;
   $: displaySearchResults = searchResults.length > 0;
   let selectedIndex = -1;
   export let setPoint: Point | null = null;
@@ -56,7 +56,7 @@
     bind:this={inputElement}
     bind:value={input}
     on:focus={() => {
-      if (input.length > 0) displaySearchResults = true;
+      displaySearchResults = true;
     }}
     on:blur={() => {
       setTimeout(() => {
@@ -82,9 +82,19 @@
       }
     }} />
 
+  {#if input !== ''}
+    <div class="absolute right-4 top-0 flex h-full place-items-center">
+      <button
+        class="h-5 w-5 rounded-full bg-gray-200 text-xs text-gray-500"
+        on:click|preventDefault={() => {
+          input = '';
+        }}>x</button>
+    </div>
+  {/if}
+
   {#if displaySearchResults}
     <div
-      class="absolute top-full z-10 mt-1 flex w-full flex-col rounded-md border border-gray-300 bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+      class="absolute top-full z-10 mt-1 flex max-h-[500px] w-full flex-col overflow-scroll rounded-md border border-gray-300 bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
       transition:fade={{ duration: 50 }}>
       {#each searchResults as point, index}
         <button
