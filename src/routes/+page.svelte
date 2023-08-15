@@ -7,10 +7,6 @@
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
   import type { Action, Point } from '$lib/types';
   import { capitalize, formatAmountToCurrency, stringifyEnum } from '$lib/utils.js';
-  import first from '$lib/assets/images/first.png';
-  import last from '$lib/assets/images/last.png';
-  import line from '$lib/assets/images/line.png';
-  import middle from '$lib/assets/images/middle.png';
   import { generateActions } from '$lib/brain.js';
   import { expressways, points, tollFeeMatrix } from '$lib/stores.js';
 
@@ -127,13 +123,19 @@
         <h2 class="mb-2 text-xl font-bold text-gray-500">Route</h2>
         {#each actions as action, index}
           <div class="flex gap-2 {index === 0 ? 'place-items-end' : 'place-items-start'}">
-            <div class="h-5 w-5">
+            <div class="relative flex h-5 w-5 flex-col place-items-center">
               {#if index === 0}
-                <img src={first} alt="first action" />
+                <div class="absolute top-1 h-full w-2 bg-blue-400" />
+                <div
+                  class="absolute left-0 top-0 h-full w-full rounded-full border-4 border-blue-400 bg-white" />
               {:else if index === actions.length - 1}
-                <img src={last} alt="last action" />
+                <div class="absolute bottom-1 h-full w-2 bg-blue-400" />
+                <div
+                  class="absolute bottom-0 left-0 h-full w-full rounded-full border-4 border-blue-400 bg-white" />
               {:else}
-                <img src={middle} alt="middle action" />
+                <div class="absolute top-1 h-full w-2 bg-blue-400" />
+                <div
+                  class="absolute left-0 top-0 h-full w-full rounded-full border-4 border-blue-400 bg-white" />
               {/if}
             </div>
             {#if action.action === 'PAY' && action.amount}
@@ -159,10 +161,13 @@
           </div>
 
           {#if index !== actions.length - 1}
-            <div class="flex place-items-end">
+            <!-- <div class="flex place-items-end">
               <div class="flex h-5 w-5 flex-col place-items-center">
                 <img src={line} alt="first action" />
               </div>
+            </div> -->
+            <div class="flex h-5 w-5 flex-col place-items-center">
+              <div class="h-full w-2 bg-blue-400" />
             </div>
           {/if}
         {/each}
