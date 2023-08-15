@@ -17,8 +17,8 @@
   $tollFeeMatrix = data.tollFeeMatrix;
 
   let darkMode: boolean;
-  let pointOrigin: Point = data.points[0];
-  let pointDestination: Point = data.points[4];
+  let pointOrigin: Point | null = data.points[0];
+  let pointDestination: Point | null = data.points[4];
   let actions: Action[] = [];
   let tollFee = 0;
 
@@ -38,13 +38,15 @@
   }
 
   async function calculate() {
-    actions = generateActions(pointOrigin, pointDestination);
+    if (pointOrigin && pointDestination) {
+      actions = generateActions(pointOrigin, pointDestination);
 
-    tollFee = 0;
+      tollFee = 0;
 
-    actions.forEach((a) => {
-      if (a.amount) tollFee += a.amount;
-    });
+      actions.forEach((a) => {
+        if (a.amount) tollFee += a.amount;
+      });
+    }
   }
 </script>
 
