@@ -157,7 +157,7 @@
                   >{capitalize(action.point.name)}</span>
                 {stringifyEnum(action.point.descriptor)}
               </p>
-            {:else if action.action === 'ENTER'}
+            {:else if action.action === 'ENTER' || action.action === 'EXIT'}
               <p class="text-gray-700 dark:text-gray-400">
                 {capitalize(action.action.toLowerCase())}
                 {action.point.expresswayId}

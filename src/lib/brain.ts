@@ -118,6 +118,7 @@ export function generateActions(originPoint: Point, destinationPoint: Point) {
           amount: tollFee,
           point: p
         });
+        tollFee = null;
       } else {
         actions.push({
           action,

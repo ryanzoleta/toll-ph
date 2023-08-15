@@ -42,7 +42,7 @@ export async function load() {
     const determinantList = [];
 
     determinantList.push(t.entryPointId);
-    if (t.exitPointId) determinantList.push(t.exitPointId);
+    if (t.entryPointId !== t.exitPointId) determinantList.push(t.exitPointId);
 
     const determinants = determinantList.sort().join(',');
 
