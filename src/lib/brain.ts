@@ -169,5 +169,8 @@ export function getReachables(originPoint: Point) {
   const southPath: Point[] = [];
   dfs2(originPoint, southPath, 'SOUTH');
 
-  return [...northPath, ...southPath];
+  return [
+    ...northPath.filter((p) => p.id !== originPoint.id),
+    ...southPath.filter((p) => p.id !== originPoint.id)
+  ];
 }
