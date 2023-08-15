@@ -93,6 +93,7 @@
       on:click={() => {
         pointOrigin = null;
         pointDestination = null;
+        actions = [];
       }}>Clear</button>
   </div>
 
