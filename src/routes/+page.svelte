@@ -17,8 +17,8 @@
   $tollFeeMatrix = data.tollFeeMatrix;
 
   let darkMode: boolean;
-  let pointOrigin: Point | null = data.points[0];
-  let pointDestination: Point | null = data.points[4];
+  let pointOrigin: Point | null = null;
+  let pointDestination: Point | null = null;
   $: reachables = pointOrigin ? (getReachables(pointOrigin) as Point[]) : [];
   let actions: Action[] = [];
   let tollFee = 0;
