@@ -133,18 +133,22 @@
             {/if}
           </div>
           {#if action.action === 'PAY' && action.amount}
-            <p class="text-gray-400">
+            <p class="text-gray-700 dark:text-gray-400">
               {capitalize(action.action.toLowerCase())}
-              <span class="font-bold text-gray-100">{formatAmountToCurrency(action.amount)}</span>
+              <span class="font-bold text-gray-800 dark:text-gray-100"
+                >{formatAmountToCurrency(action.amount)}</span>
               toll fee at
-              <span class="font-bold text-gray-100">{capitalize(action.point.name)}</span>
+              <span class="font-bold text-gray-800 dark:text-gray-100"
+                >{capitalize(action.point.name)}</span>
               {stringifyEnum(action.point.descriptor)}
             </p>
           {:else if action.action === 'ENTER'}
-            <p class="text-gray-400">
+            <p class="text-gray-700 dark:text-gray-400">
               {capitalize(action.action.toLowerCase())}
               {action.point.expresswayId}
-              at <span class="font-bold text-gray-100">{capitalize(action.point.name)}</span>
+              at
+              <span class="font-bold text-gray-800 dark:text-gray-100"
+                >{capitalize(action.point.name)}</span>
               {stringifyEnum(action.point.descriptor)}
             </p>
           {/if}
