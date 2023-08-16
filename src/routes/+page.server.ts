@@ -5,9 +5,13 @@ import type { Point, TollFeeMatrix } from '$lib/types';
 import { and, eq } from 'drizzle-orm';
 
 export async function load() {
+  console.time('points_query');
   const points: OriginalPoint[] = await db.select().from(point);
+  console.timeEnd('points_query');
 
   const pointsExpanded = [];
+
+  console.time('links_query');
 
   for (const p of points) {
     const newPoint = p as Point;
@@ -33,9 +37,15 @@ export async function load() {
     pointsExpanded.push(newPoint);
   }
 
-  const expressways = await db.select().from(expressway);
+  console.timeEnd('links_query');
 
+  console.time('expressways_query');
+  const expressways = await db.select().from(expressway);
+  console.timeEnd('expressways_query');
+
+  console.time('matrix_query');
   const matrix = await db.select().from(tollMatrix);
+  console.timeEnd('matrix_query');
   const tollFeeMatrix: TollFeeMatrix[] = [];
 
   for (const t of matrix) {
