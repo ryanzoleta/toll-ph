@@ -2,7 +2,6 @@ import { db } from '$lib/data/db';
 import type { Point as OriginalPoint } from '$lib/data/schema';
 import { expressway, link, point, tollMatrix } from '$lib/data/schema';
 import type { Point, TollFeeMatrix } from '$lib/types';
-import { and, eq } from 'drizzle-orm';
 
 export async function load() {
   console.time('points_query');
@@ -13,25 +12,25 @@ export async function load() {
 
   console.time('links_query');
 
+  const alLinks = await db.select().from(link);
+
   for (const p of points) {
     const newPoint = p as Point;
 
-    const northQueryResults = await db
-      .select({ id: link.nextPointId })
-      .from(link)
-      .where(and(eq(link.originPointId, p.id), eq(link.direction, 'NORTH')));
+    const northQueryResults = alLinks.filter(
+      (l) => l.nextPointId === p.id && l.direction === 'NORTH'
+    );
 
     newPoint.nextNorthIds = northQueryResults.map((x) => {
-      return x.id as number;
+      return x.nextPointId as number;
     });
 
-    const southQueryResults = await db
-      .select({ id: link.nextPointId })
-      .from(link)
-      .where(and(eq(link.originPointId, p.id), eq(link.direction, 'SOUTH')));
+    const southQueryResults = alLinks.filter(
+      (l) => l.nextPointId === p.id && l.direction === 'SOUTH'
+    );
 
     newPoint.nextSouthIds = southQueryResults.map((x) => {
-      return x.id as number;
+      return x.nextPointId as number;
     });
 
     pointsExpanded.push(newPoint);
