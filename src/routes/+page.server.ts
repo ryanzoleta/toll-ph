@@ -18,7 +18,7 @@ export async function load() {
     const newPoint = p as Point;
 
     const northQueryResults = alLinks.filter(
-      (l) => l.nextPointId === p.id && l.direction === 'NORTH'
+      (l) => l.originPointId === p.id && l.direction === 'NORTH'
     );
 
     newPoint.nextNorthIds = northQueryResults.map((x) => {
@@ -26,7 +26,7 @@ export async function load() {
     });
 
     const southQueryResults = alLinks.filter(
-      (l) => l.nextPointId === p.id && l.direction === 'SOUTH'
+      (l) => l.originPointId === p.id && l.direction === 'SOUTH'
     );
 
     newPoint.nextSouthIds = southQueryResults.map((x) => {
