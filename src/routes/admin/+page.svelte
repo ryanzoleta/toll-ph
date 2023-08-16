@@ -9,7 +9,7 @@
   export let data;
 </script>
 
-<div class="flex flex-col gap-3 p-5">
+<div class="flex min-h-screen flex-col gap-3 bg-black p-5 text-gray-300">
   <h1 class="text-xl font-bold">Admin Panel</h1>
 
   <div class="flex flex-col">
@@ -32,7 +32,7 @@
             <input
               type="submit"
               value="Delete"
-              class="w-full rounded-md bg-red-400 py-1 text-red-100" />
+              class="w-full rounded-md bg-red-900 py-1 text-red-300" />
           </form>
         </Box>
       {/each}
@@ -65,7 +65,7 @@
             <input
               type="submit"
               value="Delete"
-              class="w-full rounded-md bg-red-400 py-1 text-red-100" />
+              class="w-full rounded-md bg-red-900 py-1 text-red-300" />
           </form>
         </Box>
       {/each}
