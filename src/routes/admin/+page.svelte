@@ -87,27 +87,52 @@
     <div class="flex w-fit flex-col gap-1">
       <Box>
         <Form action="?/createPoint">
-          <FormField label="ID" name="pointId" />
           <FormField label="Name" name="pointName" />
+          <FormField label="Descriptor" name="pointDescriptor" />
+          <FormField label="Expressway" name="pointExpresswayId" />
+          <FormField label="Entryable" name="pointEntryable" variant="check" />
+          <FormField label="Exitable" name="pointExitable" variant="check" />
 
           <FormButton variant="create" />
         </Form>
       </Box>
-      {#each data.points as point}
-        <Box>
-          <Form action="?/updatePoint">
-            <FormField label="ID" name="pointId" value={point.id.toString()} />
-            <FormField label="Name" name="pointName" value={point.name} />
-            <FormField label="Descriptor" name="pointDescriptor" value={point.descriptor} />
 
-            <FormButton variant="update" />
-          </Form>
-          <Form action="?/deletePoint">
-            <FormField label="ID" name="pointId" value={point.id.toString()} hidden />
-            <FormButton variant="delete" />
-          </Form>
-        </Box>
-      {/each}
+      <Scroller>
+        {#each data.expressways as expressway}
+          <div>
+            <h3 class="text-lg font-bold">{expressway.id}</h3>
+            {#each data.points.filter((p) => p.expresswayId === expressway.id) as point}
+              <Box>
+                <Form action="?/updatePoint">
+                  <FormField label="ID" name="pointId" value={point.id.toString()} disabled />
+                  <FormField label="Name" name="pointName" value={point.name} />
+                  <FormField label="Descriptor" name="pointDescriptor" value={point.descriptor} />
+                  <FormField
+                    label="Expressway"
+                    name="pointExpresswayId"
+                    value={point.expresswayId} />
+                  <FormField
+                    label="Entryable"
+                    name="pointEntryable"
+                    checked={point.entryable}
+                    variant="check" />
+                  <FormField
+                    label="Exitable"
+                    name="pointExitable"
+                    checked={point.exitable}
+                    variant="check" />
+
+                  <FormButton variant="update" />
+                </Form>
+                <Form action="?/deletePoint">
+                  <FormField label="ID" name="pointId" value={point.id.toString()} hidden />
+                  <FormButton variant="delete" />
+                </Form>
+              </Box>
+            {/each}
+          </div>
+        {/each}
+      </Scroller>
     </div>
   </div>
 </div>

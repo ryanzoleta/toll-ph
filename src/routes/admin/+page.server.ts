@@ -9,13 +9,9 @@ export async function load() {
   const tollNetworks = await db.select().from(tollNetwork);
   const expressways = await db.select().from(expressway);
 
-  console.time('points_query');
   const points: OriginalPoint[] = await db.select().from(point);
-  console.timeEnd('points_query');
 
   const pointsExpanded = [];
-
-  console.time('links_query');
 
   const alLinks = await db.select().from(link);
 
@@ -99,6 +95,39 @@ export const actions = {
     try {
       if (id) {
         await db.delete(expressway).where(eq(expressway.id, id));
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+  createPoint: async ({ request }: RequestEvent) => {
+    const formData = await request.formData();
+
+    const name = formData.get('pointName')?.toString();
+    const descriptor = formData.get('pointDescriptor')?.toString() as
+      | 'ENTRANCE_RAMP'
+      | 'EXIT_RAMP'
+      | 'TOLL_GATE';
+    const expresswayId = formData.get('pointExpresswayId')?.toString();
+    const entryable = formData.get('pointEntryable')?.toString() ? true : false;
+    const exitable = formData.get('pointExitable')?.toString() ? true : false;
+
+    try {
+      if (name && descriptor && expresswayId) {
+        await db.insert(point).values({ name, descriptor, expresswayId, entryable, exitable });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+  deletePoint: async ({ request }: RequestEvent) => {
+    const formData = await request.formData();
+
+    const id = parseInt(formData.get('pointId')?.toString() as string);
+
+    try {
+      if (id) {
+        await db.delete(point).where(eq(point.id, id));
       }
     } catch (e) {
       console.log(e);

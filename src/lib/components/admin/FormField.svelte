@@ -1,13 +1,18 @@
 <script lang="ts">
-  export let variant: 'text' | 'select' = 'text';
+  export let variant: 'text' | 'select' | 'check' = 'text';
   export let label: string;
   export let name: string;
   export let value: string | null = '';
   export let disabled = false;
   export let hidden = false;
+  export let checked: boolean | null = false;
 
   if (value === null) {
     value = '';
+  }
+
+  if (checked === null) {
+    checked = false;
   }
 </script>
 
@@ -33,5 +38,8 @@
     {disabled}>
     <slot />
   </select>
+{:else if variant === 'check'}
+  <label for={name}>{label}</label>
+  <input type="checkbox" {name} {checked} />
 {/if}
 <!-- </div> -->
