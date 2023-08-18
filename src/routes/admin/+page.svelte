@@ -84,4 +84,33 @@
       {/each}
     </Scroller>
   </div>
+
+  <div class="flex flex-col">
+    <h2 class="text-lg font-bold">Points</h2>
+    <div class="flex w-fit flex-col gap-1">
+      <Box>
+        <Form action="?/createPoint">
+          <FormField label="ID" name="pointId" />
+          <FormField label="Name" name="pointName" />
+
+          <FormButton variant="create" />
+        </Form>
+      </Box>
+      {#each data.points as point}
+        <Box>
+          <Form action="?/updatePoint">
+            <FormField label="ID" name="pointId" value={point.id.toString()} />
+            <FormField label="Name" name="pointName" value={point.name} />
+            <FormField label="Descriptor" name="pointDescriptor" value={point.descriptor} />
+
+            <FormButton variant="update" />
+          </Form>
+          <Form action="?/deletePoint">
+            <FormField label="ID" name="pointId" value={point.id.toString()} hidden />
+            <FormButton variant="delete" />
+          </Form>
+        </Box>
+      {/each}
+    </div>
+  </div>
 </div>
