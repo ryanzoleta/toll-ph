@@ -3,10 +3,7 @@
   import Box from '$lib/components/admin/Box.svelte';
   import Form from '$lib/components/admin/Form.svelte';
   import FormButton from '$lib/components/admin/FormButton.svelte';
-  import FormCreateButton from '$lib/components/admin/FormCreateButton.svelte';
-  import FormDeleteButton from '$lib/components/admin/FormDeleteButton.svelte';
   import FormField from '$lib/components/admin/FormField.svelte';
-  import FormUpdateButton from '$lib/components/admin/FormUpdateButton.svelte';
   import Scroller from '$lib/components/admin/Scroller.svelte';
 
   export let data;
