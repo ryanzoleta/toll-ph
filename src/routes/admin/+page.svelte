@@ -2,8 +2,11 @@
   import { enhance } from '$app/forms';
   import Box from '$lib/components/admin/Box.svelte';
   import Form from '$lib/components/admin/Form.svelte';
+  import FormButton from '$lib/components/admin/FormButton.svelte';
   import FormCreateButton from '$lib/components/admin/FormCreateButton.svelte';
+  import FormDeleteButton from '$lib/components/admin/FormDeleteButton.svelte';
   import FormField from '$lib/components/admin/FormField.svelte';
+  import FormUpdateButton from '$lib/components/admin/FormUpdateButton.svelte';
   import Scroller from '$lib/components/admin/Scroller.svelte';
 
   export let data;
@@ -20,20 +23,21 @@
           <FormField label="ID" name="tollNetworkId" />
           <FormField label="Name" name="tollNetworkName" />
 
-          <FormCreateButton />
+          <FormButton variant="create" />
         </Form>
       </Box>
       {#each data.tollNetworks as tollNetwork}
         <Box>
-          <p>ID: {tollNetwork.id}</p>
-          <p>Name: {tollNetwork.name}</p>
-          <form method="POST" action="?/deleteTollNetwork" use:enhance>
-            <input type="hidden" name="tollNetworkId" value={tollNetwork.id} />
-            <input
-              type="submit"
-              value="Delete"
-              class="w-full rounded-md bg-red-900 py-1 text-red-300" />
-          </form>
+          <Form action="?/updateTollNetwork">
+            <FormField label="ID" name="tollNetworkId" value={tollNetwork.id} disabled />
+            <FormField label="Name" name="tollNetworkName" value={tollNetwork.name} />
+
+            <FormButton variant="update" />
+          </Form>
+          <Form action="?/deleteTollNetwork">
+            <FormField label="ID" name="tollNetworkId" value={tollNetwork.id} hidden />
+            <FormButton variant="delete" />
+          </Form>
         </Box>
       {/each}
     </Scroller>
@@ -52,21 +56,30 @@
             {/each}
           </FormField>
 
-          <FormCreateButton />
+          <FormButton variant="create" />
         </Form>
       </Box>
       {#each data.expressways as expressway}
         <Box>
-          <p>ID: {expressway.id}</p>
-          <p>Name: {expressway.name}</p>
-          <p>Toll Network: {expressway.tollNetworkId}</p>
-          <form method="POST" action="?/deleteTollNetwork" use:enhance>
-            <input type="hidden" name="tollNetworkId" value={expressway.id} />
-            <input
-              type="submit"
-              value="Delete"
-              class="w-full rounded-md bg-red-900 py-1 text-red-300" />
-          </form>
+          <Form action="?/upateExpressway">
+            <FormField label="ID" name="expresswayId" value={expressway.id} />
+            <FormField label="Name" name="expresswayName" value={expressway.name} />
+            <FormField
+              variant="select"
+              label="Toll Network"
+              name="expresswayTollNetworkId"
+              value={expressway.tollNetworkId}>
+              {#each data.tollNetworks as tollNetwork}
+                <option value={tollNetwork.id}>{tollNetwork.id}</option>
+              {/each}
+            </FormField>
+
+            <FormButton variant="update" />
+          </Form>
+          <Form action="?/deleteExpressway">
+            <FormField label="ID" name="expresswayId" value={expressway.id} hidden />
+            <FormButton variant="delete" />
+          </Form>
         </Box>
       {/each}
     </Scroller>
