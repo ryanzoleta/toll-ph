@@ -27,7 +27,6 @@
     {name}
     class="rounded-md border border-gray-800 bg-gray-800 p-1"
     {value}
-    {disabled}
     {hidden} />
 {:else if variant === 'select'}
   <label for={name}>{label}</label>

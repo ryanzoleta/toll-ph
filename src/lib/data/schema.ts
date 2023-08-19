@@ -26,7 +26,8 @@ export const point = mysqlTable('point', {
   descriptor: mysqlEnum('descriptor', ['ENTRANCE_RAMP', 'EXIT_RAMP', 'TOLL_GATE']),
   expresswayId: varchar('expresway_id', { length: 50 }).references(() => expressway.id),
   entryable: boolean('entryable'),
-  exitable: boolean('exitable')
+  exitable: boolean('exitable'),
+  sequence: int('sequence')
 });
 
 export const link = mysqlTable(

@@ -87,6 +87,7 @@
       <Box>
         <Form action="?/createPoint">
           <FormField label="Name" name="pointName" />
+          <FormField label="Sequence" name="pointSequence" />
           <FormField label="Descriptor" name="pointDescriptor" />
           <FormField label="Expressway" name="pointExpresswayId" />
           <FormField label="Entryable" name="pointEntryable" variant="check" />
@@ -103,7 +104,11 @@
             {#each data.points.filter((p) => p.expresswayId === expressway.id) as point}
               <Box>
                 <Form action="?/updatePoint">
-                  <FormField label="ID" name="pointId" value={point.id.toString()} disabled />
+                  <FormField label="ID" name="pointId" value={point.id.toString()} />
+                  <FormField
+                    label="Sequence"
+                    name="pointSequence"
+                    value={point.sequence?.toString()} />
                   <FormField label="Name" name="pointName" value={point.name} />
                   <FormField label="Descriptor" name="pointDescriptor" value={point.descriptor} />
                   <FormField
