@@ -10,6 +10,7 @@ export async function load() {
   const expressways = await db.select().from(expressway);
 
   const points: OriginalPoint[] = await db.select().from(point).orderBy(point.sequence);
+  const originalPoints = points;
 
   const pointsExpanded = [];
 
@@ -26,6 +27,10 @@ export async function load() {
       return x.nextPointId as number;
     });
 
+    newPoint.nextNorths = newPoint.nextNorthIds.map((id) => {
+      return originalPoints.find((p) => p.id === id);
+    }) as OriginalPoint[];
+
     const southQueryResults = alLinks.filter(
       (l) => l.originPointId === p.id && l.direction === 'SOUTH'
     );
@@ -33,6 +38,10 @@ export async function load() {
     newPoint.nextSouthIds = southQueryResults.map((x) => {
       return x.nextPointId as number;
     });
+
+    newPoint.nextSouths = newPoint.nextSouthIds.map((id) => {
+      return originalPoints.find((p) => p.id === id);
+    }) as OriginalPoint[];
 
     pointsExpanded.push(newPoint);
   }

@@ -6,7 +6,12 @@ export type Action = {
   amount?: number;
 };
 
-export type Point = OriginalPoint & { nextNorthIds: number[]; nextSouthIds: number[] };
+export type Point = OriginalPoint & {
+  nextNorthIds: number[];
+  nextSouthIds: number[];
+  nextNorths?: OriginalPoint[];
+  nextSouths?: OriginalPoint[];
+};
 
 export type TollFeeMatrix = {
   determinants: string;
