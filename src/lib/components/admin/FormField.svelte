@@ -31,11 +31,7 @@
     {hidden} />
 {:else if variant === 'select'}
   <label for={name}>{label}</label>
-  <select
-    {name}
-    class="flex-1 rounded-md border border-gray-800 bg-gray-800 p-1"
-    {value}
-    {disabled}>
+  <select {name} class="rounded-md border border-gray-800 bg-gray-800 p-1" {value} {disabled}>
     <slot />
   </select>
 {:else if variant === 'check'}
