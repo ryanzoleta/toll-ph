@@ -3,15 +3,13 @@
   import Form from '$lib/components/admin/Form.svelte';
   import FormButton from '$lib/components/admin/FormButton.svelte';
   import FormField from '$lib/components/admin/FormField.svelte';
+  import Next from '$lib/components/admin/Next.svelte';
   import Scroller from '$lib/components/admin/Scroller.svelte';
+  import IconPlus from '$lib/components/icons/IconPlus.svelte';
   import IconTrash from '$lib/components/icons/IconTrash.svelte';
   import axios from 'axios';
 
   export let data;
-
-  async function deleteLink(id: number, nextId: number, direction: 'NORTH' | 'SOUTH') {
-    await axios.delete(`/api/link/${id}/${nextId}/${direction}`);
-  }
 </script>
 
 <div class="flex min-h-screen flex-col gap-3 bg-black p-5 text-gray-300">
@@ -131,37 +129,6 @@
                     name="pointExitable"
                     checked={point.exitable}
                     variant="check" />
-                  <div>Next North</div>
-                  <div>
-                    {#if point.nextNorths}
-                      {#each point.nextNorths as next}
-                        <div class="flex place-content-between">
-                          <p>{next.name}</p>
-                          <button
-                            class="h-5 w-5 text-gray-500"
-                            on:click={() => {
-                              deleteLink(point.id, next.id, 'NORTH');
-                            }}><IconTrash /></button>
-                        </div>
-                      {/each}
-                    {/if}
-                  </div>
-
-                  <div>Next South</div>
-                  <div>
-                    {#if point.nextSouths}
-                      {#each point.nextSouths as next}
-                        <div class="flex place-content-between">
-                          <p>{next.name}</p>
-                          <button
-                            class="h-5 w-5 text-gray-500"
-                            on:click={() => {
-                              deleteLink(point.id, next.id, 'NORTH');
-                            }}><IconTrash /></button>
-                        </div>
-                      {/each}
-                    {/if}
-                  </div>
 
                   <FormButton variant="update" />
                 </Form>
@@ -169,6 +136,11 @@
                   <FormField label="ID" name="pointId" value={point.id.toString()} hidden />
                   <FormButton variant="delete" />
                 </Form>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <Next {point} direction="NORTH" />
+                  <Next {point} direction="SOUTH" />
+                </div>
               </Box>
             {/each}
           </div>
