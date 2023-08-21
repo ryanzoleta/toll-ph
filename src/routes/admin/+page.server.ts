@@ -113,6 +113,7 @@ export const actions = {
     const formData = await request.formData();
 
     const name = formData.get('pointName')?.toString();
+    const sequence = parseInt(formData.get('pointSequence')?.toString() as string);
     const descriptor = formData.get('pointDescriptor')?.toString() as
       | 'ENTRANCE_RAMP'
       | 'EXIT_RAMP'
@@ -123,7 +124,9 @@ export const actions = {
 
     try {
       if (name && descriptor && expresswayId) {
-        await db.insert(point).values({ name, descriptor, expresswayId, entryable, exitable });
+        await db
+          .insert(point)
+          .values({ name, sequence, descriptor, expresswayId, entryable, exitable });
       }
     } catch (e) {
       console.log(e);
