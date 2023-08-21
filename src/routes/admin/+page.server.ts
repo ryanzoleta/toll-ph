@@ -48,8 +48,7 @@ export async function load() {
 
   return {
     tollNetworks,
-    expressways,
-    points: pointsExpanded
+    expressways
   };
 }
 

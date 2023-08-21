@@ -26,7 +26,7 @@
     type="text"
     {name}
     class="rounded-md border border-gray-800 bg-gray-800 p-1"
-    {value}
+    bind:value
     {hidden} />
 {:else if variant === 'select'}
   <label for={name}>{label}</label>
@@ -35,6 +35,6 @@
   </select>
 {:else if variant === 'check'}
   <label for={name}>{label}</label>
-  <input type="checkbox" {name} {checked} />
+  <input type="checkbox" {name} bind:checked />
 {/if}
 <!-- </div> -->
