@@ -34,6 +34,14 @@
 
   async function createPoint() {
     await axios.post('/api/point', point);
+
+    point.name = '';
+    point.descriptor = '';
+    point.expresswayId = '';
+    point.entryable = false;
+    point.exitable = false;
+    point.sequence = '';
+
     $pointsQuery.refetch();
   }
 </script>
