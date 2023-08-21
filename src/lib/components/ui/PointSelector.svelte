@@ -124,9 +124,11 @@
           on:click={() => {
             setPoint = point;
           }}>
-          <div class="flex place-items-center gap-1">
+          <div class="flex place-items-center gap-2">
             <p class="font-bold">{capitalize(point.name)}</p>
-            <p class="text-sm font-extralight italic">{stringifyEnum(point.descriptor)}</p>
+            <p class="text-sm font-extralight italic text-gray-500">
+              {stringifyEnum(point.descriptor)}
+            </p>
           </div>
           <p class="text-sm text-gray-500">{point.expresswayId}</p>
         </button>

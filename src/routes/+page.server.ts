@@ -5,7 +5,10 @@ import type { Point, TollFeeMatrix } from '$lib/types';
 
 export async function load() {
   console.time('points_query');
-  const points: OriginalPoint[] = await db.select().from(point);
+  const points: OriginalPoint[] = await db
+    .select()
+    .from(point)
+    .orderBy(point.expresswayId, point.sequence);
   console.timeEnd('points_query');
 
   const pointsExpanded = [];
