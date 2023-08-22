@@ -5,7 +5,10 @@ import type { Point } from '$lib/types';
 import { json, type RequestEvent } from '@sveltejs/kit';
 
 export async function GET() {
-  const points: OriginalPoint[] = await db.select().from(point).orderBy(point.sequence);
+  const points: OriginalPoint[] = await db
+    .select()
+    .from(point)
+    .orderBy(point.expresswayId, point.sequence);
   const originalPoints = points;
 
   const pointsExpanded = [];

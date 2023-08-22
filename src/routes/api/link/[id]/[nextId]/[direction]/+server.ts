@@ -21,3 +21,17 @@ export async function DELETE(event: RequestEvent) {
 
   return json('ok');
 }
+
+export async function POST(event: RequestEvent) {
+  const { id, nextId, direction } = event.params;
+
+  if (id && nextId && direction) {
+    await db.insert(link).values({
+      originPointId: parseInt(id as string),
+      nextPointId: parseInt(nextId as string),
+      direction: direction === 'NORTH' ? link.direction.enumValues[0] : link.direction.enumValues[1]
+    });
+  }
+
+  return json('ok');
+}

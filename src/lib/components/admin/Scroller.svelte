@@ -1,3 +1,3 @@
-<div class="flex max-w-fit gap-2 overflow-y-scroll">
+<div class="flex gap-2 overflow-y-scroll">
   <slot />
 </div>

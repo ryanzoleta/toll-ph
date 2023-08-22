@@ -121,7 +121,7 @@
 
   <div class="flex flex-col">
     <h2 class="text-lg font-bold">Points</h2>
-    <div class="flex w-fit flex-col gap-1">
+    <div class="flex w-fit flex-col gap-5">
       <Box>
         <div class="grid auto-cols-fr grid-cols-2 gap-2">
           <FormField label="Name" name="pointName" bind:value={point.name} />
@@ -148,7 +148,7 @@
   </div>
   <Scroller>
     {#each data.expressways as expressway}
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-5">
         <h3 class="text-lg font-bold">{expressway.id}</h3>
         {#if $pointsQuery.isLoading}
           <p>Loading...</p>
@@ -183,8 +183,8 @@
               </Form>
 
               <div class="grid grid-cols-2 gap-2">
-                <Next {point} direction="NORTH" />
-                <Next {point} direction="SOUTH" />
+                <Next {point} direction="NORTH" allPoints={$pointsQuery.data} />
+                <Next {point} direction="SOUTH" allPoints={$pointsQuery.data} />
               </div>
             </Box>
           {/each}

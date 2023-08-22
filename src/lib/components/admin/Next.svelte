@@ -4,9 +4,11 @@
   import IconPlus from '../icons/IconPlus.svelte';
   import IconTrash from '../icons/IconTrash.svelte';
   import { createQuery } from '@tanstack/svelte-query';
+  import { stringifyEnum } from '$lib/utils';
 
   export let point: Point;
   export let direction: 'NORTH' | 'SOUTH';
+  export let allPoints: Point[];
 
   let destination: string;
 
@@ -27,7 +29,8 @@
   }
 
   async function addLink() {
-    await axios.post('/api/link', { originId: point.id, destination: destination, direction });
+    // await axios.post('/api/link', { originId: point.id, destination: destination, direction });
+    await axios.post(`/api/link/${point.id}/${destination}/${direction}`);
     $query.refetch();
     destination = '';
   }
@@ -36,18 +39,28 @@
 <div>Next {direction}</div>
 <div>
   <div class="flex place-items-center gap-2">
-    <input
+    <!-- <input
       type="text"
       class="rounded-md border border-gray-800 bg-gray-800 p-1"
-      bind:value={destination} />
-    <button class="h-5 w-5 text-gray-500" on:click={addLink}><IconPlus /></button>
+      bind:value={destination} /> -->
+    <select
+      class="w-11/12 overflow-ellipsis rounded-md border border-gray-800 bg-gray-800 p-1"
+      bind:value={destination}>
+      <option value="" selected>Choose</option>
+      {#each allPoints.filter((p) => {
+        return p.name !== 'null';
+      }) as point}
+        <option value={point.id}>{point.name} ({stringifyEnum(point.descriptor)})</option>
+      {/each}
+    </select>
+    <button class="h-5 w-1/12 text-gray-500" on:click={addLink}><IconPlus /></button>
   </div>
   {#if $query.isLoading}
     <p>Loading...</p>
   {:else}
     {#each $query.data as next}
       <div class="flex place-content-between">
-        <p>{next.name}</p>
+        <p>{next.name} ({stringifyEnum(next.descriptor)})</p>
         <button
           class="h-5 w-5 text-gray-500"
           on:click={() => {
