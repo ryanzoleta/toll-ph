@@ -110,17 +110,35 @@
 
   {#if actions.length > 0}
     <div class="flex flex-col gap-4">
-      <div class="flex flex-col rounded-lg bg-gray-200 p-5 dark:bg-gray-800 dark:text-gray-200">
-        <h2 class="mb-2 text-xl font-bold text-gray-500">Total Toll Fees</h2>
-        <div class="flex flex-col gap-5">
-          <p class="text-5xl font-extrabold tracking-tight text-gray-900 dark:text-gray-200">
-            {formatAmountToCurrency(tollFee)}
-          </p>
+      <div
+        class="flex flex-col gap-2 rounded-lg bg-gray-200 p-5 dark:bg-gray-800 dark:text-gray-200">
+        <div class="flex place-content-between">
+          <h2 class="text-xl font-bold text-gray-500">Total Toll Fees</h2>
+          <div class="flex flex-col gap-5">
+            <p class="text-5xl font-extrabold tracking-tight text-gray-900 dark:text-gray-200">
+              {formatAmountToCurrency(tollFee)}
+            </p>
+          </div>
+        </div>
+        <div>
+          <h2 class=" text-xl font-bold text-gray-500">Pay at these toll gates</h2>
+          <div>
+            {#each actions as action}
+              {#if action.amount}
+                <div class="flex place-content-between">
+                  <p>{capitalize(action.point.name)}</p>
+                  <p class="font-bold tracking-tight text-gray-600 dark:text-gray-200">
+                    {formatAmountToCurrency(action.amount)}
+                  </p>
+                </div>
+              {/if}
+            {/each}
+          </div>
         </div>
       </div>
 
-      <div class="flex flex-col rounded-lg bg-gray-200 p-5 dark:bg-gray-800 dark:text-gray-200">
-        <!-- <h2 class="mb-2 text-xl font-bold text-gray-500">Pay at these toll gates</h2> -->
+      <!-- <div class="flex flex-col rounded-lg bg-gray-200 p-5 dark:bg-gray-800 dark:text-gray-200">
+        <h2 class="mb-2 text-xl font-bold text-gray-500">Pay at these toll gates</h2>
         <div class="flex flex-col gap-5">
           <div>
             {#each actions as action}
@@ -135,7 +153,7 @@
             {/each}
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="flex flex-col rounded-lg bg-gray-200 p-5 dark:bg-gray-800 dark:text-gray-200">
         <h2 class="mb-2 text-xl font-bold text-gray-500">Route</h2>
