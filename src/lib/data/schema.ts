@@ -11,7 +11,8 @@ import {
 
 export const tollNetwork = mysqlTable('toll_network', {
   id: varchar('id', { length: 50 }).primaryKey(),
-  name: varchar('name', { length: 500 })
+  name: varchar('name', { length: 500 }),
+  rfid: mysqlEnum('rfid', ['EASY_TRIP', 'AUTOSWEEP'])
 });
 
 export const expressway = mysqlTable('expressway', {
@@ -58,3 +59,4 @@ export type Expressway = InferModel<typeof expressway, 'select'>;
 export type Point = InferModel<typeof point, 'select'>;
 export type Link = InferModel<typeof link, 'select'>;
 export type TollMatrix = InferModel<typeof tollMatrix, 'select'>;
+export type TollNetwork = InferModel<typeof tollNetwork, 'select'>;

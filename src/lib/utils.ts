@@ -12,7 +12,7 @@ export function capitalize(str: string | null) {
   return '';
 }
 
-export function stringifyEnum(str: string | null) {
+export function stringifyEnum(str: string | null | undefined) {
   if (str) {
     const parts = str.split('_');
 

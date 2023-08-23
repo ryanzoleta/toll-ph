@@ -1,7 +1,8 @@
 import { db } from '$lib/data/db';
 import type { Point as OriginalPoint } from '$lib/data/schema';
-import { expressway, link, point, tollMatrix } from '$lib/data/schema';
+import { expressway, link, point, tollMatrix, tollNetwork } from '$lib/data/schema';
 import type { Point, TollFeeMatrix } from '$lib/types';
+import { eq } from 'drizzle-orm';
 
 export async function load() {
   console.time('points_query');
@@ -42,7 +43,15 @@ export async function load() {
   console.timeEnd('links_query');
 
   console.time('expressways_query');
-  const expressways = await db.select().from(expressway);
+  const expressways = await db
+    .select({
+      id: expressway.id,
+      name: expressway.name,
+      tollNetworkId: expressway.tollNetworkId,
+      rfid: tollNetwork.rfid
+    })
+    .from(expressway)
+    .innerJoin(tollNetwork, eq(tollNetwork.id, expressway.tollNetworkId));
   console.timeEnd('expressways_query');
 
   console.time('matrix_query');

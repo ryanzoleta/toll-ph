@@ -1,4 +1,4 @@
-import type { Point as OriginalPoint } from './data/schema';
+import type { Point as OriginalPoint, Expressway as OriginalExpressway } from './data/schema';
 
 export type Action = {
   action: string;
@@ -16,4 +16,8 @@ export type Point = OriginalPoint & {
 export type TollFeeMatrix = {
   determinants: string;
   fee: number;
+};
+
+export type Expressway = OriginalExpressway & {
+  rfid: string;
 };

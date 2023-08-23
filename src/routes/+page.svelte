@@ -52,6 +52,10 @@
       });
     }
   }
+
+  function getExpressway(point: Point) {
+    return $expressways.find((e) => e.id === point.expresswayId);
+  }
 </script>
 
 <div class="mx-5 flex flex-col gap-10 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
@@ -126,7 +130,11 @@
             {#each actions as action}
               {#if action.amount}
                 <div class="flex place-content-between">
-                  <p>{capitalize(action.point.name)}</p>
+                  <p>
+                    <span class="font-bold">{capitalize(action.point.name)}</span>
+                    <span class="text-gray-500"
+                      >({stringifyEnum(getExpressway(action.point)?.rfid)})</span>
+                  </p>
                   <p class="font-bold tracking-tight text-gray-600 dark:text-gray-200">
                     {formatAmountToCurrency(action.amount)}
                   </p>
@@ -183,6 +191,8 @@
                 <span class="font-bold text-gray-800 dark:text-gray-100"
                   >{capitalize(action.point.name)}</span>
                 {stringifyEnum(action.point.descriptor)}
+                <span class="text-gray-500"
+                  >({stringifyEnum(getExpressway(action.point)?.rfid)})</span>
               </p>
             {:else if action.action === 'ENTER' || action.action === 'EXIT'}
               <p class="text-gray-700 dark:text-gray-400">
