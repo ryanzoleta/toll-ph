@@ -19,5 +19,5 @@ export type TollFeeMatrix = {
 };
 
 export type Expressway = OriginalExpressway & {
-  rfid: string;
+  rfid: string | null;
 };
