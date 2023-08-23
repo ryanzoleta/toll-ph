@@ -145,24 +145,6 @@
         </div>
       </div>
 
-      <!-- <div class="flex flex-col rounded-lg bg-gray-200 p-5 dark:bg-gray-800 dark:text-gray-200">
-        <h2 class="mb-2 text-xl font-bold text-gray-500">Pay at these toll gates</h2>
-        <div class="flex flex-col gap-5">
-          <div>
-            {#each actions as action}
-              {#if action.amount}
-                <div class="flex place-content-between">
-                  <p>{capitalize(action.point.name)}</p>
-                  <p class="font-extrabold tracking-tight text-gray-700 dark:text-gray-200">
-                    {formatAmountToCurrency(action.amount)}
-                  </p>
-                </div>
-              {/if}
-            {/each}
-          </div>
-        </div>
-      </div> -->
-
       <div class="flex flex-col rounded-lg bg-gray-200 p-5 dark:bg-gray-800 dark:text-gray-200">
         <h2 class="mb-2 text-xl font-bold text-gray-500">Route</h2>
         {#each actions as action, index}
@@ -207,11 +189,6 @@
           </div>
 
           {#if index !== actions.length - 1}
-            <!-- <div class="flex place-items-end">
-              <div class="flex h-5 w-5 flex-col place-items-center">
-                <img src={line} alt="first action" />
-              </div>
-            </div> -->
             <div class="flex h-5 w-5 flex-col place-items-center">
               <div class="h-full w-2 bg-blue-400" />
             </div>
