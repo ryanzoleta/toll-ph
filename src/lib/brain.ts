@@ -84,6 +84,8 @@ export function generateActions(originPoint: Point, destinationPoint: Point) {
   };
   let tollFee: number | null = null;
 
+  console.log(path);
+
   path.forEach((p, index) => {
     let action: '' | 'ENTER' | 'EXIT' | 'PAY' = '';
     let enPassant = false;

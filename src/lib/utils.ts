@@ -1,5 +1,14 @@
 export function capitalize(str: string | null) {
-  if (str) return str.charAt(0).toUpperCase() + str.slice(1);
+  if (str) {
+    const parts = str?.split(' ');
+    let finalString = '';
+    for (const p of parts) {
+      finalString += p.charAt(0).toUpperCase() + p.slice(1) + ' ';
+    }
+
+    return finalString.trim();
+  }
+
   return '';
 }
 
@@ -11,7 +20,7 @@ export function stringifyEnum(str: string | null) {
       parts[i] = capitalize(parts[i].toLowerCase());
     }
 
-    return parts.join(' ');
+    return parts.join(' ').trim();
   }
   return '';
 }

@@ -8,6 +8,7 @@
   import { createQuery } from '@tanstack/svelte-query';
   import axios from 'axios';
   import type { Point } from '$lib/types';
+  import { capitalize, stringifyEnum } from '$lib/utils.js';
 
   export let data;
 
@@ -155,37 +156,29 @@
         {:else if $pointsQuery.data}
           {#each $pointsQuery.data.filter((p) => p.expresswayId === expressway.id) as point}
             <Box>
-              <Form action="?/updatePoint">
-                <FormField label="ID" name="pointId" value={point.id.toString()} />
-                <FormField
-                  label="Sequence"
-                  name="pointSequence"
-                  value={point.sequence?.toString()} />
-                <FormField label="Name" name="pointName" value={point.name} />
-                <FormField label="Descriptor" name="pointDescriptor" value={point.descriptor} />
-                <FormField label="Expressway" name="pointExpresswayId" value={point.expresswayId} />
-                <FormField
-                  label="Entryable"
-                  name="pointEntryable"
-                  checked={point.entryable}
-                  variant="check" />
-                <FormField
-                  label="Exitable"
-                  name="pointExitable"
-                  checked={point.exitable}
-                  variant="check" />
-
-                <FormButton variant="update" />
-              </Form>
-              <Form action="?/deletePoint">
-                <FormField label="ID" name="pointId" value={point.id.toString()} hidden />
-                <FormButton variant="delete" />
-              </Form>
-
-              <div class="grid grid-cols-2 gap-2">
-                <Next {point} direction="NORTH" allPoints={$pointsQuery.data} />
-                <Next {point} direction="SOUTH" allPoints={$pointsQuery.data} />
+              <div class="flex flex-col">
+                <div class="flex place-content-between">
+                  <div class="flex gap-1">
+                    <p class="text-lg text-gray-500">#{point.sequence}</p>
+                    <h3 class="text-lg font-bold">
+                      {capitalize(point.name)} ({stringifyEnum(point.descriptor)})
+                    </h3>
+                  </div>
+                  <p class="text-sm">{point.id}</p>
+                </div>
+                {#if point.entryable && point.exitable}
+                  <p>Entryable and Exitable</p>
+                {:else if point.entryable}
+                  <p>Entryable</p>
+                {:else if point.exitable}
+                  <p>Exitable</p>
+                {:else}
+                  <p>Pass onlys</p>
+                {/if}
               </div>
+
+              <Next {point} direction="NORTH" allPoints={$pointsQuery.data} />
+              <Next {point} direction="SOUTH" allPoints={$pointsQuery.data} />
             </Box>
           {/each}
         {/if}

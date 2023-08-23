@@ -8,7 +8,12 @@ export async function GET(event: RequestEvent) {
 
   if (id && direction) {
     const results = await db
-      .select({ id: point.id, name: point.name, descriptor: point.descriptor })
+      .select({
+        id: point.id,
+        name: point.name,
+        descriptor: point.descriptor,
+        expresswayId: point.expresswayId
+      })
       .from(link)
       .innerJoin(point, eq(link.nextPointId, point.id))
       .where(
