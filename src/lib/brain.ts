@@ -29,14 +29,19 @@ function getExpressway(id: string) {
   return allExpressways.find((e) => e.id === id);
 }
 
-function dfs(point: Point, destination: Point, path: Point[]): Point | null {
+function dfs(
+  point: Point,
+  destination: Point,
+  path: Point[],
+  direction: 'NORTH' | 'SOUTH'
+): Point | null {
   if (point.id === destination.id) {
     return point;
   }
 
   path.push(point);
 
-  const nextIds = [...point.nextNorthIds, ...point.nextSouthIds];
+  const nextIds = direction === 'NORTH' ? [...point.nextNorthIds] : [...point.nextSouthIds];
 
   for (const nextId of nextIds) {
     if (
@@ -50,7 +55,7 @@ function dfs(point: Point, destination: Point, path: Point[]): Point | null {
         return p.id === nextId;
       }) as Point;
 
-      const result = dfs(nextPoint, destination, path);
+      const result = dfs(nextPoint, destination, path, direction);
       if (result) {
         return result;
       }
@@ -73,7 +78,9 @@ export function generateActions(originPoint: Point, destinationPoint: Point) {
 
   const path: Point[] = [];
 
-  dfs(originPoint, destinationPoint, path);
+  const direction = getGeneralDirection(originPoint, destinationPoint);
+
+  if (direction) dfs(originPoint, destinationPoint, path, direction);
 
   path.push(destinationPoint);
 
@@ -182,4 +189,26 @@ export function getReachables(originPoint: Point) {
     ...northPath.filter((p) => p.id !== originPoint.id),
     ...southPath.filter((p) => p.id !== originPoint.id)
   ];
+}
+
+export function getGeneralDirection(originPoint: Point, destinationPoint: Point) {
+  allPoints = get(points);
+  allExpressways = get(expressways);
+  tollMatrix = get(tollFeeMatrix);
+
+  const northPath: Point[] = [];
+  dfs2(originPoint, northPath, 'NORTH');
+
+  if (northPath.map((p) => p.id).includes(destinationPoint.id)) {
+    return 'NORTH';
+  }
+
+  const southPath: Point[] = [];
+  dfs2(originPoint, southPath, 'SOUTH');
+
+  if (southPath.map((p) => p.id).includes(destinationPoint.id)) {
+    return 'SOUTH';
+  }
+
+  return null;
 }
