@@ -1,62 +1,77 @@
-import type { InferModel } from 'drizzle-orm';
+import type { InferSelectModel } from 'drizzle-orm';
 import {
   boolean,
   decimal,
-  int,
-  mysqlEnum,
-  mysqlTable,
+  integer,
+  pgEnum,
+  pgTable,
   primaryKey,
+  serial,
   varchar
-} from 'drizzle-orm/mysql-core';
+} from 'drizzle-orm/pg-core';
 
-export const tollNetwork = mysqlTable('toll_network', {
+export const rfidEnum = pgEnum('rfid', ['EASY_TRIP', 'AUTOSWEEP']);
+
+export const tollNetwork = pgTable('toll_network', {
   id: varchar('id', { length: 50 }).primaryKey(),
   name: varchar('name', { length: 500 }),
-  rfid: mysqlEnum('rfid', ['EASY_TRIP', 'AUTOSWEEP'])
+  rfid: rfidEnum('rfid')
 });
 
-export const expressway = mysqlTable('expressway', {
+export const expressway = pgTable('expressway', {
   id: varchar('id', { length: 50 }).primaryKey(),
   name: varchar('name', { length: 500 }),
   tollNetworkId: varchar('toll_network_id', { length: 50 }).references(() => tollNetwork.id)
 });
 
-export const point = mysqlTable('point', {
-  id: int('id').primaryKey().autoincrement(),
+export const descriptorEnum = pgEnum('descriptor', ['ENTRANCE_RAMP', 'EXIT_RAMP', 'TOLL_GATE']);
+
+export const point = pgTable('point', {
+  id: serial('id').primaryKey(),
   name: varchar('name', { length: 500 }),
-  descriptor: mysqlEnum('descriptor', ['ENTRANCE_RAMP', 'EXIT_RAMP', 'TOLL_GATE']),
+  descriptor: descriptorEnum('descriptor').notNull(),
   expresswayId: varchar('expresway_id', { length: 50 }).references(() => expressway.id),
   entryable: boolean('entryable'),
   exitable: boolean('exitable'),
-  sequence: int('sequence')
+  sequence: integer('sequence')
 });
 
-export const link = mysqlTable(
+export const directionEnum = pgEnum('direction', ['NORTH', 'SOUTH']);
+
+export const link = pgTable(
   'link',
   {
-    originPointId: int('origin_point_id').references(() => point.id),
-    nextPointId: int('next_point_id').references(() => point.id),
-    direction: mysqlEnum('direction', ['NORTH', 'SOUTH'])
+    originPointId: integer('origin_point_id')
+      .references(() => point.id)
+      .notNull(),
+    nextPointId: integer('next_point_id')
+      .references(() => point.id)
+      .notNull(),
+    direction: directionEnum('direction').notNull()
   },
   (t) => ({
-    pk: primaryKey(t.originPointId, t.nextPointId, t.direction)
+    compoundKey: primaryKey({ columns: [t.originPointId, t.nextPointId, t.direction] })
   })
 );
 
-export const tollMatrix = mysqlTable(
+export const tollMatrix = pgTable(
   'toll_matrix',
   {
-    entryPointId: int('entry_point_id').references(() => point.id),
-    exitPointId: int('exit_point_id').references(() => point.id),
+    entryPointId: integer('entry_point_id')
+      .references(() => point.id)
+      .notNull(),
+    exitPointId: integer('exit_point_id')
+      .references(() => point.id)
+      .notNull(),
     fee: decimal('fee', { precision: 10, scale: 2 })
   },
   (t) => ({
-    pk: primaryKey(t.entryPointId, t.exitPointId)
+    compoundKey: primaryKey({ columns: [t.entryPointId, t.exitPointId] })
   })
 );
 
-export type Expressway = InferModel<typeof expressway, 'select'>;
-export type Point = InferModel<typeof point, 'select'>;
-export type Link = InferModel<typeof link, 'select'>;
-export type TollMatrix = InferModel<typeof tollMatrix, 'select'>;
-export type TollNetwork = InferModel<typeof tollNetwork, 'select'>;
+export type Expressway = InferSelectModel<typeof expressway>;
+export type Point = InferSelectModel<typeof point>;
+export type Link = InferSelectModel<typeof link>;
+export type TollMatrix = InferSelectModel<typeof tollMatrix>;
+export type TollNetwork = InferSelectModel<typeof tollNetwork>;
