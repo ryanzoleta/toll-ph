@@ -29,7 +29,7 @@ export const descriptorEnum = pgEnum('descriptor', ['ENTRANCE_RAMP', 'EXIT_RAMP'
 export const point = pgTable('point', {
   id: serial('id').primaryKey(),
   name: varchar('name', { length: 500 }),
-  descriptor: descriptorEnum('descriptor').notNull(),
+  descriptor: descriptorEnum('descriptor'),
   expresswayId: varchar('expresway_id', { length: 50 }).references(() => expressway.id),
   entryable: boolean('entryable'),
   exitable: boolean('exitable'),
