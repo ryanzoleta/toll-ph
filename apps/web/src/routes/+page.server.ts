@@ -48,7 +48,7 @@ export async function load() {
       id: expressway.id,
       name: expressway.name,
       tollNetworkId: expressway.tollNetworkId,
-      rfid: tollNetwork.rfid
+      rfid: tollNetwork.rfid,
     })
     .from(expressway)
     .innerJoin(tollNetwork, eq(tollNetwork.id, expressway.tollNetworkId));
@@ -71,13 +71,13 @@ export async function load() {
 
     tollFeeMatrix.push({
       determinants: determinants,
-      fee: parseFloat(t.fee as string)
+      fee: parseFloat(t.fee as string),
     });
   }
 
   return {
     points: pointsExpanded,
     expressways,
-    tollFeeMatrix
+    tollFeeMatrix,
   };
 }

@@ -1,7 +1,5 @@
 <script lang="ts">
   import Box from '$lib/components/admin/Box.svelte';
-  import Form from '$lib/components/admin/Form.svelte';
-  import FormButton from '$lib/components/admin/FormButton.svelte';
   import FormField from '$lib/components/admin/FormField.svelte';
   import Next from '$lib/components/admin/Next.svelte';
   import Scroller from '$lib/components/admin/Scroller.svelte';
@@ -18,7 +16,7 @@
     expresswayId: '',
     entryable: false,
     exitable: false,
-    sequence: ''
+    sequence: '',
   };
 
   const pointsQuery = createQuery({
@@ -28,7 +26,7 @@
       console.log(response.data);
       return response.data.points as Point[];
     },
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
   });
 
   $pointsQuery;

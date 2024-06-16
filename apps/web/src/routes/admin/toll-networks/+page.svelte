@@ -3,23 +3,11 @@
   import Form from '$lib/components/admin/Form.svelte';
   import FormButton from '$lib/components/admin/FormButton.svelte';
   import FormField from '$lib/components/admin/FormField.svelte';
-  import Next from '$lib/components/admin/Next.svelte';
-  import Scroller from '$lib/components/admin/Scroller.svelte';
   import { createQuery } from '@tanstack/svelte-query';
   import axios from 'axios';
   import type { Point } from '$lib/types';
-  import { capitalize, stringifyEnum } from '$lib/utils.js';
 
   export let data;
-
-  let point = {
-    name: '',
-    descriptor: '',
-    expresswayId: '',
-    entryable: false,
-    exitable: false,
-    sequence: ''
-  };
 
   const pointsQuery = createQuery({
     queryKey: ['points'],
@@ -32,19 +20,6 @@
   });
 
   $pointsQuery;
-
-  async function createPoint() {
-    await axios.post('/api/point', point);
-
-    point.name = '';
-    point.descriptor = '';
-    point.expresswayId = '';
-    point.entryable = false;
-    point.exitable = false;
-    point.sequence = '';
-
-    $pointsQuery.refetch();
-  }
 </script>
 
 <div class="flex min-h-screen flex-col gap-3 bg-black p-5 text-gray-300">
