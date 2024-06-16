@@ -31,10 +31,15 @@
   "dependencies": {
     "@tanstack/svelte-query": "^4.33.0",
     "axios": "^1.4.0",
+    "bits-ui": "^0.21.10",
+    "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.31.2",
+    "lucide-svelte": "^0.395.0",
     "mysql2": "^3.5.2",
-    "pg": "^8.12.0"
+    "pg": "^8.12.0",
+    "tailwind-merge": "^2.3.0",
+    "tailwind-variants": "^0.2.1"
   },
   "packageManager": "pnpm@8.15.1+sha1.8adba2d20330c02d3856e18c4eb3819d1d3ca6aa"
 }

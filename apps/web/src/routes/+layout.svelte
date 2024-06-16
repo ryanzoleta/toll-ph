@@ -6,9 +6,9 @@
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        enabled: browser
-      }
-    }
+        enabled: browser,
+      },
+    },
   });
 </script>
 
@@ -17,7 +17,7 @@
 </svelte:head>
 
 <QueryClientProvider client={queryClient}>
-  <div class="min-h-screen bg-slate-50 transition duration-200 dark:bg-gray-950">
+  <div class="min-h-screen transition duration-200">
     <slot />
   </div>
 </QueryClientProvider>

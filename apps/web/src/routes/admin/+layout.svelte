@@ -1,4 +1,4 @@
-<div class="flex min-h-screen flex-col gap-3 bg-black p-5 text-gray-300">
+<div class="flex min-h-screen flex-col gap-3 p-5">
   <h1 class="text-xl font-bold">Admin Panel</h1>
 
   <div class="flex flex-row gap-5">

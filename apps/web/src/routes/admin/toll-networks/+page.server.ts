@@ -9,10 +9,29 @@ export const actions = {
 
     const id = formData.get('tollNetworkId')?.toString();
     const name = formData.get('tollNetworkName')?.toString();
+    const rfid = formData.get('tollNetworkRfid')?.toString() as 'EASY_TRIP' | 'AUTOSWEEP';
 
     try {
       if (id && name) {
-        await db.insert(tollNetwork).values({ id, name });
+        await db.insert(tollNetwork).values({ id, name, rfid });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+  updateTollNetwork: async ({ request }: RequestEvent) => {
+    console.log('updating');
+    const formData = await request.formData();
+
+    const id = formData.get('tollNetworkId')?.toString();
+    const name = formData.get('tollNetworkName')?.toString();
+    const rfid = formData.get('tollNetworkRfid')?.toString() as 'EASY_TRIP' | 'AUTOSWEEP';
+
+    console.log(id, name, rfid);
+
+    try {
+      if (id) {
+        await db.update(tollNetwork).set({ name, rfid }).where(eq(tollNetwork.id, id));
       }
     } catch (e) {
       console.log(e);
@@ -30,5 +49,5 @@ export const actions = {
     } catch (e) {
       console.log(e);
     }
-  }
+  },
 };
