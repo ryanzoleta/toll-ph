@@ -13,7 +13,7 @@
       matrix.exitExpressway.id === currentExpressway.id
   );
 
-  $: points = matrices
+  $: entryPoints = matrices
     .reduce((points, matrix) => {
       const returns = [];
 
@@ -26,6 +26,23 @@
 
       if (!points.find((p) => p.id === matrix.entryPoint.id)) {
         returns.push(matrix.entryPoint);
+      }
+
+      return [...points, ...returns];
+    }, [] as Point[])
+    // .filter((point) => point.expresswayId === currentExpressway.id)
+    .filter((p) => p.descriptor === 'TOLL_GATE')
+    .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
+
+  $: exitPoints = matrices
+    .reduce((points, matrix) => {
+      const returns = [];
+
+      if (
+        matrix.entryPoint.expresswayId !== currentExpressway.id &&
+        matrix.exitPoint.expresswayId !== currentExpressway.id
+      ) {
+        return points;
       }
 
       if (!points.find((p) => p.id === matrix.exitPoint.id)) {
@@ -66,16 +83,16 @@
       <Table.Row>
         <Table.Head>ENTRY/EXIT</Table.Head>
 
-        {#each points as p}
+        {#each entryPoints as p}
           <Table.Head>{p.name}</Table.Head>
         {/each}
       </Table.Row>
     </Table.Header>
     <Table.Body>
-      {#each points as p}
+      {#each exitPoints as p}
         <Table.Row>
           <Table.Cell>{p.name}</Table.Cell>
-          {#each points as p2}
+          {#each entryPoints as p2}
             <Table.Cell
               >{matrices.find((m) => {
                 return m.entryPoint.id === p2.id && m.exitPoint.id === p.id;
