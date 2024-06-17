@@ -87,7 +87,7 @@ export function generateActions(originPoint: Point, destinationPoint: Point) {
   const actions: Action[] = [];
   let tollDeterminants: TollDeterminant = {
     entry: 99999,
-    exit: 99999
+    exit: 99999,
   };
   let tollFee: number | null = null;
 
@@ -121,6 +121,8 @@ export function generateActions(originPoint: Point, destinationPoint: Point) {
 
       tollFee = calculateToll(tollDeterminants);
 
+      console.log(tollDeterminants, tollFee);
+
       if (tollFee !== null) {
         action = 'PAY';
         tollDeterminants = { entry: 99999, exit: 99999 };
@@ -134,13 +136,13 @@ export function generateActions(originPoint: Point, destinationPoint: Point) {
         actions.push({
           action,
           amount: tollFee,
-          point: p
+          point: p,
         });
         tollFee = null;
       } else {
         actions.push({
           action,
-          point: p
+          point: p,
         });
       }
     }
@@ -187,7 +189,7 @@ export function getReachables(originPoint: Point) {
 
   return [
     ...northPath.filter((p) => p.id !== originPoint.id),
-    ...southPath.filter((p) => p.id !== originPoint.id)
+    ...southPath.filter((p) => p.id !== originPoint.id),
   ];
 }
 
