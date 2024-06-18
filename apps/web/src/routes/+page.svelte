@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { browser } from '$app/environment';
-  import { onMount } from 'svelte';
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
   import type { Action, Point } from '$lib/types';
   import { capitalize, formatAmountToCurrency, stringifyEnum } from '$lib/utils.js';
