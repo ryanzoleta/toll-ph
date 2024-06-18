@@ -1,14 +1,14 @@
 <script lang="ts">
-  import IconSun from '$lib/components/icons/IconSun.svelte';
-  import IconButton from '$lib/components/ui/IconButton.svelte';
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
-  import IconMoon from '$lib/components/icons/IconMoon.svelte';
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
   import type { Action, Point } from '$lib/types';
   import { capitalize, formatAmountToCurrency, stringifyEnum } from '$lib/utils.js';
   import { generateActions, getReachables } from '$lib/brain.js';
   import { expressways, points, tollFeeMatrix } from '$lib/stores.js';
+  import Button from '$lib/components/ui/button/button.svelte';
+  import { Sun, Moon } from 'lucide-svelte';
+  import { toggleMode } from 'mode-watcher';
 
   export let data;
 
@@ -16,7 +16,6 @@
   $expressways = data.expressways;
   $tollFeeMatrix = data.tollFeeMatrix;
 
-  let darkMode: boolean;
   let pointOrigin: Point | null = null;
   let pointDestination: Point | null = null;
   $: reachables = pointOrigin ? (getReachables(pointOrigin) as Point[]) : [];
@@ -25,21 +24,6 @@
 
   let pointOriginInput = '';
   let pointDestinationInput = '';
-
-  onMount(() => {
-    const darkModeLocal = localStorage.getItem('dark_mode');
-    darkMode = darkModeLocal ? JSON.parse(darkModeLocal) : false;
-  });
-
-  $: if (browser && darkMode !== undefined) {
-    localStorage.setItem('dark_mode', JSON.stringify(darkMode));
-
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }
 
   async function calculate() {
     if (pointOrigin && pointDestination) {
@@ -62,16 +46,13 @@
   <div class="flex place-content-between place-items-center">
     <h1 class="text-3xl font-bold text-slate-950 dark:text-slate-300">toll.ph</h1>
 
-    <IconButton
-      on:click={() => {
-        darkMode = !darkMode;
-      }}>
-      {#if darkMode}
-        <IconSun />
-      {:else}
-        <IconMoon />
-      {/if}
-    </IconButton>
+    <Button on:click={toggleMode} variant="outline" size="icon">
+      <Sun
+        class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon
+        class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <span class="sr-only">Toggle theme</span>
+    </Button>
   </div>
 
   <div class="flex flex-col gap-5">

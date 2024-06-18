@@ -59,6 +59,9 @@ importers:
       lucide-svelte:
         specifier: ^0.395.0
         version: 0.395.0(svelte@4.2.18)
+      mode-watcher:
+        specifier: ^0.3.1
+        version: 0.3.1(svelte@4.2.18)
       mysql2:
         specifier: ^3.5.2
         version: 3.10.1
@@ -2252,6 +2255,14 @@ packages:
     dependencies:
       minimist: 1.2.8
     dev: true
+
+  /mode-watcher@0.3.1(svelte@4.2.18):
+    resolution: {integrity: sha512-inghSVSXpEENV0SHM98+AvjDmTOjh9EJIrJXMScK42GNkDm5QJL7a/nZQ8M8i8RK7loFHqsQKBKdlXfw5e5C4w==}
+    peerDependencies:
+      svelte: ^4.0.0 || ^5.0.0-next.1
+    dependencies:
+      svelte: 4.2.18
+    dev: false
 
   /mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
