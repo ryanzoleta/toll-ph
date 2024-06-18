@@ -7,6 +7,7 @@
     <a href="/admin/expressways" class="hover:underline">Expressways</a>
     <a href="/admin/points" class="hover:underline">Points</a>
     <a href="/admin/toll-matrix" class="hover:underline">Toll Matrix</a>
+    <a href="/admin/toll-table" class="hover:underline">Toll Table</a>
   </div>
 
   <slot />
