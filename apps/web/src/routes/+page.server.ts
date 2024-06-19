@@ -1,48 +1,12 @@
 import { db } from '$lib/data/db';
-import type { Point as OriginalPoint } from '$lib/data/schema';
-import { expressway, link, point, tollMatrix, tollNetwork } from '$lib/data/schema';
-import type { Point, TollFeeMatrix } from '$lib/types';
+import type { Point } from '$lib/data/schema';
+import { expressway, point, tollMatrix, tollNetwork } from '$lib/data/schema';
+import type { TollFeeMatrix } from '$lib/types';
 import { eq } from 'drizzle-orm';
 
 export async function load() {
-  console.time('points_query');
-  const points: OriginalPoint[] = await db
-    .select()
-    .from(point)
-    .orderBy(point.expresswayId, point.sequence);
-  console.timeEnd('points_query');
+  const points: Point[] = await db.select().from(point).orderBy(point.expresswayId, point.sequence);
 
-  const pointsExpanded = [];
-
-  console.time('links_query');
-
-  const alLinks = await db.select().from(link);
-
-  for (const p of points) {
-    const newPoint = p as Point;
-
-    const northQueryResults = alLinks.filter(
-      (l) => l.originPointId === p.id && l.direction === 'NORTH'
-    );
-
-    newPoint.nextNorthIds = northQueryResults.map((x) => {
-      return x.nextPointId as number;
-    });
-
-    const southQueryResults = alLinks.filter(
-      (l) => l.originPointId === p.id && l.direction === 'SOUTH'
-    );
-
-    newPoint.nextSouthIds = southQueryResults.map((x) => {
-      return x.nextPointId as number;
-    });
-
-    pointsExpanded.push(newPoint);
-  }
-
-  console.timeEnd('links_query');
-
-  console.time('expressways_query');
   const expressways = await db
     .select({
       id: expressway.id,
@@ -52,11 +16,8 @@ export async function load() {
     })
     .from(expressway)
     .innerJoin(tollNetwork, eq(tollNetwork.id, expressway.tollNetworkId));
-  console.timeEnd('expressways_query');
 
-  console.time('matrix_query');
   const matrix = await db.select().from(tollMatrix);
-  console.timeEnd('matrix_query');
   const tollFeeMatrix: TollFeeMatrix[] = [];
 
   for (const t of matrix) {
@@ -76,7 +37,7 @@ export async function load() {
   }
 
   return {
-    points: pointsExpanded,
+    points: points,
     expressways,
     tollFeeMatrix,
   };

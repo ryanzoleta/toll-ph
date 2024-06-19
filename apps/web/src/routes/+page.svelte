@@ -2,7 +2,6 @@
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
   import type { Action, Point } from '$lib/types';
   import { capitalize, formatAmountToCurrency, stringifyEnum } from '$lib/utils.js';
-  import { generateActions, getReachables } from '$lib/brain.js';
   import { expressways, points, tollFeeMatrix } from '$lib/stores.js';
   import Button from '$lib/components/ui/button/button.svelte';
   import { Sun, Moon } from 'lucide-svelte';
@@ -16,7 +15,6 @@
 
   let pointOrigin: Point | null = null;
   let pointDestination: Point | null = null;
-  $: reachables = pointOrigin ? (getReachables(pointOrigin) as Point[]) : [];
   let actions: Action[] = [];
   let tollFee = 0;
 
@@ -25,8 +23,6 @@
 
   async function calculate() {
     if (pointOrigin && pointDestination) {
-      actions = generateActions(pointOrigin, pointDestination);
-
       tollFee = 0;
 
       actions.forEach((a) => {
@@ -59,7 +55,6 @@
       <PointSelector
         bind:input={pointOriginInput}
         points={data.points}
-        kind="ENTRY"
         placeholder="Enter point of origin"
         bind:setPoint={pointOrigin} />
     </div>
@@ -69,10 +64,8 @@
       <PointSelector
         bind:input={pointDestinationInput}
         points={data.points}
-        kind="EXIT"
         placeholder="Enter point of destination"
-        bind:setPoint={pointDestination}
-        {reachables} />
+        bind:setPoint={pointDestination} />
     </div>
   </div>
 
@@ -151,7 +144,6 @@
                 toll fee at
                 <span class="font-bold text-gray-800 dark:text-gray-100"
                   >{capitalize(action.point.name)}</span>
-                {stringifyEnum(action.point.descriptor)}
                 <span class="text-gray-500"
                   >({stringifyEnum(getExpressway(action.point)?.rfid)})</span>
               </p>
@@ -162,7 +154,6 @@
                 at
                 <span class="font-bold text-gray-800 dark:text-gray-100"
                   >{capitalize(action.point.name)}</span>
-                {stringifyEnum(action.point.descriptor)}
               </p>
             {/if}
           </div>

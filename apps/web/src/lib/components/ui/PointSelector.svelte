@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { Point } from '$lib/data/schema';
-  import { capitalize, stringifyEnum } from '$lib/utils';
+  import { capitalize } from '$lib/utils';
   import { fade } from 'svelte/transition';
 
   export let points: Point[];
-  export let kind: 'ENTRY' | 'EXIT';
+  // export let kind: 'ENTRY' | 'EXIT';
   export let placeholder: string;
-  export let reachables: Point[] = [];
+  // export let reachables: Point[] = [];
   export let input = '';
 
   $: searchResults = points.filter((p) => matches(input, p));
@@ -17,24 +17,27 @@
   let inputElement: HTMLElement;
 
   function matches(query: string, point: Point) {
-    const entryableOrExitable =
-      (kind === 'ENTRY' && point.entryable) || (kind === 'EXIT' && point.exitable);
-    const nameMatchesQuery = point.name?.toUpperCase().startsWith(query.toUpperCase());
-    const expresswayMatchesQuery =
-      point.expresswayId?.toUpperCase().startsWith(query.toUpperCase()) && query.length > 1;
+    // const entryableOrExitable =
+    //   (kind === 'ENTRY' && point.entryable) || (kind === 'EXIT' && point.exitable);
+    // const nameMatchesQuery = point.name?.toUpperCase().startsWith(query.toUpperCase());
+    // const expresswayMatchesQuery =
+    //   point.expresswayId?.toUpperCase().startsWith(query.toUpperCase()) && query.length > 1;
 
-    const allReachableId = reachables.map((r) => r.id);
-    const isReachable = reachables.length > 0 ? allReachableId.includes(point.id) : true;
+    // const allReachableId = reachables.map((r) => r.id);
+    // const isReachable = reachables.length > 0 ? allReachableId.includes(point.id) : true;
 
-    if (query) {
-      return (nameMatchesQuery || expresswayMatchesQuery) && entryableOrExitable && isReachable;
-    }
+    // if (query) {
+    //   return (nameMatchesQuery || expresswayMatchesQuery) && entryableOrExitable && isReachable;
+    // }
 
-    return entryableOrExitable && isReachable;
+    // return entryableOrExitable && isReachable;
+
+    // temporarily return all points
+    return true;
   }
 
   $: {
-    reachables;
+    // reachables;
     searchResults = points.filter((p) => matches(input, p));
   }
 
@@ -56,7 +59,6 @@
       }}>
       <div class="flex place-items-center gap-1">
         <p class="font-bold">{capitalize(setPoint.name)}</p>
-        <p class="text-sm font-extralight italic">{stringifyEnum(setPoint.descriptor)}</p>
       </div>
       <p class="text-sm text-gray-500">{setPoint.expresswayId}</p>
     </button>
@@ -126,9 +128,6 @@
           }}>
           <div class="flex place-items-center gap-2">
             <p class="font-bold">{capitalize(point.name)}</p>
-            <p class="text-sm font-extralight italic text-gray-500">
-              {stringifyEnum(point.descriptor)}
-            </p>
           </div>
           <p class="text-sm text-gray-500">{point.expresswayId}</p>
         </button>
