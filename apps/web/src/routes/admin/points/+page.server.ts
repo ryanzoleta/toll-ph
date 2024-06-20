@@ -9,19 +9,11 @@ export const actions = {
 
     const name = formData.get('pointName')?.toString();
     const sequence = parseInt(formData.get('pointSequence')?.toString() as string);
-    const descriptor = formData.get('pointDescriptor')?.toString() as
-      | 'ENTRANCE_RAMP'
-      | 'EXIT_RAMP'
-      | 'TOLL_GATE';
     const expresswayId = formData.get('pointExpresswayId')?.toString();
-    const entryable = formData.get('pointEntryable')?.toString() ? true : false;
-    const exitable = formData.get('pointExitable')?.toString() ? true : false;
 
     try {
-      if (name && descriptor && expresswayId) {
-        await db
-          .insert(point)
-          .values({ name, sequence, descriptor, expresswayId, entryable, exitable });
+      if (name && expresswayId) {
+        await db.insert(point).values({ name, sequence, expresswayId });
       }
     } catch (e) {
       console.log(e);
@@ -33,20 +25,11 @@ export const actions = {
     const id = parseInt(formData.get('pointId')?.toString() as string);
     const name = formData.get('pointName')?.toString();
     const sequence = parseInt(formData.get('pointSequence')?.toString() as string);
-    const descriptor = formData.get('pointDescriptor')?.toString() as
-      | 'ENTRANCE_RAMP'
-      | 'EXIT_RAMP'
-      | 'TOLL_GATE';
     const expresswayId = formData.get('pointExpresswayId')?.toString();
-    const entryable = formData.get('pointEntryable')?.toString() ? true : false;
-    const exitable = formData.get('pointExitable')?.toString() ? true : false;
 
     try {
-      if (name && descriptor && expresswayId) {
-        await db
-          .update(point)
-          .set({ name, sequence, descriptor, expresswayId, entryable, exitable })
-          .where(eq(point.id, id));
+      if (name && expresswayId) {
+        await db.update(point).set({ name, sequence, expresswayId }).where(eq(point.id, id));
       }
     } catch (e) {
       console.log(e);
@@ -64,5 +47,5 @@ export const actions = {
     } catch (e) {
       console.log(e);
     }
-  }
+  },
 };

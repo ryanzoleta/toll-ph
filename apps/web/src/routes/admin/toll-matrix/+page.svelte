@@ -31,7 +31,6 @@
       return [...points, ...returns];
     }, [] as Point[])
     // .filter((point) => point.expresswayId === currentExpressway.id)
-    .filter((p) => p.descriptor === 'TOLL_GATE')
     .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
 
   $: exitPoints = matrices
@@ -48,11 +47,9 @@
       if (!points.find((p) => p.id === matrix.exitPoint.id)) {
         returns.push(matrix.exitPoint);
       }
-
       return [...points, ...returns];
     }, [] as Point[])
     // .filter((point) => point.expresswayId === currentExpressway.id)
-    .filter((p) => p.descriptor === 'TOLL_GATE')
     .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
 </script>
 

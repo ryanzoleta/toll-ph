@@ -3,23 +3,8 @@
   import Form from '$lib/components/admin/Form.svelte';
   import FormButton from '$lib/components/admin/FormButton.svelte';
   import FormField from '$lib/components/admin/FormField.svelte';
-  import { createQuery } from '@tanstack/svelte-query';
-  import axios from 'axios';
-  import type { Point } from '$lib/types';
 
   export let data;
-
-  const pointsQuery = createQuery({
-    queryKey: ['points'],
-    queryFn: async () => {
-      const response = await axios.get('/api/point');
-      console.log(response.data);
-      return response.data.points as Point[];
-    },
-    refetchOnWindowFocus: false,
-  });
-
-  $pointsQuery;
 </script>
 
 <div class="flex min-h-screen flex-col gap-3 p-5">

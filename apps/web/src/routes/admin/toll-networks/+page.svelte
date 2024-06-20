@@ -1,7 +1,4 @@
 <script lang="ts">
-  import { createQuery } from '@tanstack/svelte-query';
-  import axios from 'axios';
-  import type { Point } from '$lib/types';
   import Input from '$lib/components/ui/input/input.svelte';
   import Label from '$lib/components/ui/label/label.svelte';
   import Button from '$lib/components/ui/button/button.svelte';
@@ -10,18 +7,6 @@
   import type { TollNetwork } from '$lib/data/schema.js';
 
   export let data;
-
-  const pointsQuery = createQuery({
-    queryKey: ['points'],
-    queryFn: async () => {
-      const response = await axios.get('/api/point');
-      console.log(response.data);
-      return response.data.points as Point[];
-    },
-    refetchOnWindowFocus: false,
-  });
-
-  $pointsQuery;
 
   let openCreateDialog = false;
   let openEditDialog = false;

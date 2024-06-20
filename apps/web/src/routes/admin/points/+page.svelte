@@ -1,114 +1,25 @@
 <script lang="ts">
-  import Box from '$lib/components/admin/Box.svelte';
-  import FormField from '$lib/components/admin/FormField.svelte';
-  import Next from '$lib/components/admin/Next.svelte';
-  import Scroller from '$lib/components/admin/Scroller.svelte';
-  import { createQuery } from '@tanstack/svelte-query';
-  import axios from 'axios';
-  import type { Point } from '$lib/types';
-  import { capitalize, stringifyEnum } from '$lib/utils.js';
-
   export let data;
-
-  let point = {
-    name: '',
-    descriptor: '',
-    expresswayId: '',
-    entryable: false,
-    exitable: false,
-    sequence: '',
-  };
-
-  const pointsQuery = createQuery({
-    queryKey: ['points'],
-    queryFn: async () => {
-      const response = await axios.get('/api/point');
-      console.log(response.data);
-      return response.data.points as Point[];
-    },
-    refetchOnWindowFocus: false,
-  });
-
-  $pointsQuery;
-
-  async function createPoint() {
-    await axios.post('/api/point', point);
-
-    point.name = '';
-    point.descriptor = '';
-    point.expresswayId = '';
-    point.entryable = false;
-    point.exitable = false;
-    point.sequence = '';
-
-    $pointsQuery.refetch();
-  }
 </script>
 
-<div class="flex min-h-screen flex-col gap-3 bg-black p-5 text-gray-300">
+<div class="flex min-h-screen flex-col gap-3 p-5 text-gray-300">
   <div class="flex flex-col">
     <h2 class="text-lg font-bold">Points</h2>
-    <div class="flex w-fit flex-col gap-5">
-      <Box>
-        <div class="grid auto-cols-fr grid-cols-2 gap-2">
-          <FormField label="Name" name="pointName" bind:value={point.name} />
-          <FormField label="Sequence" name="pointSequence" bind:value={point.sequence} />
-          <FormField label="Descriptor" name="pointDescriptor" bind:value={point.descriptor} />
-          <FormField label="Expressway" name="pointExpresswayId" bind:value={point.expresswayId} />
-          <FormField
-            label="Entryable"
-            name="pointEntryable"
-            variant="check"
-            bind:checked={point.entryable} />
-          <FormField
-            label="Exitable"
-            name="pointExitable"
-            variant="check"
-            bind:checked={point.exitable} />
-
-          <button
-            class="col-span-2 rounded-md bg-green-900 py-1 text-green-300"
-            on:click={createPoint}>Create</button>
-        </div>
-      </Box>
-    </div>
   </div>
-  <Scroller>
+
+  <div class="flex flex-col gap-5">
     {#each data.expressways as expressway}
       <div class="flex flex-col gap-5">
-        <h3 class="text-lg font-bold">{expressway.id}</h3>
-        {#if $pointsQuery.isLoading}
-          <p>Loading...</p>
-        {:else if $pointsQuery.data}
-          {#each $pointsQuery.data.filter((p) => p.expresswayId === expressway.id) as point}
-            <Box>
-              <div class="flex flex-col">
-                <div class="flex place-content-between">
-                  <div class="flex gap-1">
-                    <p class="text-lg text-gray-500">#{point.sequence}</p>
-                    <h3 class="text-lg font-bold">
-                      {capitalize(point.name)} ({stringifyEnum(point.descriptor)})
-                    </h3>
-                  </div>
-                  <p class="text-sm">{point.id}</p>
-                </div>
-                {#if point.entryable && point.exitable}
-                  <p>Entryable and Exitable</p>
-                {:else if point.entryable}
-                  <p>Entryable</p>
-                {:else if point.exitable}
-                  <p>Exitable</p>
-                {:else}
-                  <p>Pass onlys</p>
-                {/if}
-              </div>
+        <h3 class="text-lg font-bold">{expressway.name}</h3>
 
-              <Next {point} direction="NORTH" allPoints={$pointsQuery.data} />
-              <Next {point} direction="SOUTH" allPoints={$pointsQuery.data} />
-            </Box>
-          {/each}
-        {/if}
+        {#each data.points.filter((p) => p.expresswayId === expressway.id) as point}
+          <div class="flex gap-2 rounded-md bg-slate-700 p-3">
+            <p class="text-gray-500">#{point.sequence}</p>
+            <p>{point.id}</p>
+            <p>{point.name}</p>
+          </div>
+        {/each}
       </div>
     {/each}
-  </Scroller>
+  </div>
 </div>

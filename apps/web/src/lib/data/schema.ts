@@ -41,7 +41,7 @@ export const tollMatrix = pgTable(
       .references(() => point.id)
       .notNull(),
     fee: decimal('fee', { precision: 10, scale: 2 }),
-    reversible: boolean('reversible'),
+    reversible: boolean('reversible').notNull(),
   },
   (t) => ({
     compoundKey: primaryKey({ columns: [t.entryPointId, t.exitPointId] }),

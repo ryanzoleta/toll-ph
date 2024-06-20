@@ -36,11 +36,13 @@ export const actions = {
     const entryPointId = formData.get('entryPointId')?.toString();
     const exitPointId = formData.get('exitPointId')?.toString();
     const fee = formData.get('fee')?.toString();
+    const reversible = formData.get('reversible')?.toString();
 
     if (entryPointId && exitPointId && fee) {
       await db.insert(tollMatrix).values({
         entryPointId: parseInt(entryPointId),
         exitPointId: parseInt(exitPointId),
+        reversible: reversible === 'true',
         fee: fee,
       });
     }

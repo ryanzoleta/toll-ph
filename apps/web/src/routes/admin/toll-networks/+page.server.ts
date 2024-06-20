@@ -9,7 +9,7 @@ export const actions = {
 
     const id = formData.get('tollNetworkId')?.toString();
     const name = formData.get('tollNetworkName')?.toString();
-    const rfid = formData.get('tollNetworkRfid')?.toString() as 'EASY_TRIP' | 'AUTOSWEEP';
+    const rfid = formData.get('tollNetworkRfid')?.toString() as 'EASYTRIP' | 'AUTOSWEEP';
 
     try {
       if (id && name) {
@@ -25,7 +25,7 @@ export const actions = {
 
     const id = formData.get('tollNetworkId')?.toString();
     const name = formData.get('tollNetworkName')?.toString();
-    const rfid = formData.get('tollNetworkRfid')?.toString() as 'EASY_TRIP' | 'AUTOSWEEP';
+    const rfid = formData.get('tollNetworkRfid')?.toString() as 'EASYTRIP' | 'AUTOSWEEP';
 
     console.log(id, name, rfid);
 
