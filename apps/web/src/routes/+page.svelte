@@ -85,6 +85,7 @@
         pointDestination = null;
         pointOriginInput = '';
         pointDestinationInput = '';
+        tollFee = 0;
       }}>Clear</button>
   </div>
 
