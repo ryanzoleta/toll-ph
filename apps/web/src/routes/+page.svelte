@@ -21,10 +21,22 @@
 
   async function calculate() {
     if (pointOrigin && pointDestination) {
-      const matrix = data.tollMatrix.find(
+      let matrix = data.tollMatrix.find(
         (tm) => tm.entryPointId === pointOrigin?.id && tm.exitPointId === pointDestination?.id
       );
-      tollFee = matrix ? parseFloat(matrix.fee ?? '0') : 0;
+
+      if (matrix !== null && matrix !== undefined) {
+        tollFee = matrix ? parseFloat(matrix.fee ?? '0') : 0;
+      } else {
+        matrix = data.tollMatrix.find(
+          (tm) =>
+            tm.entryPointId === pointDestination?.id &&
+            tm.exitPointId === pointOrigin?.id &&
+            tm.reversible
+        );
+
+        tollFee = matrix ? parseFloat(matrix.fee ?? '0') : 0;
+      }
     }
   }
 </script>
