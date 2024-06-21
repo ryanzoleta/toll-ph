@@ -1,56 +1,38 @@
 <script lang="ts">
   import * as Table from '$lib/components/ui/table';
   import type { Point } from '$lib/data/schema.js';
-  import { cn } from '$lib/utils';
 
   export let data;
 
-  let currentExpressway = data.expressways[0];
+  function getUniqueEntryPoints(expresswayId: string) {
+    return data.tollMatrix
+      .filter((matrix) => matrix.entryExpressway.id === expresswayId)
+      .reduce((points, matrix) => {
+        const returns = [];
 
-  $: matrices = data.tollMatrix.filter(
-    (matrix) =>
-      matrix.entryExpressway.id === currentExpressway.id ||
-      matrix.exitExpressway.id === currentExpressway.id
-  );
+        if (!points.find((p) => p.id === matrix.entryPoint.id)) {
+          returns.push(matrix.entryPoint);
+        }
 
-  $: entryPoints = matrices
-    .reduce((points, matrix) => {
-      const returns = [];
+        return [...points, ...returns];
+      }, [] as Point[])
+      .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
+  }
 
-      if (
-        matrix.entryPoint.expresswayId !== currentExpressway.id &&
-        matrix.exitPoint.expresswayId !== currentExpressway.id
-      ) {
-        return points;
-      }
+  function getUniqueExitPoints(expresswayId: string) {
+    return data.tollMatrix
+      .filter((matrix) => matrix.entryExpressway.id === expresswayId)
+      .reduce((points, matrix) => {
+        const returns = [];
 
-      if (!points.find((p) => p.id === matrix.entryPoint.id)) {
-        returns.push(matrix.entryPoint);
-      }
+        if (!points.find((p) => p.id === matrix.exitPoint.id)) {
+          returns.push(matrix.exitPoint);
+        }
 
-      return [...points, ...returns];
-    }, [] as Point[])
-    // .filter((point) => point.expresswayId === currentExpressway.id)
-    .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
-
-  $: exitPoints = matrices
-    .reduce((points, matrix) => {
-      const returns = [];
-
-      if (
-        matrix.entryPoint.expresswayId !== currentExpressway.id &&
-        matrix.exitPoint.expresswayId !== currentExpressway.id
-      ) {
-        return points;
-      }
-
-      if (!points.find((p) => p.id === matrix.exitPoint.id)) {
-        returns.push(matrix.exitPoint);
-      }
-      return [...points, ...returns];
-    }, [] as Point[])
-    // .filter((point) => point.expresswayId === currentExpressway.id)
-    .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
+        return [...points, ...returns];
+      }, [] as Point[])
+      .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
+  }
 </script>
 
 <div class="flex flex-col gap-5">
@@ -62,41 +44,34 @@
     the entry point are the rows, and the exit point are the column headers.
   </p>
 
-  <div class="flex flex-row gap-5">
+  <div class="flex flex-col gap-5">
     {#each data.expressways as expressway}
-      <button
-        class={cn(
-          'underline-offset-2 hover:underline',
-          expressway.id === currentExpressway.id ? 'underline' : null
-        )}
-        on:click={() => {
-          currentExpressway = expressway;
-        }}>{expressway.name}</button>
+      <h3>{expressway.name}</h3>
+
+      <Table.Root>
+        <Table.Header>
+          <Table.Row>
+            <Table.Head>ENTRY/EXIT</Table.Head>
+
+            {#each getUniqueEntryPoints(expressway.id) as p}
+              <Table.Head>{p.name}</Table.Head>
+            {/each}
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {#each getUniqueExitPoints(expressway.id) as p}
+            <Table.Row>
+              <Table.Cell>{p.name}</Table.Cell>
+              {#each getUniqueEntryPoints(expressway.id) as p2}
+                <Table.Cell
+                  >{data.tollMatrix.find((m) => {
+                    return m.entryPoint.id === p2.id && m.exitPoint.id === p.id;
+                  })?.toll_matrix.fee ?? ''}</Table.Cell>
+              {/each}
+            </Table.Row>
+          {/each}
+        </Table.Body>
+      </Table.Root>
     {/each}
   </div>
-
-  <Table.Root>
-    <Table.Header>
-      <Table.Row>
-        <Table.Head>ENTRY/EXIT</Table.Head>
-
-        {#each entryPoints as p}
-          <Table.Head>{p.name}</Table.Head>
-        {/each}
-      </Table.Row>
-    </Table.Header>
-    <Table.Body>
-      {#each exitPoints as p}
-        <Table.Row>
-          <Table.Cell>{p.name}</Table.Cell>
-          {#each entryPoints as p2}
-            <Table.Cell
-              >{matrices.find((m) => {
-                return m.entryPoint.id === p2.id && m.exitPoint.id === p.id;
-              })?.toll_matrix.fee ?? ''}</Table.Cell>
-          {/each}
-        </Table.Row>
-      {/each}
-    </Table.Body>
-  </Table.Root>
 </div>
