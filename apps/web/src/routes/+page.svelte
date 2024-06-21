@@ -19,7 +19,7 @@
   let pointOriginInput = '';
   let pointDestinationInput = '';
 
-  async function calculate() {
+  function calculate() {
     if (pointOrigin && pointDestination) {
       let matrix = data.tollMatrix.find(
         (tm) => tm.entryPointId === pointOrigin?.id && tm.exitPointId === pointDestination?.id
@@ -39,6 +39,19 @@
       }
     }
   }
+
+  $: reachables = data.points.filter((p) => {
+    return (
+      data.tollMatrix
+        .filter((tm) => tm.entryPointId === pointOrigin?.id)
+        .map((tm) => tm.exitPointId)
+        .includes(p.id) ||
+      data.tollMatrix
+        .filter((tm) => tm.exitPointId === pointOrigin?.id && tm.reversible)
+        .map((tm) => tm.entryPointId)
+        .includes(p.id)
+    );
+  });
 </script>
 
 <div class="mx-5 flex flex-col gap-10 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
@@ -68,7 +81,7 @@
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Destination</h3>
       <PointSelector
         bind:input={pointDestinationInput}
-        points={data.points}
+        points={reachables}
         placeholder="Enter point of destination"
         bind:setPoint={pointDestination} />
     </div>
