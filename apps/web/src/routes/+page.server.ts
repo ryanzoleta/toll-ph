@@ -1,6 +1,6 @@
 import { db } from '$lib/data/db';
 import type { Point } from '$lib/data/schema';
-import { expressway, point, tollMatrix, tollNetwork } from '$lib/data/schema';
+import { connection, expressway, point, tollMatrix, tollNetwork } from '$lib/data/schema';
 import { eq } from 'drizzle-orm';
 
 export async function load() {
@@ -18,9 +18,12 @@ export async function load() {
 
   const matrix = await db.select().from(tollMatrix);
 
+  const connections = await db.select().from(connection);
+
   return {
     points: points,
     expressways,
     tollMatrix: matrix,
+    connections,
   };
 }

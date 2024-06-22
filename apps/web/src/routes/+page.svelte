@@ -21,36 +21,39 @@
 
   function calculate() {
     if (pointOrigin && pointDestination) {
-      let matrix = data.tollMatrix.find(
-        (tm) => tm.entryPointId === pointOrigin?.id && tm.exitPointId === pointDestination?.id
-      );
-
-      if (matrix !== null && matrix !== undefined) {
-        tollFee = matrix ? parseFloat(matrix.fee ?? '0') : 0;
-      } else {
-        matrix = data.tollMatrix.find(
-          (tm) =>
-            tm.entryPointId === pointDestination?.id &&
-            tm.exitPointId === pointOrigin?.id &&
-            tm.reversible
+      if (pointOrigin.expresswayId === pointDestination.expresswayId) {
+        let matrix = data.tollMatrix.find(
+          (tm) => tm.entryPointId === pointOrigin?.id && tm.exitPointId === pointDestination?.id
         );
 
-        tollFee = matrix ? parseFloat(matrix.fee ?? '0') : 0;
+        if (matrix !== null && matrix !== undefined) {
+          tollFee = matrix ? parseFloat(matrix.fee ?? '0') : 0;
+        } else {
+          matrix = data.tollMatrix.find(
+            (tm) =>
+              tm.entryPointId === pointDestination?.id &&
+              tm.exitPointId === pointOrigin?.id &&
+              tm.reversible
+          );
+
+          tollFee = matrix ? parseFloat(matrix.fee ?? '0') : 0;
+        }
+      } else {
+        tollFee = 99;
       }
     }
   }
 
+  $: reachablesEntryToExit = data.tollMatrix
+    .filter((tm) => tm.entryPointId === pointOrigin?.id)
+    .map((tm) => tm.exitPointId);
+
+  $: reachablesExitToEntry = data.tollMatrix
+    .filter((tm) => tm.exitPointId === pointOrigin?.id && tm.reversible)
+    .map((tm) => tm.entryPointId);
+
   $: reachables = data.points.filter((p) => {
-    return (
-      data.tollMatrix
-        .filter((tm) => tm.entryPointId === pointOrigin?.id)
-        .map((tm) => tm.exitPointId)
-        .includes(p.id) ||
-      data.tollMatrix
-        .filter((tm) => tm.exitPointId === pointOrigin?.id && tm.reversible)
-        .map((tm) => tm.entryPointId)
-        .includes(p.id)
-    );
+    return reachablesEntryToExit.includes(p.id) || reachablesExitToEntry.includes(p.id);
   });
 </script>
 
