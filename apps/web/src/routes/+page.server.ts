@@ -2,6 +2,7 @@ import { db } from '$lib/data/db';
 import type { Point } from '$lib/data/schema';
 import { connection, expressway, point, tollMatrix, tollNetwork } from '$lib/data/schema';
 import { eq } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/pg-core';
 
 export async function load() {
   const points: Point[] = await db.select().from(point).orderBy(point.expresswayId, point.sequence);
@@ -18,7 +19,13 @@ export async function load() {
 
   const matrix = await db.select().from(tollMatrix);
 
-  const connections = await db.select().from(connection);
+  const connectingPoint = alias(point, 'connectingPoint');
+
+  const connections = await db
+    .select()
+    .from(connection)
+    .innerJoin(point, eq(connection.pointId, point.id))
+    .innerJoin(connectingPoint, eq(connection.connectingPointId, connectingPoint.id));
 
   return {
     points: points,

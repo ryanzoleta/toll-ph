@@ -1,11 +1,11 @@
 <script lang="ts">
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
-  import type { Point } from '$lib/types';
   import { formatAmountToCurrency } from '$lib/utils.js';
   import { expressways, points } from '$lib/stores.js';
   import Button from '$lib/components/ui/button/button.svelte';
   import { Sun, Moon } from 'lucide-svelte';
   import { toggleMode } from 'mode-watcher';
+  import type { Point } from '$lib/data/schema.js';
 
   export let data;
 
@@ -44,16 +44,45 @@
     }
   }
 
-  $: reachablesEntryToExit = data.tollMatrix
-    .filter((tm) => tm.entryPointId === pointOrigin?.id)
-    .map((tm) => tm.exitPointId);
+  function getReachables(pointId: number) {
+    return data.tollMatrix.filter((tm) => tm.entryPointId === pointId).map((tm) => tm.exitPointId);
+  }
 
-  $: reachablesExitToEntry = data.tollMatrix
-    .filter((tm) => tm.exitPointId === pointOrigin?.id && tm.reversible)
-    .map((tm) => tm.entryPointId);
+  function getReachablesReversed(pointId: number) {
+    return data.tollMatrix
+      .filter((tm) => tm.exitPointId === pointId && tm.reversible)
+      .map((tm) => tm.entryPointId);
+  }
+
+  let externallyConnectedPoints: typeof data.connections = [];
+
+  let originReachables: number[] = [];
+  let originReachablesReversed: number[] = [];
+
+  $: {
+    originReachables = getReachables(pointOrigin?.id ?? 0);
+    originReachablesReversed = getReachablesReversed(pointOrigin?.id ?? 0);
+  }
+
+  $: {
+    const externallyConnectedReachablePoints = data.connections.filter((c) =>
+      originReachables.includes(c.point.id)
+    );
+
+    const externallyConnectedReachablePointsReversed = data.connections.filter((c) =>
+      originReachablesReversed.includes(c.point.id)
+    );
+
+    externallyConnectedPoints = [
+      ...(externallyConnectedReachablePoints ?? []),
+      ...(externallyConnectedReachablePointsReversed ?? []),
+    ];
+
+    console.log(externallyConnectedPoints);
+  }
 
   $: reachables = data.points.filter((p) => {
-    return reachablesEntryToExit.includes(p.id) || reachablesExitToEntry.includes(p.id);
+    return originReachables.includes(p.id) || originReachablesReversed.includes(p.id);
   });
 </script>
 
