@@ -23,20 +23,22 @@
     if (pointOrigin && pointDestination) {
       if (pointOrigin.expresswayId === pointDestination.expresswayId) {
         let matrix = data.tollMatrix.find(
-          (tm) => tm.entryPointId === pointOrigin?.id && tm.exitPointId === pointDestination?.id
+          (tm) =>
+            tm.toll_matrix.entryPointId === pointOrigin?.id &&
+            tm.toll_matrix.exitPointId === pointDestination?.id
         );
 
         if (matrix !== null && matrix !== undefined) {
-          tollFee = matrix ? parseFloat(matrix.fee ?? '0') : 0;
+          tollFee = matrix ? parseFloat(matrix.toll_matrix.fee ?? '0') : 0;
         } else {
           matrix = data.tollMatrix.find(
             (tm) =>
-              tm.entryPointId === pointDestination?.id &&
-              tm.exitPointId === pointOrigin?.id &&
-              tm.reversible
+              tm.toll_matrix.entryPointId === pointDestination?.id &&
+              tm.toll_matrix.exitPointId === pointOrigin?.id &&
+              tm.toll_matrix.reversible
           );
 
-          tollFee = matrix ? parseFloat(matrix.fee ?? '0') : 0;
+          tollFee = matrix ? parseFloat(matrix.toll_matrix.fee ?? '0') : 0;
         }
       } else {
         tollFee = 99;
@@ -45,19 +47,21 @@
   }
 
   function getReachables(pointId: number) {
-    return data.tollMatrix.filter((tm) => tm.entryPointId === pointId).map((tm) => tm.exitPointId);
+    return data.tollMatrix
+      .filter((tm) => tm.toll_matrix.entryPointId === pointId)
+      .map((tm) => tm.exit_point);
   }
 
   function getReachablesReversed(pointId: number) {
     return data.tollMatrix
-      .filter((tm) => tm.exitPointId === pointId && tm.reversible)
-      .map((tm) => tm.entryPointId);
+      .filter((tm) => tm.toll_matrix.exitPointId === pointId && tm.toll_matrix.reversible)
+      .map((tm) => tm.entry_point);
   }
 
   let externallyConnectedPoints: typeof data.connections = [];
 
-  let originReachables: number[] = [];
-  let originReachablesReversed: number[] = [];
+  let originReachables: Point[] = [];
+  let originReachablesReversed: Point[] = [];
 
   $: {
     originReachables = getReachables(pointOrigin?.id ?? 0);
@@ -66,11 +70,11 @@
 
   $: {
     const externallyConnectedReachablePoints = data.connections.filter((c) =>
-      originReachables.includes(c.point.id)
+      originReachables.map((c) => c.id).includes(c.point.id)
     );
 
     const externallyConnectedReachablePointsReversed = data.connections.filter((c) =>
-      originReachablesReversed.includes(c.point.id)
+      originReachablesReversed.map((c) => c.id).includes(c.point.id)
     );
 
     externallyConnectedPoints = [
@@ -81,9 +85,15 @@
     console.log(externallyConnectedPoints);
   }
 
-  $: reachables = data.points.filter((p) => {
-    return originReachables.includes(p.id) || originReachablesReversed.includes(p.id);
-  });
+  $: reachables = [
+    ...originReachables,
+    ...originReachablesReversed,
+    ...externallyConnectedPoints
+      .map((c) => getReachables(c.connecting_point.id))
+      .reduce((acc, val) => acc.concat(val), []),
+  ];
+
+  $: console.log(reachables);
 </script>
 
 <div class="mx-5 flex flex-col gap-10 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">

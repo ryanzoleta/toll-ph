@@ -17,9 +17,16 @@ export async function load() {
     .from(expressway)
     .innerJoin(tollNetwork, eq(tollNetwork.id, expressway.tollNetworkId));
 
-  const matrix = await db.select().from(tollMatrix);
+  const entryPoint = alias(point, 'entry_point');
+  const exitPoint = alias(point, 'exit_point');
 
-  const connectingPoint = alias(point, 'connectingPoint');
+  const matrix = await db
+    .select()
+    .from(tollMatrix)
+    .innerJoin(entryPoint, eq(tollMatrix.entryPointId, entryPoint.id))
+    .innerJoin(exitPoint, eq(tollMatrix.exitPointId, exitPoint.id));
+
+  const connectingPoint = alias(point, 'connecting_point');
 
   const connections = await db
     .select()
