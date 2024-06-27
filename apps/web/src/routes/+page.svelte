@@ -1,7 +1,7 @@
 <script lang="ts">
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
   import { formatAmountToCurrency } from '$lib/utils.js';
-  import { expressways, points } from '$lib/stores.js';
+  import { expressways } from '$lib/stores.js';
   import Button from '$lib/components/ui/button/button.svelte';
   import { Sun, Moon } from 'lucide-svelte';
   import { toggleMode } from 'mode-watcher';
@@ -9,7 +9,6 @@
 
   export let data;
 
-  $points = data.points;
   $expressways = data.expressways;
 
   let pointOrigin: Point | null = null;
@@ -19,29 +18,74 @@
   let pointOriginInput = '';
   let pointDestinationInput = '';
 
+  type TollSegment = {
+    entryPoint: Point;
+    exitPoint: Point;
+    fee: number;
+  };
+
+  let tollSegments: TollSegment[] = [];
+
+  function queryTollMatrix(origin: Point, destination: Point) {
+    let matrix = data.tollMatrix.find(
+      (tm) =>
+        tm.toll_matrix.entryPointId === origin.id && tm.toll_matrix.exitPointId === destination.id
+    );
+
+    if (matrix !== null && matrix !== undefined) {
+      return matrix;
+    } else {
+      matrix = data.tollMatrix.find(
+        (tm) =>
+          tm.toll_matrix.entryPointId === destination.id &&
+          tm.toll_matrix.exitPointId === origin.id &&
+          tm.toll_matrix.reversible
+      );
+      return matrix;
+    }
+  }
+
   function calculate() {
+    console.log('hey', pointOrigin, pointDestination);
     if (pointOrigin && pointDestination) {
-      if (pointOrigin.expresswayId === pointDestination.expresswayId) {
-        let matrix = data.tollMatrix.find(
-          (tm) =>
-            tm.toll_matrix.entryPointId === pointOrigin?.id &&
-            tm.toll_matrix.exitPointId === pointDestination?.id
+      if (pointOrigin.tollNetworkId === pointDestination.tollNetworkId) {
+        console.log('calculating same expy');
+        const matrix = queryTollMatrix(pointOrigin, pointDestination);
+        tollFee = matrix ? parseFloat(matrix.toll_matrix.fee ?? '0') : 0;
+      } else {
+        console.log('calculating diff expy');
+        const connectedPointInSameExpwy = externallyConnectedPoints.find((p) =>
+          getReachables(p.connecting_point.id)
+            .map((p) => p.id)
+            .includes(pointDestination?.id ?? 0)
         );
 
-        if (matrix !== null && matrix !== undefined) {
-          tollFee = matrix ? parseFloat(matrix.toll_matrix.fee ?? '0') : 0;
-        } else {
-          matrix = data.tollMatrix.find(
-            (tm) =>
-              tm.toll_matrix.entryPointId === pointDestination?.id &&
-              tm.toll_matrix.exitPointId === pointOrigin?.id &&
-              tm.toll_matrix.reversible
-          );
-
-          tollFee = matrix ? parseFloat(matrix.toll_matrix.fee ?? '0') : 0;
+        if (connectedPointInSameExpwy === undefined) {
+          return;
         }
-      } else {
-        tollFee = 99;
+
+        const matrix1 = queryTollMatrix(pointOrigin, connectedPointInSameExpwy?.point);
+        const fee1 = parseFloat(matrix1?.toll_matrix.fee ?? '0');
+        const matrix2 = queryTollMatrix(
+          connectedPointInSameExpwy?.connecting_point,
+          pointDestination
+        );
+        const fee2 = parseFloat(matrix2?.toll_matrix.fee ?? '0');
+
+        tollFee = fee1 + fee2;
+
+        tollSegments = [
+          {
+            entryPoint: pointOrigin,
+            exitPoint: connectedPointInSameExpwy?.point,
+            fee: fee1,
+          },
+          {
+            entryPoint: connectedPointInSameExpwy?.connecting_point,
+            exitPoint: pointDestination,
+            fee: fee2,
+          },
+        ];
       }
     }
   }
@@ -81,8 +125,6 @@
       ...(externallyConnectedReachablePoints ?? []),
       ...(externallyConnectedReachablePointsReversed ?? []),
     ];
-
-    console.log(externallyConnectedPoints);
   }
 
   $: reachables = [
@@ -91,9 +133,9 @@
     ...externallyConnectedPoints
       .map((c) => getReachables(c.connecting_point.id))
       .reduce((acc, val) => acc.concat(val), []),
-  ];
-
-  $: console.log(reachables);
+  ].map((c) => {
+    return data.points.find((p) => p.id === c.id) ?? c;
+  });
 </script>
 
 <div class="mx-5 flex flex-col gap-10 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
@@ -155,6 +197,15 @@
               {formatAmountToCurrency(tollFee)}
             </p>
           </div>
+        </div>
+
+        <div class="flex flex-col">
+          {#each tollSegments as segment}
+            <div class="flex flex-row justify-between">
+              <p>{segment.entryPoint.name} ~ {segment.exitPoint.name}</p>
+              <p>{formatAmountToCurrency(segment.fee)}</p>
+            </div>
+          {/each}
         </div>
       </div>
     </div>

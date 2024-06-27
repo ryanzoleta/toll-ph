@@ -17,23 +17,7 @@
   let inputElement: HTMLElement;
 
   function matches(query: string, point: Point) {
-    // const entryableOrExitable =
-    //   (kind === 'ENTRY' && point.entryable) || (kind === 'EXIT' && point.exitable);
-    // const nameMatchesQuery = point.name?.toUpperCase().startsWith(query.toUpperCase());
-    // const expresswayMatchesQuery =
-    //   point.expresswayId?.toUpperCase().startsWith(query.toUpperCase()) && query.length > 1;
-
-    // const allReachableId = reachables.map((r) => r.id);
-    // const isReachable = reachables.length > 0 ? allReachableId.includes(point.id) : true;
-
-    // if (query) {
-    //   return (nameMatchesQuery || expresswayMatchesQuery) && entryableOrExitable && isReachable;
-    // }
-
-    // return entryableOrExitable && isReachable;
-
-    // temporarily return all points
-    return true;
+    return point.name?.toLowerCase().startsWith(query.toLowerCase());
   }
 
   $: {
