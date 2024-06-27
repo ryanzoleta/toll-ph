@@ -7,7 +7,6 @@
   import Button from '$lib/components/ui/button/button.svelte';
   import Input from '$lib/components/ui/input/input.svelte';
   import { Switch } from '$lib/components/ui/switch';
-  import { enhance } from '$app/forms';
   import type { TollMatrix } from '$lib/data/schema.js';
 
   export let data;
@@ -25,6 +24,22 @@
     fee: null,
     reversible: false,
   };
+
+  async function createTollMatrix() {
+    const response = await fetch('/api/matrix', {
+      method: 'POST',
+      body: JSON.stringify(inputMatrix),
+    });
+
+    console.log(await response.json());
+
+    inputMatrix = {
+      entryPointId: inputMatrix.entryPointId,
+      exitPointId: inputMatrix.exitPointId,
+      fee: '',
+      reversible: inputMatrix.reversible,
+    };
+  }
 </script>
 
 <div class="flex flex-col gap-5">
@@ -43,15 +58,26 @@
     {/each}
   </div>
 
-  <Card.Root class="w-1/3">
+  <Card.Root class="lg:w-1/3">
     <Card.Header>
       <Card.Title>Add Toll Matrix</Card.Title>
     </Card.Header>
     <Card.Content>
-      <form method="POST" action="?/createTollMatrix" class="flex flex-col gap-5" use:enhance>
+      <form method="POST" class="flex flex-col gap-5" on:submit|preventDefault={createTollMatrix}>
         <div>
           <Label>Entry</Label>
-          <Select.Root>
+          <Select.Root
+            items={data.points
+              .filter((p) => p.expressway.id === currentExpressway.id)
+              .map((p) => {
+                return {
+                  value: p.point.id,
+                  text: `${p.point.name} (${p.expressway.id})`,
+                };
+              })}
+            onSelectedChange={(selected) => {
+              if (selected) inputMatrix.entryPointId = selected.value;
+            }}>
             <Select.Trigger>
               <Select.Value placeholder="Entry Point" />
             </Select.Trigger>
@@ -66,7 +92,16 @@
 
         <div>
           <Label>Exit</Label>
-          <Select.Root>
+          <Select.Root
+            items={data.points.map((p) => {
+              return {
+                value: p.point.id,
+                text: `${p.point.name} (${p.expressway.id})`,
+              };
+            })}
+            onSelectedChange={(selected) => {
+              if (selected) inputMatrix.exitPointId = selected.value;
+            }}>
             <Select.Trigger>
               <Select.Value placeholder="Exit Point" />
             </Select.Trigger>
