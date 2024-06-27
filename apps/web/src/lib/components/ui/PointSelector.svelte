@@ -9,7 +9,11 @@
   // export let reachables: Point[] = [];
   export let input = '';
 
-  $: searchResults = points.filter((p) => matches(input, p));
+  $: searchResults = points
+    .filter((p) => matches(input, p))
+    .sort((a, b) => {
+      return (a.sequence ?? 0) - (b.sequence ?? 0);
+    });
   let displaySearchResults = false;
   let selectedIndex = -1;
   export let setPoint: Point | null = null;
@@ -22,7 +26,14 @@
 
   $: {
     // reachables;
-    searchResults = points.filter((p) => matches(input, p));
+    searchResults = points
+      .filter((p) => matches(input, p))
+      .sort((a, b) => {
+        return (a.sequence ?? 0) - (b.sequence ?? 0);
+      })
+      .sort((a, b) => {
+        return a.expresswayId?.localeCompare(b.expresswayId ?? '') ?? 0;
+      });
   }
 
   $: if (!displaySearchResults) {
