@@ -54,23 +54,38 @@
         tollFee = matrix ? parseFloat(matrix.toll_matrix.fee ?? '0') : 0;
       } else {
         console.log('calculating diff expy');
-        const connectedPointInSameExpwy = externallyConnectedPoints.find((p) =>
+        let connectedPointInSameExpwy = externallyConnectedPoints.find((p) =>
           getReachables(p.connecting_point.id)
             .map((p) => p.id)
             .includes(pointDestination?.id ?? 0)
         );
 
-        if (connectedPointInSameExpwy === undefined) {
-          return;
-        }
+        let matrix1: (typeof data.tollMatrix)[number] | undefined;
+        let matrix2: (typeof data.tollMatrix)[number] | undefined;
+        let fee1: number;
+        let fee2: number;
 
-        const matrix1 = queryTollMatrix(pointOrigin, connectedPointInSameExpwy?.point);
-        const fee1 = parseFloat(matrix1?.toll_matrix.fee ?? '0');
-        const matrix2 = queryTollMatrix(
-          connectedPointInSameExpwy?.connecting_point,
-          pointDestination
-        );
-        const fee2 = parseFloat(matrix2?.toll_matrix.fee ?? '0');
+        if (connectedPointInSameExpwy === undefined) {
+          connectedPointInSameExpwy = externallyConnectedPointsReversed.find((p) =>
+            getReachables(p.point.id)
+              .map((p) => p.id)
+              .includes(pointDestination?.id ?? 0)
+          );
+
+          if (connectedPointInSameExpwy === undefined) {
+            return;
+          }
+
+          matrix1 = queryTollMatrix(pointOrigin, connectedPointInSameExpwy?.connecting_point);
+          fee1 = parseFloat(matrix1?.toll_matrix.fee ?? '0');
+          matrix2 = queryTollMatrix(connectedPointInSameExpwy?.point, pointDestination);
+          fee2 = parseFloat(matrix2?.toll_matrix.fee ?? '0');
+        } else {
+          matrix1 = queryTollMatrix(pointOrigin, connectedPointInSameExpwy?.point);
+          fee1 = parseFloat(matrix1?.toll_matrix.fee ?? '0');
+          matrix2 = queryTollMatrix(connectedPointInSameExpwy?.connecting_point, pointDestination);
+          fee2 = parseFloat(matrix2?.toll_matrix.fee ?? '0');
+        }
 
         tollFee = fee1 + fee2;
 
@@ -103,6 +118,7 @@
   }
 
   let externallyConnectedPoints: typeof data.connections = [];
+  let externallyConnectedPointsReversed: typeof data.connections = [];
 
   let originReachables: Point[] = [];
   let originReachablesReversed: Point[] = [];
@@ -113,17 +129,20 @@
   }
 
   $: {
-    const externallyConnectedReachablePoints = data.connections.filter((c) =>
-      originReachables.map((c) => c.id).includes(c.point.id)
-    );
-
-    const externallyConnectedReachablePointsReversed = data.connections.filter((c) =>
-      originReachablesReversed.map((c) => c.id).includes(c.point.id)
-    );
-
     externallyConnectedPoints = [
-      ...(externallyConnectedReachablePoints ?? []),
-      ...(externallyConnectedReachablePointsReversed ?? []),
+      ...data.connections.filter((c) => originReachables.map((c) => c.id).includes(c.point.id)),
+      ...data.connections.filter((c) =>
+        originReachablesReversed.map((c) => c.id).includes(c.point.id)
+      ),
+    ];
+
+    externallyConnectedPointsReversed = [
+      ...data.connections.filter((c) =>
+        originReachables.map((c) => c.id).includes(c.connecting_point.id)
+      ),
+      ...data.connections.filter((c) =>
+        originReachablesReversed.map((c) => c.id).includes(c.connecting_point.id)
+      ),
     ];
   }
 
@@ -132,6 +151,9 @@
     ...originReachablesReversed,
     ...externallyConnectedPoints
       .map((c) => getReachables(c.connecting_point.id))
+      .reduce((acc, val) => acc.concat(val), []),
+    ...externallyConnectedPointsReversed
+      .map((c) => getReachables(c.point.id))
       .reduce((acc, val) => acc.concat(val), []),
   ].map((c) => {
     return data.points.find((p) => p.id === c.id) ?? c;
