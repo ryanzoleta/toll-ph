@@ -1,15 +1,12 @@
 <script lang="ts">
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
   import { formatAmountToCurrency } from '$lib/utils.js';
-  import { expressways } from '$lib/stores.js';
   import Button from '$lib/components/ui/button/button.svelte';
   import { Sun, Moon } from 'lucide-svelte';
   import { toggleMode } from 'mode-watcher';
   import type { Point } from '$lib/data/schema.js';
 
   export let data;
-
-  $expressways = data.expressways;
 
   let pointOrigin: Point | null = null;
   let pointDestination: Point | null = null;
@@ -28,92 +25,90 @@
 
   function queryTollMatrix(origin: Point, destination: Point) {
     let matrix = data.tollMatrix.find(
-      (tm) =>
-        tm.toll_matrix.entryPointId === origin.id && tm.toll_matrix.exitPointId === destination.id
+      (tm) => tm.entry_point.id === origin.id && tm.exit_point.id === destination.id
     );
 
-    if (matrix !== null && matrix !== undefined) {
-      return matrix;
-    } else {
-      matrix = data.tollMatrix.find(
-        (tm) =>
-          tm.toll_matrix.entryPointId === destination.id &&
-          tm.toll_matrix.exitPointId === origin.id &&
-          tm.toll_matrix.reversible
-      );
-      return matrix;
-    }
+    if (matrix !== null && matrix !== undefined) return matrix;
+
+    matrix = data.tollMatrix.find(
+      (tm) =>
+        tm.entry_point.id === destination.id &&
+        tm.exit_point.id === origin.id &&
+        tm.toll_matrix.reversible
+    );
+    return matrix;
   }
 
   function calculate() {
-    console.log('hey', pointOrigin, pointDestination);
     if (pointOrigin && pointDestination) {
       if (pointOrigin.tollNetworkId === pointDestination.tollNetworkId) {
-        console.log('calculating same expy');
         const matrix = queryTollMatrix(pointOrigin, pointDestination);
         tollFee = matrix ? parseFloat(matrix.toll_matrix.fee ?? '0') : 0;
       } else {
-        console.log('calculating diff expy');
-        let connectedPointInSameExpwy = externallyConnectedPoints.find((p) =>
+        let matrix1: (typeof data.tollMatrix)[number] | undefined;
+        let matrix2: (typeof data.tollMatrix)[number] | undefined;
+        let fee1: number;
+        let fee2: number;
+        let connectedPoint1: Point;
+        let connectedPoint2: Point;
+
+        // Find which point in the same expressway as the origin is connected to another expressway
+        // e.g., if origin is Carmona, then Skyway (Makati) is connected to Skyway Stage 3 via Buendia
+        let connection = externallyConnectedPoints.find((p) =>
           getReachables(p.connecting_point.id)
             .map((p) => p.id)
             .includes(pointDestination?.id ?? 0)
         );
 
-        let matrix1: (typeof data.tollMatrix)[number] | undefined;
-        let matrix2: (typeof data.tollMatrix)[number] | undefined;
-        let fee1: number;
-        let fee2: number;
-
-        if (connectedPointInSameExpwy === undefined) {
-          connectedPointInSameExpwy = externallyConnectedPointsReversed.find((p) =>
+        if (connection === undefined) {
+          // It's possible that in the database, the externally connected point is the connecting point
+          connection = externallyConnectedPointsReversed.find((p) =>
             getReachables(p.point.id)
               .map((p) => p.id)
               .includes(pointDestination?.id ?? 0)
           );
 
-          if (connectedPointInSameExpwy === undefined) {
+          if (connection === undefined) {
             return;
           }
 
-          matrix1 = queryTollMatrix(pointOrigin, connectedPointInSameExpwy?.connecting_point);
-          fee1 = parseFloat(matrix1?.toll_matrix.fee ?? '0');
-          matrix2 = queryTollMatrix(connectedPointInSameExpwy?.point, pointDestination);
-          fee2 = parseFloat(matrix2?.toll_matrix.fee ?? '0');
+          connectedPoint1 = connection.connecting_point;
+          connectedPoint2 = connection.point;
         } else {
-          matrix1 = queryTollMatrix(pointOrigin, connectedPointInSameExpwy?.point);
-          fee1 = parseFloat(matrix1?.toll_matrix.fee ?? '0');
-          matrix2 = queryTollMatrix(connectedPointInSameExpwy?.connecting_point, pointDestination);
-          fee2 = parseFloat(matrix2?.toll_matrix.fee ?? '0');
+          connectedPoint1 = connection.point;
+          connectedPoint2 = connection.connecting_point;
         }
 
-        tollFee = fee1 + fee2;
+        matrix1 = queryTollMatrix(pointOrigin, connectedPoint1);
+        matrix2 = queryTollMatrix(connectedPoint2, pointDestination);
+        fee1 = parseFloat(matrix1?.toll_matrix.fee ?? '0');
+        fee2 = parseFloat(matrix2?.toll_matrix.fee ?? '0');
 
         tollSegments = [
           {
             entryPoint: pointOrigin,
-            exitPoint: connectedPointInSameExpwy?.point,
+            exitPoint: connection?.point,
             fee: fee1,
           },
           {
-            entryPoint: connectedPointInSameExpwy?.connecting_point,
+            entryPoint: connection?.connecting_point,
             exitPoint: pointDestination,
             fee: fee2,
           },
         ];
+
+        tollFee = fee1 + fee2;
       }
     }
   }
 
   function getReachables(pointId: number) {
-    return data.tollMatrix
-      .filter((tm) => tm.toll_matrix.entryPointId === pointId)
-      .map((tm) => tm.exit_point);
+    return data.tollMatrix.filter((tm) => tm.entry_point.id === pointId).map((tm) => tm.exit_point);
   }
 
   function getReachablesReversed(pointId: number) {
     return data.tollMatrix
-      .filter((tm) => tm.toll_matrix.exitPointId === pointId && tm.toll_matrix.reversible)
+      .filter((tm) => tm.exit_point.id === pointId && tm.toll_matrix.reversible)
       .map((tm) => tm.entry_point);
   }
 
