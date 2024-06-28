@@ -123,6 +123,21 @@
 
   $: {
     externalConnections = getExternalConnections(originReachablesPointIds);
+    let tempExternalConnections = [...externalConnections];
+
+    while (tempExternalConnections.length > 0) {
+      const l = [...tempExternalConnections];
+      tempExternalConnections = [];
+      for (const conn of [...l]) {
+        const connReachables = getReachables(conn.externalConnectedPoint.id);
+        const connReachableIds = connReachables.map((c) => c.id);
+
+        const connExternalConnections = getExternalConnections(connReachableIds);
+        externalConnections = [...externalConnections, ...connExternalConnections];
+        tempExternalConnections = [...tempExternalConnections, ...connExternalConnections];
+      }
+    }
+
     externalReachables = externalConnections
       .map((c) => getReachables(c.externalConnectedPoint.id))
       .reduce((acc, val) => acc.concat(val), []);
