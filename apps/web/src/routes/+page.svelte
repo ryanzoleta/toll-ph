@@ -56,29 +56,15 @@
       // Find which point in the same expressway as the origin is connected to another expressway
       // e.g., if origin is Carmona, then Skyway (Makati) is connected to Skyway Stage 3 via Buendia
       let connection = externalConnections.find((p) =>
-        getReachables(p.connecting_point.id)
+        getReachables(p.externalConnectedPoint.id)
           .map((p) => p.id)
           .includes(pointDestination?.id ?? 0)
       );
 
-      if (connection === undefined) {
-        // It's possible that in the database, the externally connected point is the connecting point
-        connection = externalConnectionsReversed.find((p) =>
-          getReachables(p.point.id)
-            .map((p) => p.id)
-            .includes(pointDestination?.id ?? 0)
-        );
+      if (!connection?.externalConnectedPoint || !connection?.reachableConnectedPoint) return;
 
-        if (connection === undefined) {
-          return;
-        }
-
-        connectedPoint1 = connection.connecting_point;
-        connectedPoint2 = connection.point;
-      } else {
-        connectedPoint1 = connection.point;
-        connectedPoint2 = connection.connecting_point;
-      }
+      connectedPoint1 = connection?.reachableConnectedPoint;
+      connectedPoint2 = connection?.externalConnectedPoint;
 
       matrix1 = queryTollMatrix(pointOrigin, connectedPoint1);
       matrix2 = queryTollMatrix(connectedPoint2, pointDestination);
@@ -88,11 +74,11 @@
       tollSegments = [
         {
           entryPoint: pointOrigin,
-          exitPoint: connection?.point,
+          exitPoint: connection?.reachableConnectedPoint,
           fee: fee1,
         },
         {
-          entryPoint: connection?.connecting_point,
+          entryPoint: connection?.externalConnectedPoint,
           exitPoint: pointDestination,
           fee: fee2,
         },
@@ -111,31 +97,45 @@
     ];
   }
 
-  let externalConnections: typeof data.connections = [];
-  let externalConnectionsReversed: typeof data.connections = [];
+  function getExternalConnections(reachablePointIds: number[]) {
+    const conn = data.connections
+      .filter((c) => reachablePointIds.includes(c.point.id))
+      .map((c) => {
+        return {
+          reachableConnectedPoint: c.point,
+          externalConnectedPoint: c.connecting_point,
+        };
+      });
+
+    const connReversed = data.connections
+      .filter((c) => reachablePointIds.includes(c.connecting_point.id))
+      .map((c) => {
+        return {
+          reachableConnectedPoint: c.connecting_point,
+          externalConnectedPoint: c.point,
+        };
+      });
+
+    return [...conn, ...connReversed] as {
+      reachableConnectedPoint: Point;
+      externalConnectedPoint: Point;
+    }[];
+  }
+
+  let externalConnections: ReturnType<typeof getExternalConnections> = [];
+  let externalReachables: Point[] = [];
 
   $: originReachables = getReachables(pointOrigin?.id ?? 0);
   $: originReachablesPointIds = originReachables.map((c) => c.id);
 
   $: {
-    externalConnections = data.connections.filter((c) =>
-      originReachablesPointIds.includes(c.point.id)
-    );
-
-    externalConnectionsReversed = data.connections.filter((c) =>
-      originReachablesPointIds.includes(c.connecting_point.id)
-    );
+    externalConnections = getExternalConnections(originReachablesPointIds);
+    externalReachables = externalConnections
+      .map((c) => getReachables(c.externalConnectedPoint.id))
+      .reduce((acc, val) => acc.concat(val), []);
   }
 
-  $: reachables = [
-    ...originReachables,
-    ...externalConnections
-      .map((c) => getReachables(c.connecting_point.id))
-      .reduce((acc, val) => acc.concat(val), []),
-    ...externalConnectionsReversed
-      .map((c) => getReachables(c.point.id))
-      .reduce((acc, val) => acc.concat(val), []),
-  ].map((c) => {
+  $: reachables = [...originReachables, ...externalReachables].map((c) => {
     return data.points.find((p) => p.id === c.id) ?? c;
   });
 </script>
