@@ -40,114 +40,99 @@
   }
 
   function calculate() {
-    if (pointOrigin && pointDestination) {
-      if (pointOrigin.tollNetworkId === pointDestination.tollNetworkId) {
-        const matrix = queryTollMatrix(pointOrigin, pointDestination);
-        tollFee = matrix ? parseFloat(matrix.toll_matrix.fee ?? '0') : 0;
-      } else {
-        let matrix1: (typeof data.tollMatrix)[number] | undefined;
-        let matrix2: (typeof data.tollMatrix)[number] | undefined;
-        let fee1: number;
-        let fee2: number;
-        let connectedPoint1: Point;
-        let connectedPoint2: Point;
+    if (!pointOrigin || !pointDestination) return;
 
-        // Find which point in the same expressway as the origin is connected to another expressway
-        // e.g., if origin is Carmona, then Skyway (Makati) is connected to Skyway Stage 3 via Buendia
-        let connection = externallyConnectedPoints.find((p) =>
-          getReachables(p.connecting_point.id)
+    if (pointOrigin.tollNetworkId === pointDestination.tollNetworkId) {
+      const matrix = queryTollMatrix(pointOrigin, pointDestination);
+      tollFee = matrix ? parseFloat(matrix.toll_matrix.fee ?? '0') : 0;
+    } else {
+      let matrix1: (typeof data.tollMatrix)[number] | undefined;
+      let matrix2: (typeof data.tollMatrix)[number] | undefined;
+      let fee1: number;
+      let fee2: number;
+      let connectedPoint1: Point;
+      let connectedPoint2: Point;
+
+      // Find which point in the same expressway as the origin is connected to another expressway
+      // e.g., if origin is Carmona, then Skyway (Makati) is connected to Skyway Stage 3 via Buendia
+      let connection = externalConnections.find((p) =>
+        getReachables(p.connecting_point.id)
+          .map((p) => p.id)
+          .includes(pointDestination?.id ?? 0)
+      );
+
+      if (connection === undefined) {
+        // It's possible that in the database, the externally connected point is the connecting point
+        connection = externalConnectionsReversed.find((p) =>
+          getReachables(p.point.id)
             .map((p) => p.id)
             .includes(pointDestination?.id ?? 0)
         );
 
         if (connection === undefined) {
-          // It's possible that in the database, the externally connected point is the connecting point
-          connection = externallyConnectedPointsReversed.find((p) =>
-            getReachables(p.point.id)
-              .map((p) => p.id)
-              .includes(pointDestination?.id ?? 0)
-          );
-
-          if (connection === undefined) {
-            return;
-          }
-
-          connectedPoint1 = connection.connecting_point;
-          connectedPoint2 = connection.point;
-        } else {
-          connectedPoint1 = connection.point;
-          connectedPoint2 = connection.connecting_point;
+          return;
         }
 
-        matrix1 = queryTollMatrix(pointOrigin, connectedPoint1);
-        matrix2 = queryTollMatrix(connectedPoint2, pointDestination);
-        fee1 = parseFloat(matrix1?.toll_matrix.fee ?? '0');
-        fee2 = parseFloat(matrix2?.toll_matrix.fee ?? '0');
-
-        tollSegments = [
-          {
-            entryPoint: pointOrigin,
-            exitPoint: connection?.point,
-            fee: fee1,
-          },
-          {
-            entryPoint: connection?.connecting_point,
-            exitPoint: pointDestination,
-            fee: fee2,
-          },
-        ];
-
-        tollFee = fee1 + fee2;
+        connectedPoint1 = connection.connecting_point;
+        connectedPoint2 = connection.point;
+      } else {
+        connectedPoint1 = connection.point;
+        connectedPoint2 = connection.connecting_point;
       }
+
+      matrix1 = queryTollMatrix(pointOrigin, connectedPoint1);
+      matrix2 = queryTollMatrix(connectedPoint2, pointDestination);
+      fee1 = parseFloat(matrix1?.toll_matrix.fee ?? '0');
+      fee2 = parseFloat(matrix2?.toll_matrix.fee ?? '0');
+
+      tollSegments = [
+        {
+          entryPoint: pointOrigin,
+          exitPoint: connection?.point,
+          fee: fee1,
+        },
+        {
+          entryPoint: connection?.connecting_point,
+          exitPoint: pointDestination,
+          fee: fee2,
+        },
+      ];
+
+      tollFee = fee1 + fee2;
     }
   }
 
   function getReachables(pointId: number) {
-    return data.tollMatrix.filter((tm) => tm.entry_point.id === pointId).map((tm) => tm.exit_point);
+    return [
+      ...data.tollMatrix.filter((tm) => tm.entry_point.id === pointId).map((tm) => tm.exit_point),
+      ...data.tollMatrix
+        .filter((tm) => tm.exit_point.id === pointId && tm.toll_matrix.reversible)
+        .map((tm) => tm.entry_point),
+    ];
   }
 
-  function getReachablesReversed(pointId: number) {
-    return data.tollMatrix
-      .filter((tm) => tm.exit_point.id === pointId && tm.toll_matrix.reversible)
-      .map((tm) => tm.entry_point);
-  }
+  let externalConnections: typeof data.connections = [];
+  let externalConnectionsReversed: typeof data.connections = [];
 
-  let externallyConnectedPoints: typeof data.connections = [];
-  let externallyConnectedPointsReversed: typeof data.connections = [];
-
-  let originReachables: Point[] = [];
-  let originReachablesReversed: Point[] = [];
+  $: originReachables = getReachables(pointOrigin?.id ?? 0);
+  $: originReachablesPointIds = originReachables.map((c) => c.id);
 
   $: {
-    originReachables = getReachables(pointOrigin?.id ?? 0);
-    originReachablesReversed = getReachablesReversed(pointOrigin?.id ?? 0);
-  }
+    externalConnections = data.connections.filter((c) =>
+      originReachablesPointIds.includes(c.point.id)
+    );
 
-  $: {
-    externallyConnectedPoints = [
-      ...data.connections.filter((c) => originReachables.map((c) => c.id).includes(c.point.id)),
-      ...data.connections.filter((c) =>
-        originReachablesReversed.map((c) => c.id).includes(c.point.id)
-      ),
-    ];
-
-    externallyConnectedPointsReversed = [
-      ...data.connections.filter((c) =>
-        originReachables.map((c) => c.id).includes(c.connecting_point.id)
-      ),
-      ...data.connections.filter((c) =>
-        originReachablesReversed.map((c) => c.id).includes(c.connecting_point.id)
-      ),
-    ];
+    externalConnectionsReversed = data.connections.filter((c) =>
+      originReachablesPointIds.includes(c.connecting_point.id)
+    );
   }
 
   $: reachables = [
     ...originReachables,
-    ...originReachablesReversed,
-    ...externallyConnectedPoints
+    ...externalConnections
       .map((c) => getReachables(c.connecting_point.id))
       .reduce((acc, val) => acc.concat(val), []),
-    ...externallyConnectedPointsReversed
+    ...externalConnectionsReversed
       .map((c) => getReachables(c.point.id))
       .reduce((acc, val) => acc.concat(val), []),
   ].map((c) => {
@@ -200,6 +185,7 @@
         pointOriginInput = '';
         pointDestinationInput = '';
         tollFee = 0;
+        tollSegments = [];
       }}>Clear</button>
   </div>
 
