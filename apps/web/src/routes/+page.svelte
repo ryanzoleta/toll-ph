@@ -100,33 +100,26 @@
   function getExternalConnections(reachablePointIds: number[]) {
     const conn = data.connections
       .filter((c) => reachablePointIds.includes(c.point.id))
-      .map((c) => {
-        return {
-          reachableConnectedPoint: c.point,
-          externalConnectedPoint: c.connecting_point,
-        };
-      });
+      .map((c) => ({
+        reachableConnectedPoint: c.point,
+        externalConnectedPoint: c.connecting_point,
+      }));
 
     const connReversed = data.connections
       .filter((c) => reachablePointIds.includes(c.connecting_point.id))
-      .map((c) => {
-        return {
-          reachableConnectedPoint: c.connecting_point,
-          externalConnectedPoint: c.point,
-        };
-      });
+      .map((c) => ({
+        reachableConnectedPoint: c.connecting_point,
+        externalConnectedPoint: c.point,
+      }));
 
-    return [...conn, ...connReversed] as {
-      reachableConnectedPoint: Point;
-      externalConnectedPoint: Point;
-    }[];
+    return [...conn, ...connReversed];
   }
-
-  let externalConnections: ReturnType<typeof getExternalConnections> = [];
-  let externalReachables: Point[] = [];
 
   $: originReachables = getReachables(pointOrigin?.id ?? 0);
   $: originReachablesPointIds = originReachables.map((c) => c.id);
+
+  let externalConnections: ReturnType<typeof getExternalConnections> = [];
+  let externalReachables: Point[] = [];
 
   $: {
     externalConnections = getExternalConnections(originReachablesPointIds);
@@ -135,9 +128,9 @@
       .reduce((acc, val) => acc.concat(val), []);
   }
 
-  $: reachables = [...originReachables, ...externalReachables].map((c) => {
-    return data.points.find((p) => p.id === c.id) ?? c;
-  });
+  $: reachables = [...originReachables, ...externalReachables].map(
+    (c) => data.points.find((p) => p.id === c.id) ?? c
+  );
 </script>
 
 <div class="mx-5 flex flex-col gap-10 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
