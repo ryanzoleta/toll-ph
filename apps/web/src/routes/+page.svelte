@@ -53,7 +53,7 @@
       for (let i = 0; i < externalConnections.length; i++) {
         const conn = { ...externalConnections[i] };
 
-        if (currentDestination.expresswayId === pointOrigin.expresswayId) {
+        if (currentDestination.tollNetworkId === pointOrigin.tollNetworkId) {
           const fee = queryTollMatrix(pointOrigin, currentDestination);
           tollSegments = [
             {
@@ -134,7 +134,11 @@
         const connReachables = getReachables(conn.externalConnectedPoint.id);
         const connReachableIds = connReachables.map((c) => c.id);
 
-        const connExternalConnections = getExternalConnections(connReachableIds);
+        const connExternalConnections = getExternalConnections(connReachableIds).filter((c) => {
+          return !externalConnections.some(
+            (ec) => ec.externalConnectedPoint.id === c.externalConnectedPoint.id
+          );
+        });
         externalConnections = [...externalConnections, ...connExternalConnections];
         tempExternalConnections = [...tempExternalConnections, ...connExternalConnections];
       }
@@ -145,9 +149,12 @@
       .reduce((acc, val) => acc.concat(val), []);
   }
 
-  $: reachables = [...originReachables, ...externalReachables].map(
-    (c) => data.points.find((p) => p.id === c.id) ?? c
-  );
+  $: reachables = [...originReachables, ...externalReachables]
+    .map((c) => data.points.find((p) => p.id === c.id) ?? c)
+    .reduce((acc, val) => {
+      if (!acc.find((p) => p.id === val.id)) acc.push(val);
+      return acc;
+    }, [] as Point[]);
 </script>
 
 <div class="mx-5 flex flex-col gap-10 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">

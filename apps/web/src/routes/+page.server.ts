@@ -36,12 +36,31 @@ export async function load() {
     .innerJoin(exitPoint, eq(tollMatrix.exitPointId, exitPoint.id));
 
   const connectingPoint = alias(point, 'connecting_point');
+  const connectingExpressway = alias(expressway, 'connecting_expressway');
 
   const connections = await db
-    .select()
+    .select({
+      connection,
+      point: {
+        id: point.id,
+        name: point.name,
+        expresswayId: point.expresswayId,
+        sequence: point.sequence,
+        tollNetworkId: expressway.tollNetworkId,
+      },
+      connecting_point: {
+        id: connectingPoint.id,
+        name: connectingPoint.name,
+        expresswayId: connectingPoint.expresswayId,
+        sequence: connectingPoint.sequence,
+        tollNetworkId: connectingExpressway.tollNetworkId,
+      },
+    })
     .from(connection)
     .innerJoin(point, eq(connection.pointId, point.id))
-    .innerJoin(connectingPoint, eq(connection.connectingPointId, connectingPoint.id));
+    .innerJoin(expressway, eq(point.expresswayId, expressway.id))
+    .innerJoin(connectingPoint, eq(connection.connectingPointId, connectingPoint.id))
+    .innerJoin(connectingExpressway, eq(point.expresswayId, expressway.id));
 
   return {
     points: points,
