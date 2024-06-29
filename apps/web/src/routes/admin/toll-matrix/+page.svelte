@@ -4,9 +4,9 @@
 
   export let data;
 
-  function getUniqueEntryPoints(expresswayId: string) {
+  function getUniqueEntryPoints(tollNetworkId: string) {
     return data.tollMatrix
-      .filter((matrix) => matrix.entryExpressway.id === expresswayId)
+      .filter((matrix) => matrix.entryExpressway.tollNetworkId === tollNetworkId)
       .reduce((points, matrix) => {
         const returns = [];
 
@@ -19,9 +19,9 @@
       .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
   }
 
-  function getUniqueExitPoints(expresswayId: string) {
+  function getUniqueExitPoints(tollNetworkId: string) {
     return data.tollMatrix
-      .filter((matrix) => matrix.entryExpressway.id === expresswayId)
+      .filter((matrix) => matrix.entryExpressway.tollNetworkId === tollNetworkId)
       .reduce((points, matrix) => {
         const returns = [];
 
@@ -45,24 +45,24 @@
   </p>
 
   <div class="flex flex-col gap-5">
-    {#each data.expressways as expressway}
-      <h3>{expressway.name}</h3>
+    {#each data.tollNetworks as tollNetwork}
+      <h3>{tollNetwork.name}</h3>
 
       <Table.Root>
         <Table.Header>
           <Table.Row>
             <Table.Head>ENTRY/EXIT</Table.Head>
 
-            {#each getUniqueEntryPoints(expressway.id) as p}
+            {#each getUniqueEntryPoints(tollNetwork.id) as p}
               <Table.Head>{p.name}</Table.Head>
             {/each}
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {#each getUniqueExitPoints(expressway.id) as p}
+          {#each getUniqueExitPoints(tollNetwork.id) as p}
             <Table.Row>
               <Table.Cell>{p.name}</Table.Cell>
-              {#each getUniqueEntryPoints(expressway.id) as p2}
+              {#each getUniqueEntryPoints(tollNetwork.id) as p2}
                 <Table.Cell
                   >{data.tollMatrix.find((m) => {
                     return m.entryPoint.id === p2.id && m.exitPoint.id === p.id;

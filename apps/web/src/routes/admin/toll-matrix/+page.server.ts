@@ -1,5 +1,5 @@
 import { db } from '$lib/data/db';
-import { expressway, point, tollMatrix } from '$lib/data/schema';
+import { expressway, point, tollMatrix, tollNetwork } from '$lib/data/schema';
 import { eq } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 
@@ -23,8 +23,11 @@ export async function load() {
     .from(point)
     .innerJoin(expressway, eq(point.expresswayId, expressway.id));
 
+  const tollNetworks = await db.select().from(tollNetwork);
+
   return {
     tollMatrix: tollMatrixResults,
     points,
+    tollNetworks,
   };
 }

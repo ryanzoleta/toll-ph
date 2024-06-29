@@ -69,6 +69,7 @@
           <Select.Root
             items={data.points
               .filter((p) => p.expressway.tollNetworkId === currentTollNetwork.id)
+              .sort((a, b) => (a.point.sequence ?? 0) - (b.point.sequence ?? 0))
               .map((p) => {
                 return {
                   value: p.point.id,
@@ -82,7 +83,9 @@
               <Select.Value placeholder="Entry Point" />
             </Select.Trigger>
             <Select.Content class="max-h-[500px] overflow-y-scroll">
-              {#each data.points.filter((p) => p.expressway.tollNetworkId === currentTollNetwork.id) as p}
+              {#each data.points
+                .filter((p) => p.expressway.tollNetworkId === currentTollNetwork.id)
+                .sort((a, b) => (a.point.sequence ?? 0) - (b.point.sequence ?? 0)) as p}
                 <Select.Item value={p.point.id}>{p.point.name} ({p.expressway.id})</Select.Item>
               {/each}
             </Select.Content>
@@ -95,6 +98,7 @@
           <Select.Root
             items={data.points
               .filter((p) => p.expressway.tollNetworkId === currentTollNetwork.id)
+              .sort((a, b) => (a.point.sequence ?? 0) - (b.point.sequence ?? 0))
               .map((p) => {
                 return {
                   value: p.point.id,
@@ -108,7 +112,9 @@
               <Select.Value placeholder="Exit Point" />
             </Select.Trigger>
             <Select.Content class="max-h-[500px] overflow-y-scroll">
-              {#each data.points.filter((p) => p.expressway.tollNetworkId === currentTollNetwork.id) as p}
+              {#each data.points
+                .filter((p) => p.expressway.tollNetworkId === currentTollNetwork.id)
+                .sort((a, b) => (a.point.sequence ?? 0) - (b.point.sequence ?? 0)) as p}
                 <Select.Item value={p.point.id}>{p.point.name} ({p.expressway.id})</Select.Item>
               {/each}
             </Select.Content>
