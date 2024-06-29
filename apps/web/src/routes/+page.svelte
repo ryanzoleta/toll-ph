@@ -46,45 +46,53 @@
       const matrix = queryTollMatrix(pointOrigin, pointDestination);
       tollFee = matrix ? parseFloat(matrix.toll_matrix.fee ?? '0') : 0;
     } else {
-      let matrix1: (typeof data.tollMatrix)[number] | undefined;
-      let matrix2: (typeof data.tollMatrix)[number] | undefined;
-      let fee1: number;
-      let fee2: number;
-      let connectedPoint1: Point;
-      let connectedPoint2: Point;
+      console.log('externalConnections', externalConnections);
+      console.log('externalReachables', externalReachables);
 
-      // Find which point in the same expressway as the origin is connected to another expressway
-      // e.g., if origin is Carmona, then Skyway (Makati) is connected to Skyway Stage 3 via Buendia
-      let connection = externalConnections.find((p) =>
-        getReachables(p.externalConnectedPoint.id)
-          .map((p) => p.id)
-          .includes(pointDestination?.id ?? 0)
-      );
+      let currentDestination = pointDestination;
 
-      if (!connection?.externalConnectedPoint || !connection?.reachableConnectedPoint) return;
+      for (let i = 0; i < externalConnections.length; i++) {
+        const conn = { ...externalConnections[i] };
 
-      connectedPoint1 = connection?.reachableConnectedPoint;
-      connectedPoint2 = connection?.externalConnectedPoint;
+        if (currentDestination.expresswayId === pointOrigin.expresswayId) {
+          const fee = parseFloat(
+            queryTollMatrix(pointOrigin, currentDestination)?.toll_matrix.fee ?? '0'
+          );
+          tollSegments = [
+            {
+              entryPoint: { ...pointOrigin },
+              exitPoint: { ...currentDestination },
+              fee,
+            },
+            ...tollSegments,
+          ];
+          tollFee += fee;
 
-      matrix1 = queryTollMatrix(pointOrigin, connectedPoint1);
-      matrix2 = queryTollMatrix(connectedPoint2, pointDestination);
-      fee1 = parseFloat(matrix1?.toll_matrix.fee ?? '0');
-      fee2 = parseFloat(matrix2?.toll_matrix.fee ?? '0');
+          break;
+        } else {
+          const connReachables = getReachables(conn.externalConnectedPoint.id);
+          const connReachableIds = connReachables.map((c) => c.id);
 
-      tollSegments = [
-        {
-          entryPoint: pointOrigin,
-          exitPoint: connection?.reachableConnectedPoint,
-          fee: fee1,
-        },
-        {
-          entryPoint: connection?.externalConnectedPoint,
-          exitPoint: pointDestination,
-          fee: fee2,
-        },
-      ];
+          if (connReachableIds.includes(currentDestination.id)) {
+            const fee = parseFloat(
+              queryTollMatrix(conn.externalConnectedPoint, currentDestination)?.toll_matrix.fee ??
+                '0'
+            );
+            tollSegments = [
+              {
+                entryPoint: { ...conn.externalConnectedPoint },
+                exitPoint: { ...currentDestination },
+                fee,
+              },
+              ...tollSegments,
+            ];
+            tollFee += fee;
+            currentDestination = { ...conn.reachableConnectedPoint };
 
-      tollFee = fee1 + fee2;
+            i = -1;
+          }
+        }
+      }
     }
   }
 
