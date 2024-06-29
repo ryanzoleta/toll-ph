@@ -60,7 +60,7 @@ export async function load() {
     .innerJoin(point, eq(connection.pointId, point.id))
     .innerJoin(expressway, eq(point.expresswayId, expressway.id))
     .innerJoin(connectingPoint, eq(connection.connectingPointId, connectingPoint.id))
-    .innerJoin(connectingExpressway, eq(point.expresswayId, expressway.id));
+    .innerJoin(connectingExpressway, eq(connectingPoint.expresswayId, connectingExpressway.id));
 
   return {
     points: points,
