@@ -11,10 +11,10 @@
 
   export let data;
 
-  let currentExpressway = data.expressways[0];
+  let currentTollNetwork = data.tollNetworks[0];
 
   $: matrices = data.tollMatrix
-    .filter((matrix) => matrix.entryExpressway.id === currentExpressway.id)
+    .filter((matrix) => matrix.entryExpressway.tollNetworkId === currentTollNetwork.id)
     .sort((a, b) => (a.exitPoint.sequence ?? 0) - (b.exitPoint.sequence ?? 0))
     .sort((a, b) => (a.entryPoint.sequence ?? 0) - (b.entryPoint.sequence ?? 0));
 
@@ -46,15 +46,15 @@
   <h2 class="text-lg font-bold">Toll Table</h2>
 
   <div class="flex flex-row gap-5">
-    {#each data.expressways as expressway}
+    {#each data.tollNetworks as tollNetwork}
       <button
         class={cn(
           'underline-offset-2 hover:underline',
-          expressway.id === currentExpressway.id ? 'underline' : null
+          tollNetwork.id === currentTollNetwork.id ? 'underline' : null
         )}
         on:click={() => {
-          currentExpressway = expressway;
-        }}>{expressway.name}</button>
+          currentTollNetwork = tollNetwork;
+        }}>{tollNetwork.name}</button>
     {/each}
   </div>
 
@@ -68,7 +68,7 @@
           <Label>Entry</Label>
           <Select.Root
             items={data.points
-              .filter((p) => p.expressway.id === currentExpressway.id)
+              .filter((p) => p.expressway.tollNetworkId === currentTollNetwork.id)
               .map((p) => {
                 return {
                   value: p.point.id,
@@ -82,7 +82,7 @@
               <Select.Value placeholder="Entry Point" />
             </Select.Trigger>
             <Select.Content class="max-h-[500px] overflow-y-scroll">
-              {#each data.points.filter((p) => p.expressway.id === currentExpressway.id) as p}
+              {#each data.points.filter((p) => p.expressway.tollNetworkId === currentTollNetwork.id) as p}
                 <Select.Item value={p.point.id}>{p.point.name} ({p.expressway.id})</Select.Item>
               {/each}
             </Select.Content>
@@ -93,12 +93,14 @@
         <div>
           <Label>Exit</Label>
           <Select.Root
-            items={data.points.map((p) => {
-              return {
-                value: p.point.id,
-                text: `${p.point.name} (${p.expressway.id})`,
-              };
-            })}
+            items={data.points
+              .filter((p) => p.expressway.tollNetworkId === currentTollNetwork.id)
+              .map((p) => {
+                return {
+                  value: p.point.id,
+                  text: `${p.point.name} (${p.expressway.id})`,
+                };
+              })}
             onSelectedChange={(selected) => {
               if (selected) inputMatrix.exitPointId = selected.value;
             }}>
@@ -106,7 +108,7 @@
               <Select.Value placeholder="Exit Point" />
             </Select.Trigger>
             <Select.Content class="max-h-[500px] overflow-y-scroll">
-              {#each data.points as p}
+              {#each data.points.filter((p) => p.expressway.tollNetworkId === currentTollNetwork.id) as p}
                 <Select.Item value={p.point.id}>{p.point.name} ({p.expressway.id})</Select.Item>
               {/each}
             </Select.Content>

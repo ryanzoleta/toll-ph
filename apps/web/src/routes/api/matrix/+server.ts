@@ -16,7 +16,7 @@ export async function POST(event: RequestEvent) {
     await db.insert(tollMatrix).values({
       entryPointId: parseInt(entryPointId),
       exitPointId: parseInt(exitPointId),
-      reversible: reversible === 'on',
+      reversible,
       fee: fee,
     });
 
