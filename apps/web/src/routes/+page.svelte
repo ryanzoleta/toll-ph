@@ -28,7 +28,7 @@
       (tm) => tm.entry_point.id === origin.id && tm.exit_point.id === destination.id
     );
 
-    if (matrix !== null && matrix !== undefined) return matrix;
+    if (matrix !== null && matrix !== undefined) return parseFloat(matrix?.toll_matrix.fee ?? '0');
 
     matrix = data.tollMatrix.find(
       (tm) =>
@@ -36,15 +36,14 @@
         tm.exit_point.id === origin.id &&
         tm.toll_matrix.reversible
     );
-    return matrix;
+    return parseFloat(matrix?.toll_matrix.fee ?? '0');
   }
 
   function calculate() {
     if (!pointOrigin || !pointDestination) return;
 
     if (pointOrigin.tollNetworkId === pointDestination.tollNetworkId) {
-      const matrix = queryTollMatrix(pointOrigin, pointDestination);
-      tollFee = matrix ? parseFloat(matrix.toll_matrix.fee ?? '0') : 0;
+      tollFee = queryTollMatrix(pointOrigin, pointDestination);
     } else {
       console.log('externalConnections', externalConnections);
       console.log('externalReachables', externalReachables);
@@ -55,9 +54,7 @@
         const conn = { ...externalConnections[i] };
 
         if (currentDestination.expresswayId === pointOrigin.expresswayId) {
-          const fee = parseFloat(
-            queryTollMatrix(pointOrigin, currentDestination)?.toll_matrix.fee ?? '0'
-          );
+          const fee = queryTollMatrix(pointOrigin, currentDestination);
           tollSegments = [
             {
               entryPoint: { ...pointOrigin },
@@ -74,10 +71,7 @@
           const connReachableIds = connReachables.map((c) => c.id);
 
           if (connReachableIds.includes(currentDestination.id)) {
-            const fee = parseFloat(
-              queryTollMatrix(conn.externalConnectedPoint, currentDestination)?.toll_matrix.fee ??
-                '0'
-            );
+            const fee = queryTollMatrix(conn.externalConnectedPoint, currentDestination);
             tollSegments = [
               {
                 entryPoint: { ...conn.externalConnectedPoint },
