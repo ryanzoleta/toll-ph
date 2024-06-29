@@ -222,7 +222,7 @@
         <div class="flex flex-col">
           {#each tollSegments as segment}
             <div class="flex flex-row justify-between">
-              <p>{segment.entryPoint.name} ~ {segment.exitPoint.name}</p>
+              <p>{segment.entryPoint.name} → {segment.exitPoint.name}</p>
               <p>{formatAmountToCurrency(segment.fee)}</p>
             </div>
           {/each}
