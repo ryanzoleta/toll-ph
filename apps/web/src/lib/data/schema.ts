@@ -22,6 +22,7 @@ export const expressway = pgTable('expressway', {
   id: varchar('id', { length: 50 }).primaryKey(),
   name: varchar('name', { length: 500 }),
   tollNetworkId: varchar('toll_network_id', { length: 50 }).references(() => tollNetwork.id),
+  sequence: integer('sequence').default(1),
 });
 
 export const point = pgTable('point', {
@@ -60,6 +61,8 @@ export const connection = pgTable(
 );
 
 export type Expressway = InferSelectModel<typeof expressway>;
-export type Point = InferSelectModel<typeof point> & { tollNetworkId?: string | null };
+export type Point = InferSelectModel<typeof point> & { tollNetworkId?: string | null } & {
+  expresswaySequence?: number | null;
+} & { expresswayId?: string | null };
 export type TollMatrix = InferSelectModel<typeof tollMatrix>;
 export type TollNetwork = InferSelectModel<typeof tollNetwork>;

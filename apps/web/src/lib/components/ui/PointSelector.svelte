@@ -35,7 +35,7 @@
         return (a.sequence ?? 0) - (b.sequence ?? 0);
       })
       .sort((a, b) => {
-        return a.expresswayId?.localeCompare(b.expresswayId ?? '') ?? 0;
+        return (a.expresswaySequence ?? 0) - (b.expresswaySequence ?? 0);
       });
   }
 

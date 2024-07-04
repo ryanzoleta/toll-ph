@@ -9,6 +9,7 @@ export async function load() {
       id: point.id,
       name: point.name,
       expresswayId: point.expresswayId,
+      expresswaySequence: expressway.sequence,
       sequence: point.sequence,
       tollNetworkId: expressway.tollNetworkId,
     })
@@ -24,7 +25,8 @@ export async function load() {
       rfid: tollNetwork.rfid,
     })
     .from(expressway)
-    .innerJoin(tollNetwork, eq(tollNetwork.id, expressway.tollNetworkId));
+    .innerJoin(tollNetwork, eq(tollNetwork.id, expressway.tollNetworkId))
+    .orderBy(expressway.sequence);
 
   const entryPoint = alias(point, 'entry_point');
   const exitPoint = alias(point, 'exit_point');
