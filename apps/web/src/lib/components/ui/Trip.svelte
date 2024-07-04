@@ -14,7 +14,7 @@
 </script>
 
 <div
-  class="flex flex-col gap-5 rounded-lg bg-slate-900 p-5 transition-opacity duration-100 hover:opacity-70"
+  class="flex flex-col gap-5 rounded-lg bg-slate-100 p-5 transition-opacity duration-100 hover:opacity-70 dark:bg-slate-900"
   role="button"
   tabindex="0"
   on:keydown={(e) => {
