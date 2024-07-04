@@ -1,5 +1,6 @@
 <script lang="ts">
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
+  import Trip from '$lib/components/ui/Trip.svelte';
   import { formatAmountToCurrency } from '$lib/utils.js';
   import Button from '$lib/components/ui/button/button.svelte';
   import { Sun, Moon } from 'lucide-svelte';
@@ -43,6 +44,10 @@
         tollSegments,
       },
     ];
+  }
+
+  function deleteTrip(trip: TripResult) {
+    savedTrips = savedTrips.filter((t) => t !== trip);
   }
 
   function queryTollMatrix(origin: Point, destination: Point) {
@@ -295,38 +300,20 @@
 
   {#if savedTrips.length > 0}
     <div class="flex flex-col gap-5">
+      <div class="w-full border-b border-b-slate-200 dark:border-b-slate-800" />
       <h3 class="text-center text-sm text-slate-700">saved trips</h3>
 
       <div class="flex flex-col gap-5">
         {#each savedTrips as trip}
-          <div
-            class="flex flex-row items-center justify-between gap-10 rounded-lg bg-slate-900 p-5">
-            <div class="flex flex-1 flex-row items-center justify-between gap-2">
-              <div class="flex flex-1 flex-col items-center">
-                <p class="text-slate-400 dark:text-slate-600">
-                  {trip.tollSegments[0].entryPoint.expresswayId}
-                </p>
-                <p class="text-center font-bold">{trip.tollSegments[0].entryPoint.name}</p>
-              </div>
-
-              <p class="flex-1 text-center text-slate-400 dark:text-slate-600">→</p>
-
-              <div class="flex flex-1 flex-col items-center">
-                <p class="text-slate-400 dark:text-slate-600">
-                  {trip.tollSegments[trip.tollSegments.length - 1].exitPoint.expresswayId}
-                </p>
-                <p class="text-center font-bold">
-                  {trip.tollSegments[trip.tollSegments.length - 1].exitPoint.name}
-                </p>
-              </div>
-            </div>
-
-            <p class="text-2xl font-bold">{formatAmountToCurrency(trip.totalFee)}</p>
-          </div>
+          <Trip
+            {trip}
+            on:delete={() => {
+              deleteTrip(trip);
+            }} />
         {/each}
       </div>
 
-      <p class="text-center text-sm text-slate-700">
+      <p class="mb-5 text-center text-sm text-slate-700">
         total amount: {formatAmountToCurrency(
           savedTrips.reduce((acc, val) => acc + val.totalFee, 0)
         )}
