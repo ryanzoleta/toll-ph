@@ -94,12 +94,22 @@
   }
 
   function getReachables(pointId: number) {
-    return [
+    const returnValue = [
       ...data.tollMatrix.filter((tm) => tm.entry_point.id === pointId).map((tm) => tm.exit_point),
       ...data.tollMatrix
         .filter((tm) => tm.exit_point.id === pointId && tm.toll_matrix.reversible)
         .map((tm) => tm.entry_point),
     ];
+
+    // this is crazy, but this is needed to allow southbound connections to NAIAX (e.g., Skyway Buendia to NAIAX)
+    if (pointId === 1) {
+      const point1 = data.points.find((p) => p.id === 1);
+      if (point1) {
+        returnValue.push(point1);
+      }
+    }
+
+    return returnValue;
   }
 
   function getExternalConnections(reachablePointIds: number[]) {
@@ -225,7 +235,11 @@
         <div class="flex flex-col">
           {#each tollSegments as segment}
             <div class="flex flex-row justify-between">
-              <p>{segment.entryPoint.name} → {segment.exitPoint.name}</p>
+              {#if segment.entryPoint.id === segment.exitPoint.id}
+                <p>{segment.entryPoint.name}</p>
+              {:else}
+                <p>{segment.entryPoint.name} → {segment.exitPoint.name}</p>
+              {/if}
               <p>{formatAmountToCurrency(segment.fee)}</p>
             </div>
           {/each}
