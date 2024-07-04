@@ -5,6 +5,8 @@
   import { Sun, Moon } from 'lucide-svelte';
   import { toggleMode } from 'mode-watcher';
   import type { Point } from '$lib/data/schema.js';
+  import type { TollSegment, TripResult } from '$lib/types.js';
+  import { onMount } from 'svelte';
 
   export let data;
 
@@ -15,13 +17,33 @@
   let pointOriginInput = '';
   let pointDestinationInput = '';
 
-  type TollSegment = {
-    entryPoint: Point;
-    exitPoint: Point;
-    fee: number;
-  };
-
   let tollSegments: TollSegment[] = [];
+
+  let savedTrips = [] as TripResult[];
+  let localStorageLoaded = false;
+
+  onMount(() => {
+    savedTrips = JSON.parse(localStorage.getItem('savedTrips') ?? '[]');
+    localStorageLoaded = true;
+  });
+
+  $: {
+    if (localStorageLoaded) {
+      localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+    }
+  }
+
+  function saveResult() {
+    if (tollFee === 0) return;
+
+    savedTrips = [
+      ...savedTrips,
+      {
+        totalFee: tollFee,
+        tollSegments,
+      },
+    ];
+  }
 
   function queryTollMatrix(origin: Point, destination: Point) {
     let matrix = data.tollMatrix.find(
@@ -243,7 +265,7 @@
 
           <Button
             class="bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
-            >Save</Button>
+            on:click={saveResult}>Save</Button>
         </div>
 
         <div class="flex flex-col">
@@ -268,6 +290,47 @@
           {/each}
         </div>
       </div>
+    </div>
+  {/if}
+
+  {#if savedTrips.length > 0}
+    <div class="flex flex-col gap-5">
+      <h3 class="text-center text-sm text-slate-700">saved trips</h3>
+
+      <div class="flex flex-col gap-5">
+        {#each savedTrips as trip}
+          <div
+            class="flex flex-row items-center justify-between gap-10 rounded-lg bg-slate-900 p-5">
+            <div class="flex flex-1 flex-row items-center justify-between gap-2">
+              <div class="flex flex-1 flex-col items-center">
+                <p class="text-slate-400 dark:text-slate-600">
+                  {trip.tollSegments[0].entryPoint.expresswayId}
+                </p>
+                <p class="text-center font-bold">{trip.tollSegments[0].entryPoint.name}</p>
+              </div>
+
+              <p class="flex-1 text-center text-slate-400 dark:text-slate-600">→</p>
+
+              <div class="flex flex-1 flex-col items-center">
+                <p class="text-slate-400 dark:text-slate-600">
+                  {trip.tollSegments[trip.tollSegments.length - 1].exitPoint.expresswayId}
+                </p>
+                <p class="text-center font-bold">
+                  {trip.tollSegments[trip.tollSegments.length - 1].exitPoint.name}
+                </p>
+              </div>
+            </div>
+
+            <p class="text-2xl font-bold">{formatAmountToCurrency(trip.totalFee)}</p>
+          </div>
+        {/each}
+      </div>
+
+      <p class="text-center text-sm text-slate-700">
+        total amount: {formatAmountToCurrency(
+          savedTrips.reduce((acc, val) => acc + val.totalFee, 0)
+        )}
+      </p>
     </div>
   {/if}
 </div>
