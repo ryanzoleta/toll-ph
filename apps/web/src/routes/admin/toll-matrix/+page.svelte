@@ -63,10 +63,10 @@
             <Table.Row>
               <Table.Cell>{p.name}</Table.Cell>
               {#each getUniqueEntryPoints(tollNetwork.id) as p2}
-                <Table.Cell
-                  >{data.tollMatrix.find((m) => {
-                    return m.entryPoint.id === p2.id && m.exitPoint.id === p.id;
-                  })?.toll_matrix.fee ?? ''}</Table.Cell>
+                {@const m = data.tollMatrix.find((m) => {
+                  return m.entryPoint.id === p2.id && m.exitPoint.id === p.id;
+                })?.toll_matrix}
+                <Table.Cell>{m?.fee ?? ''}{m?.fee ? (m?.reversible ? '' : '*') : ''}</Table.Cell>
               {/each}
             </Table.Row>
           {/each}
