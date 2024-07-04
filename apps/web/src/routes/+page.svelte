@@ -42,6 +42,9 @@
   function calculate() {
     if (!pointOrigin || !pointDestination) return;
 
+    tollSegments = [];
+    tollFee = 0;
+
     if (pointOrigin.tollNetworkId === pointDestination.tollNetworkId) {
       tollFee = queryTollMatrix(pointOrigin, pointDestination);
     } else {
