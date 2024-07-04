@@ -21,7 +21,10 @@
   let inputElement: HTMLElement;
 
   function matches(query: string, point: Point) {
-    return point.name?.toLowerCase().startsWith(query.toLowerCase());
+    return (
+      point.name?.toLowerCase().startsWith(query.toLowerCase()) ||
+      point.expresswayId?.toLowerCase().startsWith(query.toLowerCase())
+    );
   }
 
   $: {
