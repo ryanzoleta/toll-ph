@@ -231,13 +231,19 @@
     <div class="flex flex-col gap-5">
       <div
         class="flex flex-col gap-2 rounded-lg bg-slate-200 p-5 dark:bg-slate-800 dark:text-slate-200">
-        <div class="flex flex-col">
-          <h2 class="text-gray-500">Total Toll Fees</h2>
-          <div class="flex flex-col gap-5">
-            <p class="text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-200">
-              {formatAmountToCurrency(tollFee)}
-            </p>
+        <div class="flex flex-row justify-between">
+          <div class="flex flex-col">
+            <h2 class="text-gray-500">Total Toll Fees</h2>
+            <div class="flex flex-col gap-5">
+              <p class="text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-200">
+                {formatAmountToCurrency(tollFee)}
+              </p>
+            </div>
           </div>
+
+          <Button
+            class="bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
+            >Save</Button>
         </div>
 
         <div class="flex flex-col">
@@ -247,7 +253,7 @@
                 {segment.entryPoint.expresswayId}
               </p>
               {#if segment.entryPoint.id === segment.exitPoint.id}
-                <p class="flex-1">{segment.entryPoint.name}</p>
+                <p class="flex-1 text-center">{segment.entryPoint.name}</p>
               {:else}
                 <div class="flex flex-row gap-2">
                   <p class="">{segment.entryPoint.name}</p>
