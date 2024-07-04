@@ -228,13 +228,13 @@
   </div>
 
   {#if tollFee > 0}
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-5">
       <div
-        class="flex flex-col gap-2 rounded-lg bg-gray-200 p-5 dark:bg-gray-800 dark:text-gray-200">
+        class="flex flex-col gap-2 rounded-lg bg-slate-200 p-5 dark:bg-slate-800 dark:text-slate-200">
         <div class="flex flex-col">
           <h2 class="text-gray-500">Total Toll Fees</h2>
           <div class="flex flex-col gap-5">
-            <p class="text-5xl font-extrabold tracking-tight text-gray-900 dark:text-gray-200">
+            <p class="text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-200">
               {formatAmountToCurrency(tollFee)}
             </p>
           </div>
@@ -243,17 +243,21 @@
         <div class="flex flex-col">
           {#each tollSegments as segment}
             <div class="flex flex-row justify-between">
-              <p class="flex-1 text-slate-700">{segment.entryPoint.expresswayId}</p>
+              <p class="flex-1 text-slate-400 dark:text-slate-600">
+                {segment.entryPoint.expresswayId}
+              </p>
               {#if segment.entryPoint.id === segment.exitPoint.id}
                 <p class="flex-1">{segment.entryPoint.name}</p>
               {:else}
                 <div class="flex flex-row gap-2">
                   <p class="">{segment.entryPoint.name}</p>
-                  <p class="text-slate-600">→</p>
+                  <p class="text-slate-400 dark:text-slate-600">→</p>
                   <p class="">{segment.exitPoint.name}</p>
                 </div>
               {/if}
-              <p class="flex-1 text-right text-slate-500">{formatAmountToCurrency(segment.fee)}</p>
+              <p class="flex-1 text-right text-slate-400 dark:text-slate-600">
+                {formatAmountToCurrency(segment.fee)}
+              </p>
             </div>
           {/each}
         </div>
