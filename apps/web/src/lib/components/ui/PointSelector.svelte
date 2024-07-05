@@ -20,11 +20,15 @@
 
   let inputElement: HTMLElement;
 
+  function escapeRegExp(str: string) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
   function matches(query: string, point: Point) {
-    return (
-      point.name?.toLowerCase().startsWith(query.toLowerCase()) ||
-      point.expresswayId?.toLowerCase().startsWith(query.toLowerCase())
-    );
+    const escapedQuery = escapeRegExp(query);
+    const pattern = new RegExp(escapedQuery, 'i');
+
+    return pattern.test(point.name ?? '') || pattern.test(point.expresswayId ?? '');
   }
 
   $: {
