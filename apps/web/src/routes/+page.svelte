@@ -44,6 +44,7 @@
       {
         totalFee: tollFee,
         tollSegments,
+        vehicleClass: vehicleClass.value,
       },
     ];
   }
@@ -216,8 +217,6 @@
     { value: 2, label: 'Class 2' },
     { value: 3, label: 'Class 3' },
   ];
-
-  $: console.log(vehicleClass.value);
 </script>
 
 <div class="mx-5 flex flex-col gap-10 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
