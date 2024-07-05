@@ -9,6 +9,7 @@
   import type { TollSegment, TripResult } from '$lib/types.js';
   import { onMount } from 'svelte';
   import * as Tooltip from '$lib/components/ui/tooltip';
+  import * as Select from '$lib/components/ui/select';
 
   export let data;
 
@@ -204,6 +205,15 @@
       if (!acc.find((p) => p.id === val.id)) acc.push(val);
       return acc;
     }, [] as Point[]);
+
+  let vehicleClass = { value: 1, label: 'Class 1' };
+  let vehicleClassList = [
+    { value: 1, label: 'Class 1' },
+    { value: 2, label: 'Class 2' },
+    { value: 3, label: 'Class 3' },
+  ];
+
+  $: console.log(vehicleClass.value);
 </script>
 
 <div class="mx-5 flex flex-col gap-10 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
@@ -220,6 +230,37 @@
   </div>
 
   <div class="flex flex-col gap-5">
+    <div class="flex flex-col gap-2">
+      <h3 class="font-bold text-slate-700 dark:text-slate-300">Vehicle Class</h3>
+      <Select.Root bind:selected={vehicleClass} items={vehicleClassList}>
+        <Select.Trigger>
+          <Select.Value placeholder="Vehicle Class" asChild let:label>
+            {#if label}
+              <div class="flex flex-row items-center gap-2">
+                {label.substring(0, 8)}
+              </div>
+            {:else}
+              <p>Vehicle Class</p>
+            {/if}
+          </Select.Value>
+        </Select.Trigger>
+        <Select.Content>
+          <Select.Item value="1" class="flex flex-col items-start">
+            <p class="font-bold">Class 1</p>
+            <p class="text-slate-500">Car, Jeepney, Van, Pick-Up, Motorcycle (400c and up)</p>
+          </Select.Item>
+          <Select.Item value="2" class="flex flex-col items-start">
+            <p class="font-bold">Class 2</p>
+            <p class="text-slate-500">Bus, Truck</p>
+          </Select.Item>
+          <Select.Item value="3" class="flex flex-col items-start">
+            <p class="font-bold">Class 3</p>
+            <p class="text-slate-500">Large Truck, Large Truck with Trailer</p>
+          </Select.Item>
+        </Select.Content>
+      </Select.Root>
+    </div>
+
     <div class="flex flex-col gap-2">
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Origin</h3>
       <PointSelector
