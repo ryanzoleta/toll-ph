@@ -273,12 +273,14 @@
             on:click={saveResult}>Save</Button>
         </div>
 
-        <div class="flex flex-col">
+        <div class="flex flex-col gap-2">
           {#each tollSegments as segment}
             <div class="flex flex-row justify-between">
-              <p class="flex-1 text-slate-400 dark:text-slate-600">
-                {segment.entryPoint.expresswayId}
-              </p>
+              <div class="flex flex-1 flex-row gap-1">
+                <p class="flex-1 text-slate-400 dark:text-slate-600">
+                  {segment.entryPoint.expresswayId}
+                </p>
+              </div>
               {#if segment.entryPoint.id === segment.exitPoint.id}
                 <p class="flex-1 text-center">{segment.entryPoint.name}</p>
               {:else}
@@ -288,9 +290,23 @@
                   <p class="">{segment.exitPoint.name}</p>
                 </div>
               {/if}
-              <p class="flex-1 text-right text-slate-400 dark:text-slate-600">
-                {formatAmountToCurrency(segment.fee)}
-              </p>
+
+              <div class="flex flex-1 flex-row gap-2">
+                <p class="flex-1 text-right text-slate-400 dark:text-slate-600">
+                  {formatAmountToCurrency(segment.fee)}
+                </p>
+                {#if segment.entryPoint.rfid === 'AUTOSWEEP'}
+                  <div
+                    class="rounded-lg px-2 py-1 font-mono text-xs dark:bg-green-700 dark:text-green-200">
+                    A
+                  </div>
+                {:else}
+                  <div
+                    class="rounded-lg px-2 py-1 font-mono text-xs dark:bg-blue-900 dark:text-blue-400">
+                    E
+                  </div>
+                {/if}
+              </div>
             </div>
           {/each}
         </div>

@@ -12,9 +12,11 @@ export async function load() {
       expresswaySequence: expressway.sequence,
       sequence: point.sequence,
       tollNetworkId: expressway.tollNetworkId,
+      rfid: tollNetwork.rfid,
     })
     .from(point)
     .innerJoin(expressway, eq(point.expresswayId, expressway.id))
+    .innerJoin(tollNetwork, eq(expressway.tollNetworkId, tollNetwork.id))
     .orderBy(point.expresswayId, point.sequence);
 
   const expressways = await db
@@ -39,6 +41,7 @@ export async function load() {
 
   const connectingPoint = alias(point, 'connecting_point');
   const connectingExpressway = alias(expressway, 'connecting_expressway');
+  const connectingTollNetwork = alias(tollNetwork, 'connecting_toll_network');
 
   const connections = await db
     .select({
@@ -49,6 +52,7 @@ export async function load() {
         expresswayId: point.expresswayId,
         sequence: point.sequence,
         tollNetworkId: expressway.tollNetworkId,
+        rfid: tollNetwork.rfid,
       },
       connecting_point: {
         id: connectingPoint.id,
@@ -56,13 +60,19 @@ export async function load() {
         expresswayId: connectingPoint.expresswayId,
         sequence: connectingPoint.sequence,
         tollNetworkId: connectingExpressway.tollNetworkId,
+        rfid: connectingTollNetwork.rfid,
       },
     })
     .from(connection)
     .innerJoin(point, eq(connection.pointId, point.id))
     .innerJoin(expressway, eq(point.expresswayId, expressway.id))
+    .innerJoin(tollNetwork, eq(expressway.tollNetworkId, tollNetwork.id))
     .innerJoin(connectingPoint, eq(connection.connectingPointId, connectingPoint.id))
-    .innerJoin(connectingExpressway, eq(connectingPoint.expresswayId, connectingExpressway.id));
+    .innerJoin(connectingExpressway, eq(connectingPoint.expresswayId, connectingExpressway.id))
+    .innerJoin(
+      connectingTollNetwork,
+      eq(connectingExpressway.tollNetworkId, connectingTollNetwork.id)
+    );
 
   return {
     points: points,

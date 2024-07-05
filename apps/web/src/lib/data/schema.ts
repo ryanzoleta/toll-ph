@@ -61,8 +61,10 @@ export const connection = pgTable(
 );
 
 export type Expressway = InferSelectModel<typeof expressway>;
-export type Point = InferSelectModel<typeof point> & { tollNetworkId?: string | null } & {
+export type Point = InferSelectModel<typeof point> & {
+  tollNetworkId?: string | null;
   expresswaySequence?: number | null;
+  rfid?: 'EASYTRIP' | 'AUTOSWEEP' | null;
 } & { expresswayId?: string | null };
 export type TollMatrix = InferSelectModel<typeof tollMatrix>;
 export type TollNetwork = InferSelectModel<typeof tollNetwork>;
