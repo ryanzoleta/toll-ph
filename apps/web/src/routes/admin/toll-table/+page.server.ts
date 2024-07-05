@@ -43,6 +43,7 @@ export const actions = {
 
     if (entryPointId && exitPointId && fee) {
       await db.insert(tollMatrix).values({
+        vehicleClass: 1,
         entryPointId: parseInt(entryPointId),
         exitPointId: parseInt(exitPointId),
         reversible: reversible === 'on',
