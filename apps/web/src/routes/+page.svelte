@@ -235,13 +235,12 @@
   <div class="flex flex-col gap-5">
     <div class="flex flex-col gap-2">
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Vehicle Class</h3>
+
       <Select.Root bind:selected={vehicleClass} items={vehicleClassList}>
-        <Select.Trigger>
+        <Select.Trigger class="h-fit border-0 bg-slate-200 p-3 text-base dark:bg-slate-800">
           <Select.Value placeholder="Vehicle Class" asChild let:label>
             {#if label}
-              <div class="flex flex-row items-center gap-2">
-                {label.substring(0, 8)}
-              </div>
+              <p class="font-bold">{label.substring(0, 8)}</p>
             {:else}
               <p>Vehicle Class</p>
             {/if}
@@ -296,6 +295,7 @@
         pointDestinationInput = '';
         tollFee = 0;
         tollSegments = [];
+        vehicleClass = { value: 1, label: 'Class 1' };
       }}>Clear</button>
   </div>
 
