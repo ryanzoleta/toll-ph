@@ -68,7 +68,7 @@
             </div>
           {/if}
 
-          <div class="flex flex-1 flex-row gap-2">
+          <div class="flex flex-1 flex-row items-center gap-2">
             <p class="flex-1 text-right text-slate-400 dark:text-slate-600">
               {formatAmountToCurrency(segment.fee)}
             </p>

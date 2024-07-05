@@ -8,6 +8,7 @@
   import type { Point } from '$lib/data/schema.js';
   import type { TollSegment, TripResult } from '$lib/types.js';
   import { onMount } from 'svelte';
+  import * as Tooltip from '$lib/components/ui/tooltip';
 
   export let data;
 
@@ -256,7 +257,7 @@
 
   {#if tollFee > 0}
     <div
-      class="flex flex-col gap-5 rounded-lg bg-slate-200 p-5 dark:bg-slate-800 dark:text-slate-200">
+      class="flex flex-col gap-5 rounded-lg bg-slate-100 p-5 dark:bg-slate-900 dark:text-slate-200">
       <div class="flex flex-row justify-between">
         <div class="flex flex-col">
           <h2 class="text-gray-500">Total Toll Fees</h2>
@@ -276,7 +277,7 @@
         {#each tollSegments as segment}
           <div class="flex flex-row justify-between">
             <div class="flex flex-1 flex-row gap-1">
-              <p class="flex-1 text-slate-400 dark:text-slate-600">
+              <p class="flex-1 text-slate-500 dark:text-slate-500">
                 {segment.entryPoint.expresswayId}
               </p>
             </div>
@@ -285,26 +286,38 @@
             {:else}
               <div class="flex flex-row gap-2">
                 <p class="">{segment.entryPoint.name}</p>
-                <p class="text-slate-400 dark:text-slate-600">→</p>
+                <p class="text-slate-500 dark:text-slate-500">→</p>
                 <p class="">{segment.exitPoint.name}</p>
               </div>
             {/if}
 
             <div class="flex flex-1 flex-row gap-2">
-              <p class="flex-1 text-right text-slate-400 dark:text-slate-600">
+              <p class="flex-1 text-right text-slate-500 dark:text-slate-500">
                 {formatAmountToCurrency(segment.fee)}
               </p>
-              {#if segment.entryPoint.rfid === 'AUTOSWEEP'}
-                <div
-                  class="rounded-lg px-2 py-1 font-mono text-xs dark:bg-green-700 dark:text-green-200">
-                  A
-                </div>
-              {:else}
-                <div
-                  class="rounded-lg px-2 py-1 font-mono text-xs dark:bg-blue-900 dark:text-blue-400">
-                  E
-                </div>
-              {/if}
+
+              <Tooltip.Root openDelay={200}>
+                <Tooltip.Trigger>
+                  {#if segment.entryPoint.rfid === 'AUTOSWEEP'}
+                    <div
+                      class="rounded-lg bg-green-300 px-2 py-1 font-mono text-xs text-green-700 dark:bg-green-700 dark:text-green-200">
+                      A
+                    </div>
+                  {:else}
+                    <div
+                      class="rounded-lg bg-blue-300 px-2 py-1 font-mono text-xs text-blue-700 dark:bg-blue-900 dark:text-blue-400">
+                      E
+                    </div>
+                  {/if}
+                </Tooltip.Trigger>
+                <Tooltip.Content>
+                  {#if segment.entryPoint.rfid === 'AUTOSWEEP'}
+                    <p>AutoSweep RFID</p>
+                  {:else}
+                    <p>EasyTrip RFID</p>
+                  {/if}
+                </Tooltip.Content>
+              </Tooltip.Root>
             </div>
           </div>
         {/each}
