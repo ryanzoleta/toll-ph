@@ -16,7 +16,6 @@ export async function load() {
     .innerJoin(exitPoint, eq(tollMatrix.exitPointId, exitPoint.id))
     .innerJoin(entryExpressway, eq(entryPoint.expresswayId, entryExpressway.id))
     .innerJoin(exitExpressway, eq(exitPoint.expresswayId, exitExpressway.id));
-  console.log(tollMatrixResults);
 
   const points = await db
     .select()
