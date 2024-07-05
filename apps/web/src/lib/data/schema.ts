@@ -43,18 +43,22 @@ export const tollMatrix = pgTable(
       .notNull(),
     fee: decimal('fee', { precision: 10, scale: 2 }),
     reversible: boolean('reversible').notNull(),
-    class: integer('class').notNull(),
+    vehicleClass: integer('vehicle_class').notNull(),
   },
   (t) => ({
-    compoundKey: primaryKey({ columns: [t.entryPointId, t.exitPointId] }),
+    compoundKey: primaryKey({ columns: [t.entryPointId, t.exitPointId, t.vehicleClass] }),
   })
 );
 
 export const connection = pgTable(
   'connection',
   {
-    pointId: integer('point_id').references(() => point.id),
-    connectingPointId: integer('connecting_point_id').references(() => point.id),
+    pointId: integer('point_id')
+      .references(() => point.id)
+      .notNull(),
+    connectingPointId: integer('connecting_point_id')
+      .references(() => point.id)
+      .notNull(),
   },
   (t) => ({
     compoundKey: primaryKey({ columns: [t.pointId, t.connectingPointId] }),

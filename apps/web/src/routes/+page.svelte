@@ -58,7 +58,7 @@
       (tm) =>
         tm.entry_point.id === origin.id &&
         tm.exit_point.id === destination.id &&
-        tm.toll_matrix.class === vehicleClass.value
+        tm.toll_matrix.vehicleClass === vehicleClass.value
     );
 
     if (matrix !== null && matrix !== undefined) return parseFloat(matrix?.toll_matrix.fee ?? '0');
@@ -68,7 +68,7 @@
         tm.entry_point.id === destination.id &&
         tm.exit_point.id === origin.id &&
         tm.toll_matrix.reversible &&
-        tm.toll_matrix.class === vehicleClass.value
+        tm.toll_matrix.vehicleClass === vehicleClass.value
     );
     return parseFloat(matrix?.toll_matrix.fee ?? '0');
   }
