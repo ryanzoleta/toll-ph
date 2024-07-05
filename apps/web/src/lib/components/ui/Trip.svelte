@@ -82,8 +82,12 @@
       {/each}
     </div>
 
-    <button
-      class="w-full text-right text-sm text-slate-400 hover:underline dark:text-slate-600"
-      on:click={dispatchDelete}>Delete</button>
+    <div class="flex flex-row justify-between">
+      <p class="text-left text-sm">Class {trip.vehicleClass}</p>
+
+      <button
+        class="text-right text-sm text-slate-400 hover:underline dark:text-slate-600"
+        on:click={dispatchDelete}>Delete</button>
+    </div>
   {/if}
 </div>
