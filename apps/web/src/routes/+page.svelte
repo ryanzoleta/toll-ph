@@ -54,7 +54,10 @@
 
   function queryTollMatrix(origin: Point, destination: Point) {
     let matrix = data.tollMatrix.find(
-      (tm) => tm.entry_point.id === origin.id && tm.exit_point.id === destination.id
+      (tm) =>
+        tm.entry_point.id === origin.id &&
+        tm.exit_point.id === destination.id &&
+        tm.toll_matrix.class === vehicleClass.value
     );
 
     if (matrix !== null && matrix !== undefined) return parseFloat(matrix?.toll_matrix.fee ?? '0');
@@ -63,7 +66,8 @@
       (tm) =>
         tm.entry_point.id === destination.id &&
         tm.exit_point.id === origin.id &&
-        tm.toll_matrix.reversible
+        tm.toll_matrix.reversible &&
+        tm.toll_matrix.class === vehicleClass.value
     );
     return parseFloat(matrix?.toll_matrix.fee ?? '0');
   }
@@ -245,15 +249,15 @@
           </Select.Value>
         </Select.Trigger>
         <Select.Content>
-          <Select.Item value="1" class="flex flex-col items-start">
+          <Select.Item value={1} class="flex flex-col items-start">
             <p class="font-bold">Class 1</p>
             <p class="text-slate-500">Car, Jeepney, Van, Pick-Up, Motorcycle (400c and up)</p>
           </Select.Item>
-          <Select.Item value="2" class="flex flex-col items-start">
+          <Select.Item value={2} class="flex flex-col items-start">
             <p class="font-bold">Class 2</p>
             <p class="text-slate-500">Bus, Truck</p>
           </Select.Item>
-          <Select.Item value="3" class="flex flex-col items-start">
+          <Select.Item value={3} class="flex flex-col items-start">
             <p class="font-bold">Class 3</p>
             <p class="text-slate-500">Large Truck, Large Truck with Trailer</p>
           </Select.Item>
