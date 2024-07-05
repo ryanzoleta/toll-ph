@@ -67,9 +67,17 @@
               <p class="">{segment.exitPoint.name}</p>
             </div>
           {/if}
-          <p class="flex-1 text-right text-slate-400 dark:text-slate-600">
-            {formatAmountToCurrency(segment.fee)}
-          </p>
+
+          <div class="flex flex-1 flex-row gap-2">
+            <p class="flex-1 text-right text-slate-400 dark:text-slate-600">
+              {formatAmountToCurrency(segment.fee)}
+            </p>
+            {#if segment.entryPoint.rfid === 'AUTOSWEEP'}
+              <div class="font-mono text-xs text-green-600 dark:text-green-500">A</div>
+            {:else}
+              <div class="font-mono text-xs text-blue-600 dark:text-blue-500">E</div>
+            {/if}
+          </div>
         </div>
       {/each}
     </div>
