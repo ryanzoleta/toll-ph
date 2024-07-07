@@ -2,6 +2,8 @@
   import type { TripResult } from '$lib/types';
   import { formatAmountToCurrency } from '$lib/utils';
   import { createEventDispatcher } from 'svelte';
+  import Button from './button/button.svelte';
+  import { GripVertical } from 'lucide-svelte';
 
   const dispatch = createEventDispatcher();
 
@@ -14,9 +16,17 @@
 </script>
 
 <div
-  class="flex flex-col gap-5 rounded-lg bg-slate-100 p-5 transition-all duration-100 dark:bg-slate-900">
-  <div class="flex w-full flex-row items-center justify-between gap-10">
-    <div class="flex flex-1 flex-row items-center justify-between gap-2">
+  class="tripContainer flex flex-col gap-5 rounded-lg bg-slate-100 p-5 duration-100 dark:bg-slate-900">
+  <div class="flex w-full flex-row items-center justify-between">
+    <Button
+      variant="ghost"
+      size="icon"
+      class="dragger cursor-move rounded-full text-stone-400"
+      title="Drag to sort">
+      <GripVertical size={18} />
+    </Button>
+
+    <div class="mr-5 flex flex-1 flex-row items-center justify-between gap-2">
       <div class="flex flex-1 flex-col items-center">
         <p class="text-slate-400 dark:text-slate-600">
           {trip.tollSegments[0].entryPoint.expresswayId}

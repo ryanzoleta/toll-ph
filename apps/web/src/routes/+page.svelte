@@ -10,6 +10,7 @@
   import { onMount } from 'svelte';
   import * as Tooltip from '$lib/components/ui/tooltip';
   import * as Select from '$lib/components/ui/select';
+  import Sortable from 'sortablejs';
 
   export let data;
 
@@ -24,6 +25,7 @@
 
   let savedTrips = [] as TripResult[];
   let localStorageLoaded = false;
+  let savedResult = false;
 
   onMount(() => {
     savedTrips = JSON.parse(localStorage.getItem('savedTrips') ?? '[]');
@@ -47,6 +49,8 @@
         vehicleClass: vehicleClass.value,
       },
     ];
+
+    savedResult = true;
   }
 
   function deleteTrip(trip: TripResult) {
@@ -78,6 +82,7 @@
 
     tollSegments = [];
     tollFee = 0;
+    savedResult = false;
 
     if (pointOrigin.tollNetworkId === pointDestination.tollNetworkId) {
       tollSegments = [
@@ -90,9 +95,6 @@
 
       tollFee = queryTollMatrix(pointOrigin, pointDestination);
     } else {
-      console.log('externalConnections', externalConnections);
-      console.log('externalReachables', externalReachables);
-
       let currentDestination = pointDestination;
 
       for (let i = 0; i < externalConnections.length; i++) {
@@ -217,6 +219,44 @@
     { value: 2, label: 'Class 2' },
     { value: 3, label: 'Class 3' },
   ];
+
+  let container: HTMLDivElement;
+
+  $: if (container) {
+    new Sortable(container, {
+      animation: 150,
+      delay: 0,
+      handle: '.dragger',
+      draggable: '.tripContainer',
+      onEnd: (evt) => {
+        if (
+          evt.oldDraggableIndex !== undefined &&
+          evt.newDraggableIndex !== undefined &&
+          evt.oldDraggableIndex !== evt.newDraggableIndex
+        ) {
+          const savedTripsCopy = [...savedTrips];
+          const newSavedTrips = [];
+          for (let i = 0; i < savedTripsCopy.length; i++) {
+            if (i === evt.newDraggableIndex) {
+              if (evt.newDraggableIndex < evt.oldDraggableIndex) {
+                newSavedTrips.push(savedTripsCopy[evt.oldDraggableIndex]);
+                newSavedTrips.push(savedTripsCopy[i]);
+              } else {
+                newSavedTrips.push(savedTripsCopy[i]);
+                newSavedTrips.push(savedTripsCopy[evt.oldDraggableIndex]);
+              }
+            } else if (i === evt.oldDraggableIndex) {
+              // do nothing
+            } else {
+              newSavedTrips.push(savedTripsCopy[i]);
+            }
+          }
+
+          savedTrips = [...newSavedTrips];
+        }
+      },
+    });
+  }
 </script>
 
 <div class="mx-5 flex flex-col gap-10 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
@@ -302,7 +342,7 @@
   {#if tollFee > 0}
     <div
       class="flex flex-col gap-5 rounded-lg bg-slate-100 p-5 dark:bg-slate-900 dark:text-slate-200">
-      <div class="flex flex-row justify-between">
+      <div class="flex flex-row items-center justify-between">
         <div class="flex flex-col">
           <h2 class="text-gray-500">Total Toll Fees</h2>
           <div class="flex flex-col gap-5">
@@ -312,9 +352,13 @@
           </div>
         </div>
 
-        <Button
-          class="bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
-          on:click={saveResult}>Save</Button>
+        {#if savedResult}
+          <p class="text-center text-sm text-slate-500">Saved!</p>
+        {:else}
+          <Button
+            class="bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
+            on:click={saveResult}>Save</Button>
+        {/if}
       </div>
 
       <div class="flex flex-col gap-1">
@@ -374,14 +418,16 @@
       <div class="w-full border-b border-b-slate-200 dark:border-b-slate-800" />
       <h3 class="text-center text-sm text-slate-700">saved trips</h3>
 
-      <div class="flex flex-col gap-5">
-        {#each savedTrips as trip}
-          <Trip
-            {trip}
-            on:delete={() => {
-              deleteTrip(trip);
-            }} />
-        {/each}
+      <div class="flex flex-col gap-5" bind:this={container}>
+        {#key savedTrips}
+          {#each savedTrips as trip}
+            <Trip
+              {trip}
+              on:delete={() => {
+                deleteTrip(trip);
+              }} />
+          {/each}
+        {/key}
       </div>
 
       <p class="mb-5 text-center text-sm text-slate-700">
