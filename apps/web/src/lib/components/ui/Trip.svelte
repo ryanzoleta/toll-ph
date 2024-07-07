@@ -14,17 +14,7 @@
 </script>
 
 <div
-  class="flex flex-col gap-5 rounded-lg bg-slate-100 p-5 transition-all duration-100 hover:opacity-70 dark:bg-slate-900"
-  role="button"
-  tabindex="0"
-  on:keydown={(e) => {
-    if (e.key === 'Enter') {
-      expanded = !expanded;
-    }
-  }}
-  on:click={() => {
-    expanded = !expanded;
-  }}>
+  class="flex flex-col gap-5 rounded-lg bg-slate-100 p-5 transition-all duration-100 dark:bg-slate-900">
   <div class="flex w-full flex-row items-center justify-between gap-10">
     <div class="flex flex-1 flex-row items-center justify-between gap-2">
       <div class="flex flex-1 flex-col items-center">
@@ -46,7 +36,20 @@
       </div>
     </div>
 
-    <p class="text-right text-2xl font-bold">{formatAmountToCurrency(trip.totalFee)}</p>
+    <div class="flex flex-col items-center">
+      <p class="text-right text-2xl font-bold">{formatAmountToCurrency(trip.totalFee)}</p>
+      <button
+        class="text-center text-xs text-slate-400 hover:underline dark:text-slate-600"
+        on:click={() => {
+          expanded = !expanded;
+        }}>
+        {#if expanded}
+          hide details
+        {:else}
+          see details
+        {/if}
+      </button>
+    </div>
   </div>
 
   {#if expanded}
