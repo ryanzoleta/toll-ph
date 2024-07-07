@@ -30,6 +30,8 @@ export const point = pgTable('point', {
   name: varchar('name', { length: 500 }),
   expresswayId: varchar('expresway_id', { length: 50 }).references(() => expressway.id),
   sequence: integer('sequence'),
+  entryable: boolean('entryable').default(true),
+  exitable: boolean('exitable').default(true),
 });
 
 export const tollMatrix = pgTable(
