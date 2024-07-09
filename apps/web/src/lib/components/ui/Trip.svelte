@@ -15,8 +15,7 @@
   }
 </script>
 
-<div
-  class="tripContainer flex flex-col gap-5 rounded-lg bg-slate-100 p-3 duration-100 dark:bg-slate-900 md:p-5">
+<div class="tripContainer flex flex-col gap-5 rounded-lg bg-slate-100 p-3 dark:bg-slate-900 md:p-5">
   <div class="flex w-full flex-row items-center justify-between">
     <Button
       variant="ghost"
