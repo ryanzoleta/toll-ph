@@ -71,7 +71,7 @@
     <div class="flex w-full flex-col text-sm">
       {#each trip.tollSegments as segment}
         <div class="flex flex-row justify-between">
-          <p class="flex-1 text-left text-slate-400 dark:text-slate-600">
+          <p class="hidden flex-1 text-left text-slate-400 dark:text-slate-600 md:block">
             {segment.entryPoint.expresswayId}
           </p>
           {#if segment.entryPoint.id === segment.exitPoint.id}
@@ -81,6 +81,7 @@
               <p class="">{segment.entryPoint.name}</p>
               <p class="text-slate-400 dark:text-slate-600">→</p>
               <p class="">{segment.exitPoint.name}</p>
+              <p class="block text-slate-500 md:hidden">({segment.entryPoint.expresswayId})</p>
             </div>
           {/if}
 
