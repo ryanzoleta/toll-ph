@@ -16,6 +16,7 @@ export const tollNetwork = pgTable('toll_network', {
   id: varchar('id', { length: 50 }).primaryKey(),
   name: varchar('name', { length: 500 }),
   rfid: rfidEnum('rfid'),
+  sequence: integer('sequence').default(1),
 });
 
 export const expressway = pgTable('expressway', {
