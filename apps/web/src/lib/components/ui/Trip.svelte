@@ -16,14 +16,15 @@
 </script>
 
 <div
-  class="tripContainer flex flex-col gap-5 rounded-lg bg-slate-100 p-2 duration-100 dark:bg-slate-900 md:p-5">
+  class="tripContainer flex flex-col gap-5 rounded-lg bg-slate-100 p-3 duration-100 dark:bg-slate-900 md:p-5">
   <div class="flex w-full flex-row items-center justify-between">
     <Button
       variant="ghost"
       size="icon"
-      class="dragger cursor-move rounded-full text-stone-400"
+      class="dragger h-5 w-5 cursor-move rounded-full text-stone-400 md:h-10 md:w-10"
       title="Drag to sort">
-      <GripVertical size={18} />
+      <GripVertical size={18} class="hidden md:block" />
+      <GripVertical size={14} class="block md:hidden" />
     </Button>
 
     <div class="mr-5 flex flex-1 flex-row items-center justify-between gap-2 text-sm md:text-base">
