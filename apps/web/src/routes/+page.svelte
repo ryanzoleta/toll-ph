@@ -364,18 +364,18 @@
         </div>
 
         {#if savedResult}
-          <p class="text-center text-sm text-slate-500">Saved!</p>
+          <p class="hidden text-center text-sm text-slate-500 md:block">Saved!</p>
         {:else}
           <Button
-            class="bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
+            class="hidden bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 md:block"
             on:click={saveResult}>Save</Button>
         {/if}
       </div>
 
-      <div class="flex flex-col gap-1">
+      <div class="flex flex-col gap-1 text-sm md:text-base">
         {#each tollSegments as segment}
           <div class="flex flex-row justify-between">
-            <div class="flex flex-1 flex-row gap-1">
+            <div class="hidden flex-1 flex-row gap-1 md:flex">
               <p class="flex-1 text-slate-500 dark:text-slate-500">
                 {segment.entryPoint.expresswayId}
               </p>
@@ -387,6 +387,7 @@
                 <p class="">{segment.entryPoint.name}</p>
                 <p class="text-slate-500 dark:text-slate-500">→</p>
                 <p class="">{segment.exitPoint.name}</p>
+                <p class="block text-slate-500 md:hidden">({segment.entryPoint.expresswayId})</p>
               </div>
             {/if}
 
@@ -421,6 +422,14 @@
           </div>
         {/each}
       </div>
+
+      {#if savedResult}
+        <p class="block text-center text-sm text-slate-500 md:hidden">Saved!</p>
+      {:else}
+        <Button
+          class="block bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 md:hidden"
+          on:click={saveResult}>Save</Button>
+      {/if}
     </div>
   {/if}
 
