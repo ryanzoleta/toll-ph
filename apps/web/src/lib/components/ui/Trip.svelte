@@ -16,7 +16,7 @@
 </script>
 
 <div
-  class="tripContainer flex flex-col gap-5 rounded-lg bg-slate-100 p-5 duration-100 dark:bg-slate-900">
+  class="tripContainer flex flex-col gap-5 rounded-lg bg-slate-100 p-2 duration-100 dark:bg-slate-900 md:p-5">
   <div class="flex w-full flex-row items-center justify-between">
     <Button
       variant="ghost"
@@ -26,7 +26,7 @@
       <GripVertical size={18} />
     </Button>
 
-    <div class="mr-5 flex flex-1 flex-row items-center justify-between gap-2">
+    <div class="mr-5 flex flex-1 flex-row items-center justify-between gap-2 text-sm md:text-base">
       <div class="flex flex-1 flex-col items-center">
         <p class="text-slate-400 dark:text-slate-600">
           {trip.tollSegments[0].entryPoint.expresswayId}
@@ -47,7 +47,9 @@
     </div>
 
     <div class="flex flex-col items-center">
-      <p class="text-right text-2xl font-bold">{formatAmountToCurrency(trip.totalFee)}</p>
+      <p class="text-right text-sm font-bold md:text-2xl">
+        {formatAmountToCurrency(trip.totalFee)}
+      </p>
       <button
         class="text-center text-xs text-slate-400 hover:underline dark:text-slate-600"
         on:click={() => {
