@@ -225,9 +225,10 @@
   $: if (container) {
     new Sortable(container, {
       animation: 150,
-      delay: 0,
+      delay: 200,
       handle: '.dragger',
       draggable: '.tripContainer',
+      delayOnTouchOnly: true,
       onEnd: (evt) => {
         if (
           evt.oldDraggableIndex !== undefined &&
