@@ -135,7 +135,7 @@
         </button>
       {/each}
     </div>
-  {:else if displaySearchResults && searchResults.length === 0}
+  {:else if displaySearchResults && searchResults.length === 0 && input !== ''}
     <div
       class="absolute top-full z-10 mt-1 flex max-h-[500px] w-full flex-col overflow-scroll rounded-md border border-gray-300 bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
       transition:fade={{ duration: 50 }}>
@@ -143,7 +143,7 @@
         class="flex place-content-between place-items-center bg-gray-200 px-2
           py-2 dark:bg-gray-900">
         <div class="flex place-items-center gap-2">
-          <p class="italic">Pick a point of origin</p>
+          <p class="italic">Point not found</p>
         </div>
       </button>
     </div>
