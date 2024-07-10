@@ -20,10 +20,9 @@
     <Button
       variant="ghost"
       size="icon"
-      class="dragger h-5 w-5 cursor-move rounded-full text-stone-400 md:h-10 md:w-10"
+      class="dragger hidden h-5 w-5 cursor-move rounded-full text-stone-400 md:flex  md:h-10 md:w-10"
       title="Drag to sort">
       <GripVertical size={18} class="hidden md:block" />
-      <GripVertical size={14} class="block md:hidden" />
     </Button>
 
     <div class="mr-5 flex flex-1 flex-row items-center justify-between gap-2 text-sm md:text-base">
