@@ -3,8 +3,7 @@
   import Trip from '$lib/components/ui/Trip.svelte';
   import { formatAmountToCurrency } from '$lib/utils.js';
   import Button from '$lib/components/ui/button/button.svelte';
-  import { Sun, Moon } from 'lucide-svelte';
-  import { toggleMode } from 'mode-watcher';
+  import Header from '$lib/components/ui/Header.svelte';
   import type { Point } from '$lib/data/schema.js';
   import type { TollSegment, TripResult } from '$lib/types.js';
   import { onMount } from 'svelte';
@@ -259,28 +258,7 @@
 </script>
 
 <div class="mx-5 flex flex-col gap-10 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
-  <div class="flex place-content-between place-items-center">
-    <a href="/" class="text-3xl font-bold text-slate-950 dark:text-slate-300">toll.ph</a>
-
-    <div class="flex flex-row items-center gap-5">
-      <a
-        href="/matrix"
-        class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
-        >Matrix</a>
-      <a
-        href="/matrix"
-        class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
-        >Apps</a>
-
-      <Button on:click={toggleMode} variant="outline" size="icon">
-        <Sun
-          class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-        <Moon
-          class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-        <span class="sr-only">Toggle theme</span>
-      </Button>
-    </div>
-  </div>
+  <Header />
 
   <div class="flex flex-col gap-5">
     <div class="flex flex-col gap-2">

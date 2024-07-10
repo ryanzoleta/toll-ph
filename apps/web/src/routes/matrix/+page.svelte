@@ -1,10 +1,8 @@
 <script lang="ts">
-  import { toggleMode } from 'mode-watcher';
-  import Button from '$lib/components/ui/button/button.svelte';
-  import { Sun, Moon, ArrowLeft } from 'lucide-svelte';
   import * as Select from '$lib/components/ui/select';
   import * as Table from '$lib/components/ui/table';
   import type { Point } from '$lib/data/schema.js';
+  import Header from '$lib/components/ui/Header.svelte';
 
   export let data;
 
@@ -48,20 +46,7 @@
 
 <div class="flex flex-col items-center">
   <div class="mx-5 flex w-11/12 flex-col gap-10 pt-5">
-    <div class="flex place-content-between place-items-center">
-      <div class="flex flex-row items-center gap-2">
-        <Button href="/" size="icon" variant="ghost" class="rounded-full"><ArrowLeft /></Button>
-        <a href="/" class="text-3xl font-bold text-slate-950 dark:text-slate-300">toll.ph</a>
-      </div>
-
-      <Button on:click={toggleMode} variant="outline" size="icon">
-        <Sun
-          class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-        <Moon
-          class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-        <span class="sr-only">Toggle theme</span>
-      </Button>
-    </div>
+    <Header />
 
     <div class="flex flex-col gap-2 sm:w-1/3">
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Vehicle Class</h3>
