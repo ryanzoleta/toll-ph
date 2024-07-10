@@ -260,7 +260,7 @@
 
 <div class="mx-5 flex flex-col gap-10 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
   <div class="flex place-content-between place-items-center">
-    <h1 class="text-3xl font-bold text-slate-950 dark:text-slate-300">toll.ph</h1>
+    <a href="/" class="text-3xl font-bold text-slate-950 dark:text-slate-300">toll.ph</a>
 
     <div class="flex flex-row items-center gap-5">
       <a
