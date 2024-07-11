@@ -48,6 +48,10 @@
   <div class="mx-5 flex w-11/12 flex-col gap-10 pt-5">
     <Header />
 
+    <div>
+      <h2 class="text-2xl font-bold tracking-tight">Toll Matrix/Table</h2>
+    </div>
+
     <div class="flex flex-col gap-2 sm:w-1/3">
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Vehicle Class</h3>
 
@@ -78,10 +82,18 @@
       </Select.Root>
     </div>
 
+    <div class="flex flex-row gap-5">
+      <p>Jump to:</p>
+
+      {#each data.tollNetworks as tollNetwork}
+        <a href="#{tollNetwork.id}" class="text-slate-500 hover:underline">{tollNetwork.name}</a>
+      {/each}
+    </div>
+
     <div class="flex flex-col gap-10">
       {#each data.tollNetworks as tollNetwork}
         <div class="flex flex-col gap-2">
-          <h3 class="font-bold">{tollNetwork.name}</h3>
+          <h3 class="text-xl font-bold" id={tollNetwork.id}>{tollNetwork.name}</h3>
 
           <Table.Root>
             <Table.Header>
