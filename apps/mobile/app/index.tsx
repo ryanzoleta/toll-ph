@@ -1,13 +1,27 @@
 import { Link } from 'expo-router';
-import { SafeAreaView, Text } from 'react-native';
+import { Moon, Sun } from 'lucide-react-native';
+import { Pressable, SafeAreaView, Text, View } from 'react-native';
+import { useColorScheme } from 'nativewind';
 
 function index() {
+  const { colorScheme, toggleColorScheme } = useColorScheme();
+
   return (
-    <SafeAreaView>
-      <Text className="text-2xl font-bold text-white underline">index</Text>
-      <Link href="/matrix" style={{ color: 'white', fontSize: 50 }}>
-        matrix page
-      </Link>
+    <SafeAreaView className="bg-background min-h-screen">
+      <View className="px-5 py-2">
+        <View className="flex flex-row justify-between">
+          <Text className="text-foreground text-4xl font-extrabold tracking-tight underline">
+            toll.ph
+          </Text>
+
+          <Pressable onPress={toggleColorScheme}>
+            {colorScheme === 'dark' ? <Sun /> : <Moon />}
+          </Pressable>
+        </View>
+        <Link href="/matrix" className="text-foreground">
+          matrix page
+        </Link>
+      </View>
     </SafeAreaView>
   );
 }
