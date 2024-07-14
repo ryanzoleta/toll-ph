@@ -16,7 +16,7 @@
 
 <svelte:head>
   <title>Toll.ph - Philippine Expressway Toll Fee Calculator</title>
-  <meta name=" robots" content=" index, follow" />
+  <meta name="robots" content="index, follow" />
   <meta name="application-name" content="Toll.ph" />
   <meta name="description" content="Philippine Expressways Toll Fee Calculator" />
   <meta
