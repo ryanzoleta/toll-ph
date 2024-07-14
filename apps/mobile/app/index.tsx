@@ -13,20 +13,26 @@ function index() {
         <View className="flex flex-row items-center justify-between">
           <Text className="text-foreground text-4xl font-extrabold tracking-tight">toll.ph</Text>
 
-          <Pressable
-            onPressIn={toggleColorScheme}
-            className="transition-opacity duration-100 active:opacity-50"
-          >
-            {colorScheme === 'dark' ? (
-              <Sun color={colors.slate[500]} />
-            ) : (
-              <Moon color={colors.slate[500]} />
-            )}
-          </Pressable>
+          <View className="flex flex-row items-center gap-10">
+            <Link
+              href="/matrix"
+              className="text-foreground text-lg transition-opacity duration-100 active:opacity-70"
+            >
+              Matrix
+            </Link>
+
+            <Pressable
+              onPressIn={toggleColorScheme}
+              className="transition-opacity duration-100 active:opacity-50"
+            >
+              {colorScheme === 'dark' ? (
+                <Sun color={colors.slate[500]} />
+              ) : (
+                <Moon color={colors.slate[500]} />
+              )}
+            </Pressable>
+          </View>
         </View>
-        <Link href="/matrix" className="text-foreground">
-          matrix page
-        </Link>
       </View>
     </SafeAreaView>
   );
