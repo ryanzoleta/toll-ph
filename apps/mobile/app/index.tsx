@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { ChevronDown, Moon, Sun } from 'lucide-react-native';
 import { Pressable, SafeAreaView, Text, View } from 'react-native';
 import { useColorScheme } from 'nativewind';
@@ -103,7 +103,7 @@ function PointSelector({ points }) {
         'relative flex flex-row items-center justify-between rounded-md p-3 ',
         point ? 'bg-slate-700' : 'bg-slate-800'
       )}
-      onPress={() => setSetselecting(!setselecting)}
+      onPress={() => router.push('/origin')}
     >
       {point ? (
         <Text className="text-foreground text-lg font-bold">{point}</Text>
@@ -111,14 +111,13 @@ function PointSelector({ points }) {
         <Text className="text-muted text-lg">Select a point</Text>
       )}
 
-      {setselecting && (
+      {/* {setselecting && (
         <View className="absolute left-0 top-full z-10 mt-1 w-full rounded-md bg-slate-800">
           {points.map((point) => (
             <Pressable
               key={point.id}
               onPress={() => {
-                setPoint(point.name);
-                setSetselecting(false);
+                router.push('/origin');
               }}
               className="rounded-md p-2"
             >
@@ -126,7 +125,7 @@ function PointSelector({ points }) {
             </Pressable>
           ))}
         </View>
-      )}
+      )} */}
     </Pressable>
   );
 }

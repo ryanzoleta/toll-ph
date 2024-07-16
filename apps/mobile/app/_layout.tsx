@@ -48,7 +48,9 @@ export default function RootLayout() {
 function RootLayoutNav() {
   return (
     // <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-    <Stack screenOptions={{ headerShown: false }}></Stack>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="origin" options={{ presentation: 'modal' }}></Stack.Screen>
+    </Stack>
     // </ThemeProvider>
   );
 }
