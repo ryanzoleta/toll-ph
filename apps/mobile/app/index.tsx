@@ -3,30 +3,10 @@ import { ChevronDown, Moon, Sun } from 'lucide-react-native';
 import { Pressable, SafeAreaView, Text, View } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import colors from 'tailwindcss/colors';
+import allPoints from '../data/points.json';
 
 function index() {
   const { colorScheme, toggleColorScheme } = useColorScheme();
-
-  const points = [
-    {
-      id: 1,
-      name: 'Magallanes',
-      expresswayId: 'SLEX',
-      sequence: 1,
-    },
-    {
-      id: 2,
-      name: 'Merville',
-      expresswayId: 'SLEX',
-      sequence: 2,
-    },
-    {
-      id: 3,
-      name: 'Bicutan',
-      expresswayId: 'SLEX',
-      sequence: 3,
-    },
-  ];
 
   return (
     <SafeAreaView className="bg-background min-h-screen">
@@ -78,7 +58,7 @@ function index() {
           <View className="flex flex-col gap-1">
             <FormLabel>Origin</FormLabel>
 
-            <PointSelector points={points} />
+            <PointSelector points={allPoints} />
           </View>
         </View>
       </View>
@@ -93,7 +73,7 @@ function FormLabel({ children }: { children: ReactNode }) {
   return <Text className="text-foreground text-lg font-bold">{children}</Text>;
 }
 
-function PointSelector({ points }) {
+function PointSelector({ points }: { points: typeof allPoints }) {
   const [point, setPoint] = useState<string | null>(null);
   const [setselecting, setSetselecting] = useState(false);
 
@@ -103,29 +83,13 @@ function PointSelector({ points }) {
         'relative flex flex-row items-center justify-between rounded-md p-3 ',
         point ? 'bg-slate-700' : 'bg-slate-800'
       )}
-      onPress={() => router.push('/origin')}
+      onPress={() => router.push({ pathname: '/selector', params: { origin: 12 } })}
     >
       {point ? (
         <Text className="text-foreground text-lg font-bold">{point}</Text>
       ) : (
         <Text className="text-muted text-lg">Select a point</Text>
       )}
-
-      {/* {setselecting && (
-        <View className="absolute left-0 top-full z-10 mt-1 w-full rounded-md bg-slate-800">
-          {points.map((point) => (
-            <Pressable
-              key={point.id}
-              onPress={() => {
-                router.push('/origin');
-              }}
-              className="rounded-md p-2"
-            >
-              <Text className="text-foreground text-lg font-bold">{point.name}</Text>
-            </Pressable>
-          ))}
-        </View>
-      )} */}
     </Pressable>
   );
 }
