@@ -1,6 +1,6 @@
 import { SafeAreaView, View, Text, TextInput, ScrollView } from 'react-native';
 import allPoints from '../../data/points.json';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 
 export default function Selector() {
   const params = useLocalSearchParams();

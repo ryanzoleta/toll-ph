@@ -8,6 +8,8 @@ import allPoints from '../data/points.json';
 function index() {
   const { colorScheme, toggleColorScheme } = useColorScheme();
 
+  const [origin, setOrigin] = useState<(typeof allPoints)[number] | null>(null);
+
   return (
     <SafeAreaView className="bg-background min-h-screen">
       <View className="flex flex-col gap-3 px-5 py-2">
@@ -58,7 +60,19 @@ function index() {
           <View className="flex flex-col gap-1">
             <FormLabel>Origin</FormLabel>
 
-            <PointSelector points={allPoints} />
+            <Pressable
+              className={twMerge(
+                'relative flex flex-row items-center justify-between rounded-md p-3 ',
+                origin ? 'bg-slate-700' : 'bg-slate-800'
+              )}
+              onPress={() => router.push({ pathname: '/selector', params: { origin: 12 } })}
+            >
+              {origin ? (
+                <Text className="text-foreground text-lg font-bold">{origin.name}</Text>
+              ) : (
+                <Text className="text-muted text-lg">Select a point</Text>
+              )}
+            </Pressable>
           </View>
         </View>
       </View>
@@ -71,27 +85,6 @@ import { twMerge } from 'tailwind-merge';
 
 function FormLabel({ children }: { children: ReactNode }) {
   return <Text className="text-foreground text-lg font-bold">{children}</Text>;
-}
-
-function PointSelector({ points }: { points: typeof allPoints }) {
-  const [point, setPoint] = useState<string | null>(null);
-  const [setselecting, setSetselecting] = useState(false);
-
-  return (
-    <Pressable
-      className={twMerge(
-        'relative flex flex-row items-center justify-between rounded-md p-3 ',
-        point ? 'bg-slate-700' : 'bg-slate-800'
-      )}
-      onPress={() => router.push({ pathname: '/selector', params: { origin: 12 } })}
-    >
-      {point ? (
-        <Text className="text-foreground text-lg font-bold">{point}</Text>
-      ) : (
-        <Text className="text-muted text-lg">Select a point</Text>
-      )}
-    </Pressable>
-  );
 }
 
 export default index;
