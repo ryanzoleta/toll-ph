@@ -49,6 +49,7 @@ function RootLayoutNav() {
   return (
     // <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
     <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index"></Stack.Screen>
       <Stack.Screen name="selector/index" options={{ presentation: 'modal' }}></Stack.Screen>
     </Stack>
     // </ThemeProvider>

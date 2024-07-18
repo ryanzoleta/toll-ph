@@ -117,6 +117,10 @@ function index() {
             </Pressable>
           </View>
         </View>
+
+        <Pressable className=''>
+          <Text>Calculate</Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
