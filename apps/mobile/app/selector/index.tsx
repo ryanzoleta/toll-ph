@@ -1,26 +1,38 @@
 import { SafeAreaView, View, Text, TextInput, ScrollView, Pressable } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useAllPointsStore, useOriginStore } from '@/lib/stores';
+import { useAllPointsStore, useSelectedPoints } from '@/lib/stores';
 import { useEffect, useState } from 'react';
 
 export default function Selector() {
   const params = useLocalSearchParams();
   const { allPoints } = useAllPointsStore();
-  const { setOrigin } = useOriginStore();
+  const { setOrigin, setDestination } = useSelectedPoints();
 
   const [input, setInput] = useState('');
   const [filteredPoints, setFilteredPoints] = useState(allPoints);
 
+  const isOrigin = params.isOrigin === '1';
+
   useEffect(() => {
     setFilteredPoints(
-      allPoints.filter((point) => point.name.toLowerCase().includes(input.toLowerCase()))
+      allPoints.filter(
+        (point) =>
+          point.name.toLowerCase().includes(input.toLowerCase()) ||
+          point.expresway_id.toLowerCase().includes(input.toLowerCase())
+      )
     );
   }, [input]);
 
   return (
     <SafeAreaView className="bg-background min-h-screen">
       <View className="flex flex-col">
-        <Text className="text-foreground px-5 pt-5 text-3xl font-bold">Pick Point of Origin</Text>
+        {isOrigin ? (
+          <Text className="text-foreground px-5 pt-5 text-3xl font-bold">Pick Point of Origin</Text>
+        ) : (
+          <Text className="text-foreground px-5 pt-5 text-3xl font-bold">
+            Pick Destination Point
+          </Text>
+        )}
 
         <TextInput
           className="bg-secondary text-secondary-foreground m-3 rounded-lg p-3 align-top"
@@ -38,7 +50,8 @@ export default function Selector() {
               className="border-t-secondary flex flex-row items-center justify-between border-t p-5"
               key={point.id}
               onPress={() => {
-                setOrigin(point);
+                if (isOrigin) setOrigin(point);
+                else setDestination(point);
                 router.back();
               }}
             >

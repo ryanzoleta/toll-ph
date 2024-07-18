@@ -5,12 +5,12 @@ import { useColorScheme } from 'nativewind';
 import colors from 'tailwindcss/colors';
 import { ReactNode } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { useOriginStore } from '@/lib/stores';
+import { useSelectedPoints } from '@/lib/stores';
 
 function index() {
   const { colorScheme, toggleColorScheme } = useColorScheme();
 
-  const { origin } = useOriginStore();
+  const { origin, destination } = useSelectedPoints();
 
   return (
     <SafeAreaView className="bg-background min-h-screen">
@@ -67,12 +67,32 @@ function index() {
                 'relative flex flex-row items-center justify-between rounded-md p-3 ',
                 origin ? 'bg-slate-700' : 'bg-slate-800'
               )}
-              onPress={() => router.push({ pathname: '/selector', params: { origin: 12 } })}
+              onPress={() => router.push({ pathname: '/selector', params: { isOrigin: 1 } })}
             >
               {origin ? (
                 <Text className="text-foreground text-lg font-bold">{origin.name}</Text>
               ) : (
-                <Text className="text-muted text-lg">Select a point</Text>
+                <Text className="text-muted text-lg">Select entry point</Text>
+              )}
+            </Pressable>
+          </View>
+        </View>
+
+        <View>
+          <View className="flex flex-col gap-1">
+            <FormLabel>Destination</FormLabel>
+
+            <Pressable
+              className={twMerge(
+                'relative flex flex-row items-center justify-between rounded-md p-3 ',
+                destination ? 'bg-slate-700' : 'bg-slate-800'
+              )}
+              onPress={() => router.push({ pathname: '/selector', params: { isOrigin: 0 } })}
+            >
+              {destination ? (
+                <Text className="text-foreground text-lg font-bold">{destination.name}</Text>
+              ) : (
+                <Text className="text-muted text-lg">Select exit point</Text>
               )}
             </Pressable>
           </View>
