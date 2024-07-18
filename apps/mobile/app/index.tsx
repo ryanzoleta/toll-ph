@@ -1,5 +1,5 @@
 import { Link, router } from 'expo-router';
-import { ChevronDown, Moon, Sun } from 'lucide-react-native';
+import { ChevronDown, Moon, Sun, X } from 'lucide-react-native';
 import { Pressable, SafeAreaView, Text, View } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import colors from 'tailwindcss/colors';
@@ -10,7 +10,7 @@ import { useSelectedPoints } from '@/lib/stores';
 function index() {
   const { colorScheme, toggleColorScheme } = useColorScheme();
 
-  const { origin, destination } = useSelectedPoints();
+  const { origin, destination, setDestination, setOrigin } = useSelectedPoints();
 
   return (
     <SafeAreaView className="bg-background min-h-screen">
@@ -67,10 +67,20 @@ function index() {
                 'relative flex flex-row items-center justify-between rounded-md p-3 ',
                 origin ? 'bg-slate-700' : 'bg-slate-800'
               )}
-              onPress={() => router.push({ pathname: '/selector', params: { isOrigin: 1 } })}
+              onPressIn={() => router.push({ pathname: '/selector', params: { isOrigin: 1 } })}
             >
               {origin ? (
-                <Text className="text-foreground text-lg font-bold">{origin.name}</Text>
+                <>
+                  <Text className="text-foreground text-lg font-bold">{origin.name}</Text>
+                  <Pressable
+                    onPress={() => {
+                      setOrigin(null);
+                    }}
+                    className="active:bg-secondary rounded-full p-1"
+                  >
+                    <X color={colors.slate[500]} size={15} />
+                  </Pressable>
+                </>
               ) : (
                 <Text className="text-muted text-lg">Select entry point</Text>
               )}
@@ -87,10 +97,20 @@ function index() {
                 'relative flex flex-row items-center justify-between rounded-md p-3 ',
                 destination ? 'bg-slate-700' : 'bg-slate-800'
               )}
-              onPress={() => router.push({ pathname: '/selector', params: { isOrigin: 0 } })}
+              onPressIn={() => router.push({ pathname: '/selector', params: { isOrigin: 0 } })}
             >
               {destination ? (
-                <Text className="text-foreground text-lg font-bold">{destination.name}</Text>
+                <>
+                  <Text className="text-foreground text-lg font-bold">{destination.name}</Text>
+                  <Pressable
+                    onPress={() => {
+                      setDestination(null);
+                    }}
+                    className="active:bg-secondary rounded-full p-1"
+                  >
+                    <X color={colors.slate[500]} size={15} />
+                  </Pressable>
+                </>
               ) : (
                 <Text className="text-muted text-lg">Select exit point</Text>
               )}
