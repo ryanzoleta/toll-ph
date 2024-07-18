@@ -3,12 +3,14 @@ import { ChevronDown, Moon, Sun } from 'lucide-react-native';
 import { Pressable, SafeAreaView, Text, View } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import colors from 'tailwindcss/colors';
-import allPoints from '../data/points.json';
+import { ReactNode } from 'react';
+import { twMerge } from 'tailwind-merge';
+import { useOriginStore } from '@/lib/stores';
 
 function index() {
   const { colorScheme, toggleColorScheme } = useColorScheme();
 
-  const [origin, setOrigin] = useState<(typeof allPoints)[number] | null>(null);
+  const { origin } = useOriginStore();
 
   return (
     <SafeAreaView className="bg-background min-h-screen">
@@ -79,9 +81,6 @@ function index() {
     </SafeAreaView>
   );
 }
-
-import { ReactNode, useState } from 'react';
-import { twMerge } from 'tailwind-merge';
 
 function FormLabel({ children }: { children: ReactNode }) {
   return <Text className="text-foreground text-lg font-bold">{children}</Text>;

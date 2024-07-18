@@ -1,10 +1,11 @@
-import { SafeAreaView, View, Text, TextInput, ScrollView } from 'react-native';
-import allPoints from '../../data/points.json';
-import { useLocalSearchParams } from 'expo-router';
+import { SafeAreaView, View, Text, TextInput, ScrollView, Pressable } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useAllPointsStore, useOriginStore } from '@/lib/stores';
 
 export default function Selector() {
   const params = useLocalSearchParams();
-  console.log(params);
+  const { allPoints } = useAllPointsStore();
+  const { setOrigin } = useOriginStore();
 
   return (
     <SafeAreaView className="bg-background min-h-screen">
@@ -21,13 +22,17 @@ export default function Selector() {
       <View className="flex flex-1 flex-col pb-16 pt-5">
         <ScrollView>
           {allPoints.map((point) => (
-            <View
+            <Pressable
               className="border-t-secondary flex flex-row items-center justify-between border-t p-5"
               key={point.id}
+              onPress={() => {
+                setOrigin(point);
+                router.back();
+              }}
             >
               <Text className="text-foreground text-2xl font-bold">{point.name}</Text>
               <Text className="text-1xl font-bold text-slate-500">{point.expresway_id}</Text>
-            </View>
+            </Pressable>
           ))}
         </ScrollView>
       </View>
