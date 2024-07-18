@@ -14,7 +14,7 @@ function index() {
 
   return (
     <SafeAreaView className="bg-background min-h-screen">
-      <View className="flex flex-col gap-3 px-5 py-2">
+      <View className="flex flex-col gap-7 px-5 py-2">
         <View className="flex flex-row items-center justify-between">
           <Text className="text-foreground text-4xl font-extrabold tracking-tight">toll.ph</Text>
 
@@ -64,10 +64,10 @@ function index() {
 
             <Pressable
               className={twMerge(
-                'relative flex flex-row items-center justify-between rounded-md p-3 ',
+                'relative flex flex-row items-center justify-between rounded-md p-3 transition-opacity duration-100 active:opacity-80',
                 origin ? 'bg-slate-700' : 'bg-slate-800'
               )}
-              onPressIn={() => router.push({ pathname: '/selector', params: { isOrigin: 1 } })}
+              onPress={() => router.push({ pathname: '/selector', params: { isOrigin: 1 } })}
             >
               {origin ? (
                 <>
@@ -94,10 +94,10 @@ function index() {
 
             <Pressable
               className={twMerge(
-                'relative flex flex-row items-center justify-between rounded-md p-3 ',
+                'relative flex flex-row items-center justify-between rounded-md p-3 transition-opacity duration-100 active:opacity-80',
                 destination ? 'bg-slate-700' : 'bg-slate-800'
               )}
-              onPressIn={() => router.push({ pathname: '/selector', params: { isOrigin: 0 } })}
+              onPress={() => router.push({ pathname: '/selector', params: { isOrigin: 0 } })}
             >
               {destination ? (
                 <>
@@ -118,9 +118,21 @@ function index() {
           </View>
         </View>
 
-        <Pressable className=''>
-          <Text>Calculate</Text>
-        </Pressable>
+        <View className="flex flex-col gap-3">
+          <Pressable className="rounded-lg bg-green-800 p-3 transition-all duration-100 active:opacity-90">
+            <Text className="text-center text-xl font-bold text-green-300">Calculate</Text>
+          </Pressable>
+
+          <Pressable
+            className="bg-secondary  rounded-lg p-3 transition-all duration-100 active:opacity-90"
+            onPress={() => {
+              setDestination(null);
+              setOrigin(null);
+            }}
+          >
+            <Text className="text-center text-xl font-bold text-slate-500">Clear</Text>
+          </Pressable>
+        </View>
       </View>
     </SafeAreaView>
   );
