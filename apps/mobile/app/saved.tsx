@@ -49,7 +49,7 @@ function Trip({ trip }: TripProps) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <View className="tripContainer flex flex-col gap-5 rounded-lg bg-slate-100  p-5  dark:bg-slate-900">
+    <View className="tripContainer bg-card flex flex-col gap-5 rounded-lg  p-5 ">
       <View className="flex w-full flex-row items-center justify-between">
         <View className="mr-5 flex flex-1 flex-row items-center justify-between gap-2 text-sm ">
           <View className="flex flex-1 flex-col items-center">
@@ -106,7 +106,7 @@ function Trip({ trip }: TripProps) {
                 )}
 
                 <View className="flex flex-1 flex-row items-center gap-2">
-                  <Text className="flex-1 text-right font-mono text-sm text-slate-400">
+                  <Text className="text-muted flex-1 text-right text-sm">
                     {formatAmountToCurrency(segment.fee)}
                   </Text>
 

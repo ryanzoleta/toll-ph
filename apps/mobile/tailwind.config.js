@@ -44,6 +44,10 @@ module.exports = {
           DEFAULT: 'hsl(var(--success) / <alpha-value>)',
           foreground: 'hsl(var(--success-foreground) / <alpha-value>)',
         },
+        easytrip: {
+          DEFAULT: 'hsl(var(--easytrip) / <alpha-value>)',
+          foreground: 'hsl(var(--easytrip-foreground) / <alpha-value>)',
+        },
       },
     },
   },

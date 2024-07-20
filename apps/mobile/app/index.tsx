@@ -364,21 +364,21 @@ function index() {
 
                         {ts.entryPoint.rfid === 'AUTOSWEEP' ? (
                           <Pressable
-                            className="rounded-lg bg-green-300 px-2 py-1 dark:bg-green-700"
+                            className="bg-success rounded-lg px-2 py-1"
                             onPressIn={() => {
                               Toast.show('AutoSweep RFID');
                             }}
                           >
-                            <Text className=" text-xs text-green-700 dark:text-green-200">A</Text>
+                            <Text className=" text-success-foreground text-xs">A</Text>
                           </Pressable>
                         ) : (
                           <Pressable
-                            className="rounded-lg bg-blue-300 px-2 py-1 dark:bg-blue-700"
+                            className="bg-easytrip rounded-lg px-2 py-1 "
                             onPressIn={() => {
                               Toast.show('EasyTrip RFID');
                             }}
                           >
-                            <Text className=" text-xs text-blue-700 dark:text-blue-200">E</Text>
+                            <Text className=" text-easytrip-foreground text-xs ">E</Text>
                           </Pressable>
                         )}
                       </View>
