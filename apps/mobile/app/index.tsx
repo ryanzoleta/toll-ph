@@ -1,6 +1,6 @@
 import { Link, router } from 'expo-router';
 import { ChevronDown, Moon, Sun, X } from 'lucide-react-native';
-import { Pressable, SafeAreaView, Text, View } from 'react-native';
+import { Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import colors from 'tailwindcss/colors';
 import { ReactNode, useEffect, useState } from 'react';
@@ -206,182 +206,180 @@ function index() {
 
     setExternalConnections(_externalConnections);
     console.log(_externalConnections);
-
-    // externalReachables = externalConnections
-    //   .map((c) => getReachables(c.externalConnectedPoint.id))
-    //   .reduce((acc, val) => acc.concat(val), []);
   }, [origin, destination]);
 
   return (
-    <SafeAreaView className="bg-background min-h-screen">
-      <View className="flex flex-col gap-7 px-5 py-2">
-        <View className="flex flex-row items-center justify-between">
-          <Text className="text-foreground text-4xl font-extrabold tracking-tight">toll.ph</Text>
+    <SafeAreaView className="bg-background flex min-h-screen flex-col gap-3">
+      <View className="flex flex-row items-center justify-between px-5 ">
+        <Text className="text-foreground text-4xl font-extrabold tracking-tight">toll.ph</Text>
 
-          <View className="flex flex-row items-center gap-10">
-            <Link
-              href="/matrix"
-              className="text-foreground text-lg transition-opacity duration-100 active:opacity-70"
-            >
-              Matrix
-            </Link>
-
-            <Pressable
-              onPressIn={toggleColorScheme}
-              className="transition-opacity duration-100 active:opacity-50"
-            >
-              {colorScheme === 'dark' ? (
-                <Sun color={colors.slate[500]} />
-              ) : (
-                <Moon color={colors.slate[500]} />
-              )}
-            </Pressable>
-          </View>
-        </View>
-
-        <View>
-          <Text className="text-muted">
-            Use this to calculate the toll fee for a trip from anywhere in the entire Luzon
-            expressway network, form Baguio, to Manila, to Batangas
-          </Text>
-        </View>
-
-        <View>
-          <View className="flex flex-col gap-1">
-            <FormLabel>Vehicle Class</FormLabel>
-
-            <Pressable className="flex flex-row items-center justify-between rounded-md bg-slate-700 p-3">
-              <Text className="text-foreground text-lg font-bold">Class 1</Text>
-
-              <ChevronDown color={colors.slate[500]} size={20} />
-            </Pressable>
-          </View>
-        </View>
-
-        <View>
-          <View className="flex flex-col gap-1">
-            <FormLabel>Origin</FormLabel>
-
-            <Pressable
-              className={twMerge(
-                'relative flex flex-row items-center justify-between rounded-md p-3 transition-opacity duration-100 active:opacity-80',
-                origin ? 'bg-slate-700' : 'bg-slate-800'
-              )}
-              onPress={() => router.push({ pathname: '/selector', params: { isOrigin: 1 } })}
-            >
-              {origin ? (
-                <>
-                  <Text className="text-foreground text-lg font-bold">{origin.name}</Text>
-                  <Pressable
-                    onPress={() => {
-                      setOrigin(null);
-                    }}
-                    className="active:bg-secondary rounded-full p-1"
-                  >
-                    <X color={colors.slate[500]} size={15} />
-                  </Pressable>
-                </>
-              ) : (
-                <Text className="text-muted text-lg">Select entry point</Text>
-              )}
-            </Pressable>
-          </View>
-        </View>
-
-        <View>
-          <View className="flex flex-col gap-1">
-            <FormLabel>Destination</FormLabel>
-
-            <Pressable
-              className={twMerge(
-                'relative flex flex-row items-center justify-between rounded-md p-3 transition-opacity duration-100 active:opacity-80',
-                destination ? 'bg-slate-700' : 'bg-slate-800'
-              )}
-              onPress={() => router.push({ pathname: '/selector', params: { isOrigin: 0 } })}
-            >
-              {destination ? (
-                <>
-                  <Text className="text-foreground text-lg font-bold">{destination.name}</Text>
-                  <Pressable
-                    onPress={() => {
-                      setDestination(null);
-                    }}
-                    className="active:bg-secondary rounded-full p-1"
-                  >
-                    <X color={colors.slate[500]} size={15} />
-                  </Pressable>
-                </>
-              ) : (
-                <Text className="text-muted text-lg">Select exit point</Text>
-              )}
-            </Pressable>
-          </View>
-        </View>
-
-        <View className="flex flex-col gap-3">
-          <Pressable
-            className="rounded-lg bg-green-800 p-3 transition-all duration-100 active:opacity-90"
-            onPress={calculate}
+        <View className="flex flex-row items-center gap-10">
+          <Link
+            href="/matrix"
+            className="text-foreground text-lg transition-opacity duration-100 active:opacity-70"
           >
-            <Text className="text-center text-xl font-bold text-green-300">Calculate</Text>
-          </Pressable>
+            Matrix
+          </Link>
 
           <Pressable
-            className="bg-secondary  rounded-lg p-3 transition-all duration-100 active:opacity-90"
-            onPress={() => {
-              setTollFee(0);
-              setTollSegments([]);
-              setDestination(null);
-              setOrigin(null);
-            }}
+            onPressIn={toggleColorScheme}
+            className="transition-opacity duration-100 active:opacity-50"
           >
-            <Text className="text-center text-xl font-bold text-slate-500">Clear</Text>
+            {colorScheme === 'dark' ? (
+              <Sun color={colors.slate[500]} />
+            ) : (
+              <Moon color={colors.slate[500]} />
+            )}
           </Pressable>
         </View>
+      </View>
 
-        {tollFee > 0 && (
-          <View className="rounded-lg bg-slate-900 p-3">
-            <View className="flex flex-col gap-3">
-              <Text className="text-xl text-slate-500">Total Toll Fee</Text>
-              <Text className="text-foreground text-5xl font-extrabold tracking-tighter">
-                {formatAmountToCurrency(tollFee)}
-              </Text>
+      <ScrollView>
+        <View className="flex flex-col gap-5 px-5 py-3">
+          <View>
+            <Text className="text-muted">
+              Use this to calculate the toll fee for a trip from anywhere in the entire Luzon
+              expressway network, form Baguio, to Manila, to Batangas
+            </Text>
+          </View>
 
-              <View className="flex flex-col gap-1">
-                {tollSegments.map((ts, i) => (
-                  <View key={i} className="flex flex-row justify-between">
-                    <View className="flex flex-row gap-1">
-                      <Text className="text-foreground">{ts.entryPoint.name}</Text>
-                      <Text className="text-slate-500">→</Text>
-                      <Text className="text-foreground">{ts.exitPoint.name}</Text>
-                    </View>
+          <View>
+            <View className="flex flex-col gap-1">
+              <FormLabel>Vehicle Class</FormLabel>
 
-                    <View className="flex flex-row gap-1">
-                      <Text className="text-foreground">{formatAmountToCurrency(ts.fee)}</Text>
+              <Pressable className="flex flex-row items-center justify-between rounded-md bg-slate-700 p-3">
+                <Text className="text-foreground text-lg font-bold">Class 1</Text>
 
-                      {ts.entryPoint.rfid === 'AUTOSWEEP' ? (
-                        <View className="rounded-lg bg-green-300 px-2 py-1 dark:bg-green-700 ">
-                          <Text className=" text-xs text-green-700 dark:text-green-200">A</Text>
-                        </View>
-                      ) : (
-                        <View className="rounded-lg bg-blue-300 px-2 py-1 dark:bg-blue-700 ">
-                          <Text className=" text-xs text-blue-700 dark:text-blue-200">E</Text>
-                        </View>
-                      )}
-                    </View>
-                  </View>
-                ))}
-              </View>
-
-              <Pressable className="bg-secondary rounded-lg p-2 transition-opacity duration-100 active:opacity-90">
-                <Text className="text-secondary-foreground text-center text-lg font-bold ">
-                  Save
-                </Text>
+                <ChevronDown color={colors.slate[500]} size={20} />
               </Pressable>
             </View>
           </View>
-        )}
-      </View>
+
+          <View>
+            <View className="flex flex-col gap-1">
+              <FormLabel>Origin</FormLabel>
+
+              <Pressable
+                className={twMerge(
+                  'relative flex flex-row items-center justify-between rounded-md p-3 transition-opacity duration-100 active:opacity-80',
+                  origin ? 'bg-slate-700' : 'bg-slate-800'
+                )}
+                onPress={() => router.push({ pathname: '/selector', params: { isOrigin: 1 } })}
+              >
+                {origin ? (
+                  <>
+                    <Text className="text-foreground text-lg font-bold">{origin.name}</Text>
+                    <Pressable
+                      onPress={() => {
+                        setOrigin(null);
+                      }}
+                      className="active:bg-secondary rounded-full p-1"
+                    >
+                      <X color={colors.slate[500]} size={15} />
+                    </Pressable>
+                  </>
+                ) : (
+                  <Text className="text-muted text-lg">Select entry point</Text>
+                )}
+              </Pressable>
+            </View>
+          </View>
+
+          <View>
+            <View className="flex flex-col gap-1">
+              <FormLabel>Destination</FormLabel>
+
+              <Pressable
+                className={twMerge(
+                  'relative flex flex-row items-center justify-between rounded-md p-3 transition-opacity duration-100 active:opacity-80',
+                  destination ? 'bg-slate-700' : 'bg-slate-800'
+                )}
+                onPress={() => router.push({ pathname: '/selector', params: { isOrigin: 0 } })}
+              >
+                {destination ? (
+                  <>
+                    <Text className="text-foreground text-lg font-bold">{destination.name}</Text>
+                    <Pressable
+                      onPress={() => {
+                        setDestination(null);
+                      }}
+                      className="active:bg-secondary rounded-full p-1"
+                    >
+                      <X color={colors.slate[500]} size={15} />
+                    </Pressable>
+                  </>
+                ) : (
+                  <Text className="text-muted text-lg">Select exit point</Text>
+                )}
+              </Pressable>
+            </View>
+          </View>
+
+          <View className="flex flex-col gap-3">
+            <Pressable
+              className="rounded-lg bg-green-800 p-3 transition-all duration-100 active:opacity-90"
+              onPress={calculate}
+            >
+              <Text className="text-center text-xl font-bold text-green-300">Calculate</Text>
+            </Pressable>
+
+            <Pressable
+              className="bg-secondary  rounded-lg p-3 transition-all duration-100 active:opacity-90"
+              onPress={() => {
+                setTollFee(0);
+                setTollSegments([]);
+                setDestination(null);
+                setOrigin(null);
+              }}
+            >
+              <Text className="text-center text-xl font-bold text-slate-500">Clear</Text>
+            </Pressable>
+          </View>
+
+          {tollFee > 0 && (
+            <View className="mb-10 rounded-lg bg-slate-900 p-3">
+              <View className="flex flex-col gap-3">
+                <Text className="text-xl text-slate-500">Total Toll Fee</Text>
+                <Text className="text-foreground text-5xl font-extrabold tracking-tighter">
+                  {formatAmountToCurrency(tollFee)}
+                </Text>
+
+                <View className="flex flex-col gap-1">
+                  {tollSegments.map((ts, i) => (
+                    <View key={i} className="flex flex-row justify-between">
+                      <View className="flex flex-row gap-1">
+                        <Text className="text-foreground">{ts.entryPoint.name}</Text>
+                        <Text className="text-slate-500">→</Text>
+                        <Text className="text-foreground">{ts.exitPoint.name}</Text>
+                      </View>
+
+                      <View className="flex flex-row gap-1">
+                        <Text className="text-foreground">{formatAmountToCurrency(ts.fee)}</Text>
+
+                        {ts.entryPoint.rfid === 'AUTOSWEEP' ? (
+                          <View className="rounded-lg bg-green-300 px-2 py-1 dark:bg-green-700 ">
+                            <Text className=" text-xs text-green-700 dark:text-green-200">A</Text>
+                          </View>
+                        ) : (
+                          <View className="rounded-lg bg-blue-300 px-2 py-1 dark:bg-blue-700 ">
+                            <Text className=" text-xs text-blue-700 dark:text-blue-200">E</Text>
+                          </View>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+                </View>
+
+                <Pressable className="bg-secondary rounded-lg p-2 transition-opacity duration-100 active:opacity-90">
+                  <Text className="text-secondary-foreground text-center text-lg font-bold ">
+                    Save
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          )}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
