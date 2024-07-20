@@ -96,8 +96,6 @@ function index() {
   }
 
   function calculate() {
-    console.log(origin);
-    console.log(destination);
     if (!origin || !destination) return;
 
     let _tollSegments: TollSegment[] = [];
@@ -106,6 +104,7 @@ function index() {
     setSavedResult(false);
 
     if (origin.toll_network_name === destination.toll_network_name) {
+      console.log('same toll network');
       setTollSegments([
         {
           entryPoint: { ...origin },
@@ -116,6 +115,8 @@ function index() {
 
       setTollFee(queryTollMatrix(origin, destination));
     } else {
+      console.log('different network');
+      console.log(externalConnections.length);
       let currentDestination = destination;
       // const externalConnections = getExternalConnections([origin.id]);
 
@@ -165,6 +166,7 @@ function index() {
   useEffect(() => {
     const originReachables = getReachables(origin?.id ?? 0);
     const originReachablesPointIds = originReachables.map((c) => c?.id);
+    console.log(originReachablesPointIds);
 
     let _externalConnections: typeof externalConnections = [];
     _externalConnections = getExternalConnections(originReachablesPointIds as number[]);
@@ -190,11 +192,12 @@ function index() {
     }
 
     setExternalConnections(_externalConnections);
+    console.log(_externalConnections);
 
     // externalReachables = externalConnections
     //   .map((c) => getReachables(c.externalConnectedPoint.id))
     //   .reduce((acc, val) => acc.concat(val), []);
-  }, [origin]);
+  }, [origin, destination]);
 
   return (
     <SafeAreaView className="bg-background min-h-screen">
