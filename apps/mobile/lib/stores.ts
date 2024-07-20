@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import allPoints from '../data/points.json';
 
+export type Point = (typeof allPoints)[number];
+
 export const useAllPointsStore = create(() => ({
   allPoints,
 }));
