@@ -16,9 +16,10 @@ import tollMatrix from '../data/toll_matrix.json';
 import connections from '../data/connections.json';
 import Toast from 'react-native-root-toast';
 import { formatAmountToCurrency } from '@/lib/utils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function index() {
-  const { colorScheme, toggleColorScheme } = useColorScheme();
+  const { colorScheme, setColorScheme } = useColorScheme();
 
   const { origin, destination, setDestination, setOrigin } = useSelectedPoints();
   const { allPoints } = useAllPointsStore();
@@ -31,6 +32,26 @@ function index() {
   >([]);
 
   const { savedTrips, fetchSavedTrips, setSavedTrips } = useSavedTrips();
+
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    async function getStoredTheme() {
+      const theme = await AsyncStorage.getItem('theme');
+      if (theme === 'dark' || theme === 'light') {
+        setColorScheme(theme);
+      }
+    }
+
+    getStoredTheme();
+    setLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (loaded && colorScheme) {
+      AsyncStorage.setItem('theme', colorScheme);
+    }
+  }, [colorScheme]);
 
   useEffect(() => {
     fetchSavedTrips();
@@ -219,7 +240,13 @@ function index() {
           </Link>
 
           <Pressable
-            onPressIn={toggleColorScheme}
+            onPressIn={() => {
+              if (colorScheme === 'dark') {
+                setColorScheme('light');
+              } else {
+                setColorScheme('dark');
+              }
+            }}
             className="flex h-full flex-row items-center px-2 transition-opacity duration-100 active:opacity-50"
           >
             {colorScheme === 'dark' ? (
