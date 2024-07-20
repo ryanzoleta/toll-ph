@@ -8,6 +8,7 @@ import { twMerge } from 'tailwind-merge';
 import { Point, useAllPointsStore, useSelectedPoints } from '@/lib/stores';
 import tollMatrix from '../data/toll_matrix.json';
 import connections from '../data/connections.json';
+import Toast from 'react-native-root-toast';
 
 export type TollSegment = {
   entryPoint: Point;
@@ -174,6 +175,13 @@ function index() {
       setTollFee(_tollFee);
       setTollSegments(_tollSegments);
     }
+
+    if (_tollFee === 0 && _tollSegments.length === 0) {
+      Toast.show('Destination is unreachable from origin.', {
+        backgroundColor: colors.red[800],
+        textColor: colors.red[100],
+      });
+    }
   }
 
   useEffect(() => {
@@ -247,7 +255,15 @@ function index() {
             <View className="flex flex-col gap-1">
               <FormLabel>Vehicle Class</FormLabel>
 
-              <Pressable className="flex flex-row items-center justify-between rounded-md bg-slate-700 p-3">
+              <Pressable
+                className="flex flex-row items-center justify-between rounded-md bg-slate-700 p-3 transition-opacity duration-100 active:opacity-60"
+                onPress={() => {
+                  Toast.show('Currently only supports Class 1 vehicles.', {
+                    backgroundColor: colors.red[800],
+                    textColor: colors.red[100],
+                  });
+                }}
+              >
                 <Text className="text-foreground text-lg font-bold">Class 1</Text>
 
                 <ChevronDown color={colors.slate[500]} size={20} />
