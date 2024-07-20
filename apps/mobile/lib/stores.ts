@@ -11,6 +11,7 @@ export type TollSegment = {
 };
 
 export type TripResult = {
+  id: number;
   totalFee: number;
   tollSegments: TollSegment[];
   vehicleClass: number;

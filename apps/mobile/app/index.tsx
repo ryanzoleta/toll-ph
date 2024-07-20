@@ -400,7 +400,12 @@ function index() {
                       setSavedResult(true);
                       setSavedTrips([
                         ...savedTrips,
-                        { totalFee: tollFee, tollSegments, vehicleClass: 1 },
+                        {
+                          id: Math.floor(Date.now() / 1000),
+                          totalFee: tollFee,
+                          tollSegments,
+                          vehicleClass: 1,
+                        },
                       ]);
                     }}
                   >

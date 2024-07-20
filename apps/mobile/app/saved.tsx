@@ -3,11 +3,11 @@ import { formatAmountToCurrency } from '@/lib/utils';
 import { router } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import { useState } from 'react';
-import { Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { Alert, Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import colors from 'tailwindcss/colors';
 
 function index() {
-  const { savedTrips, fetchSavedTrips, setSavedTrips } = useSavedTrips();
+  const { savedTrips } = useSavedTrips();
 
   return (
     <SafeAreaView className="bg-background flex min-h-screen flex-col gap-3">
@@ -24,9 +24,15 @@ function index() {
       </View>
 
       <ScrollView>
-        <View className="flex flex-col gap-3 p-5">
-          {savedTrips.map((trip, index) => {
-            return <Trip trip={trip} key={index} />;
+        <View className="flex flex-1 flex-col gap-3 p-5">
+          {savedTrips.length === 0 && (
+            <View>
+              <Text className="text-muted text-center">Your saved trips will appear here</Text>
+            </View>
+          )}
+
+          {savedTrips.map((trip) => {
+            return <Trip trip={trip} key={trip.id} />;
           })}
         </View>
       </ScrollView>
@@ -47,6 +53,7 @@ type TripProps = {
 
 function Trip({ trip }: TripProps) {
   const [expanded, setExpanded] = useState(false);
+  const { savedTrips, setSavedTrips } = useSavedTrips();
 
   return (
     <View className="tripContainer bg-card flex flex-col gap-5 rounded-lg  p-5 ">
@@ -127,7 +134,25 @@ function Trip({ trip }: TripProps) {
           <View className="flex flex-row justify-between">
             <Text className="text-muted text-left text-sm">Class {trip.vehicleClass}</Text>
 
-            <Pressable className="text-right text-sm transition-opacity duration-100 active:opacity-60">
+            <Pressable
+              className="text-right text-sm transition-opacity duration-100 active:opacity-60"
+              onPress={() => {
+                Alert.alert('Delete Trip', 'Are you sure you want to delete this trip?', [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+
+                  {
+                    text: 'Delete',
+                    onPress: () => {
+                      setSavedTrips(savedTrips.filter((t) => t.id !== trip.id));
+                    },
+                    style: 'destructive',
+                  },
+                ]);
+              }}
+            >
               <Text className="text-muted text-sm">Delete</Text>
             </Pressable>
           </View>
