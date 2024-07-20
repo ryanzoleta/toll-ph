@@ -2,6 +2,7 @@ import { SafeAreaView, View, Text, TextInput, ScrollView, Pressable } from 'reac
 import { router, useLocalSearchParams } from 'expo-router';
 import { useAllPointsStore, useSelectedPoints } from '@/lib/stores';
 import { useEffect, useState } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 export default function Selector() {
   const params = useLocalSearchParams();
@@ -45,9 +46,12 @@ export default function Selector() {
 
       <View className="flex flex-1 flex-col pb-16 pt-5">
         <ScrollView>
-          {filteredPoints.map((point) => (
+          {filteredPoints.map((point, index) => (
             <Pressable
-              className="border-t-secondary flex flex-row items-center justify-between border-t p-5"
+              className={twMerge(
+                'border-t-secondary flex flex-row items-center justify-between border-t p-5 transition-all duration-100 active:bg-slate-100 active:dark:bg-slate-800',
+                index === filteredPoints.length - 1 && 'border-b-secondary border-b'
+              )}
               key={point.id}
               onPress={() => {
                 if (isOrigin) setOrigin(point);

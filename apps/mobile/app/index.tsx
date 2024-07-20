@@ -213,7 +213,7 @@ function index() {
       <View className="flex flex-row items-center justify-between px-5 ">
         <Text className="text-foreground text-4xl font-extrabold tracking-tight">toll.ph</Text>
 
-        <View className="flex flex-row items-center gap-10">
+        <View className="flex h-full flex-row items-center gap-5">
           <Link
             href="/matrix"
             className="text-foreground text-lg transition-opacity duration-100 active:opacity-70"
@@ -223,7 +223,7 @@ function index() {
 
           <Pressable
             onPressIn={toggleColorScheme}
-            className="transition-opacity duration-100 active:opacity-50"
+            className="flex h-full flex-row items-center px-2 transition-opacity duration-100 active:opacity-50"
           >
             {colorScheme === 'dark' ? (
               <Sun color={colors.slate[500]} />
@@ -235,7 +235,7 @@ function index() {
       </View>
 
       <ScrollView>
-        <View className="flex flex-col gap-5 px-5 py-3">
+        <View className="flex flex-col gap-5 px-5 py-3 pb-10">
           <View>
             <Text className="text-muted">
               Use this to calculate the toll fee for a trip from anywhere in the entire Luzon

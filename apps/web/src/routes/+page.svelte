@@ -349,7 +349,7 @@
           <p class="hidden text-center text-sm text-slate-500 md:block">Saved!</p>
         {:else}
           <Button
-            class="hidden bg-slate-300 text-slate-600 hover:bg-slate-400 md:block dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
+            class="hidden bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 md:block"
             on:click={saveResult}>Save</Button>
         {/if}
       </div>
@@ -409,7 +409,7 @@
         <p class="block text-center text-sm text-slate-500 md:hidden">Saved!</p>
       {:else}
         <Button
-          class="block bg-slate-300 text-slate-600 hover:bg-slate-400 md:hidden dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
+          class="block bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 md:hidden"
           on:click={saveResult}>Save</Button>
       {/if}
     </div>
