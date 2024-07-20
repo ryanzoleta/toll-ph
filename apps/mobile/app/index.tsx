@@ -178,7 +178,6 @@ function index() {
   useEffect(() => {
     const originReachables = getReachables(origin?.id ?? 0);
     const originReachablesPointIds = originReachables.map((c) => c?.id);
-    console.log(originReachablesPointIds);
 
     let _externalConnections: typeof externalConnections = [];
     _externalConnections = getExternalConnections(originReachablesPointIds as number[]);
@@ -204,7 +203,6 @@ function index() {
     }
 
     setExternalConnections(_externalConnections);
-    console.log(_externalConnections);
   }, [origin, destination]);
 
   return (
