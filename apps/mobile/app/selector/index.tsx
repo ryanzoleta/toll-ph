@@ -49,7 +49,7 @@ export default function Selector() {
           {filteredPoints.map((point, index) => (
             <Pressable
               className={twMerge(
-                'border-t-secondary flex flex-row items-center justify-between border-t p-5 transition-all duration-100 active:bg-slate-100 active:dark:bg-slate-800',
+                'border-t-secondary active:bg-secondary flex flex-row items-center justify-between border-t p-5 transition-all duration-100',
                 index === filteredPoints.length - 1 && 'border-b-secondary border-b'
               )}
               key={point.id}

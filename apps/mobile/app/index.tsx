@@ -118,19 +118,16 @@ function index() {
     setSavedResult(false);
 
     if (origin.toll_network_name === destination.toll_network_name) {
-      console.log('same toll network');
-      setTollSegments([
+      _tollSegments = [
         {
           entryPoint: { ...origin },
           exitPoint: { ...destination },
           fee: queryTollMatrix(origin, destination),
         },
-      ]);
+      ];
 
-      setTollFee(queryTollMatrix(origin, destination));
+      _tollFee = queryTollMatrix(origin, destination);
     } else {
-      console.log('different network');
-      console.log(externalConnections.length);
       let currentDestination = destination;
       // const externalConnections = getExternalConnections([origin.id]);
 
@@ -171,10 +168,10 @@ function index() {
           }
         }
       }
-
-      setTollFee(_tollFee);
-      setTollSegments(_tollSegments);
     }
+
+    setTollFee(_tollFee);
+    setTollSegments(_tollSegments);
 
     if (_tollFee === 0 && _tollSegments.length === 0) {
       Toast.show('Destination is unreachable from origin.', {
@@ -256,7 +253,7 @@ function index() {
               <FormLabel>Vehicle Class</FormLabel>
 
               <Pressable
-                className="flex flex-row items-center justify-between rounded-md bg-slate-700 p-3 transition-opacity duration-100 active:opacity-60"
+                className="bg-secondary flex flex-row items-center justify-between rounded-md p-3 transition-opacity duration-100 active:opacity-60 "
                 onPress={() => {
                   Toast.show('Currently only supports Class 1 vehicles.', {
                     backgroundColor: colors.red[800],
@@ -277,8 +274,7 @@ function index() {
 
               <Pressable
                 className={twMerge(
-                  'relative flex flex-row items-center justify-between rounded-md p-3 transition-opacity duration-100 active:opacity-80',
-                  origin ? 'bg-slate-700' : 'bg-slate-800'
+                  'bg-secondary relative flex flex-row items-center justify-between rounded-md p-3 transition-opacity duration-100 active:opacity-80'
                 )}
                 onPress={() => router.push({ pathname: '/selector', params: { isOrigin: 1 } })}
               >
@@ -306,10 +302,7 @@ function index() {
               <FormLabel>Destination</FormLabel>
 
               <Pressable
-                className={twMerge(
-                  'relative flex flex-row items-center justify-between rounded-md p-3 transition-opacity duration-100 active:opacity-80',
-                  destination ? 'bg-slate-700' : 'bg-slate-800'
-                )}
+                className="bg-secondary relative flex flex-row items-center justify-between rounded-md p-3 transition-opacity duration-100 active:opacity-80"
                 onPress={() => router.push({ pathname: '/selector', params: { isOrigin: 0 } })}
               >
                 {destination ? (
@@ -333,14 +326,16 @@ function index() {
 
           <View className="flex flex-col gap-3">
             <Pressable
-              className="rounded-lg bg-green-800 p-3 transition-all duration-100 active:opacity-90"
+              className="bg-success rounded-lg p-3 transition-all duration-100 active:opacity-90"
               onPress={calculate}
             >
-              <Text className="text-center text-xl font-bold text-green-300">Calculate</Text>
+              <Text className="text-success-foreground text-center text-xl font-bold">
+                Calculate
+              </Text>
             </Pressable>
 
             <Pressable
-              className="bg-secondary  rounded-lg p-3 transition-all duration-100 active:opacity-90"
+              className="bg-secondary rounded-lg p-3 transition-all duration-100 active:opacity-90"
               onPress={() => {
                 setTollFee(0);
                 setTollSegments([]);
@@ -353,7 +348,7 @@ function index() {
           </View>
 
           {tollFee > 0 && (
-            <View className="mb-10 rounded-lg bg-slate-900 p-3">
+            <View className="bg-card mb-10 rounded-lg p-3">
               <View className="flex flex-col gap-3">
                 <Text className="text-xl text-slate-500">Total Toll Fee</Text>
                 <Text className="text-foreground text-5xl font-extrabold tracking-tighter">
@@ -367,19 +362,30 @@ function index() {
                         <Text className="text-foreground">{ts.entryPoint.name}</Text>
                         <Text className="text-slate-500">→</Text>
                         <Text className="text-foreground">{ts.exitPoint.name}</Text>
+                        <Text className="text-muted">({ts.entryPoint.expresway_id})</Text>
                       </View>
 
-                      <View className="flex flex-row gap-1">
+                      <View className="flex flex-row items-center gap-1">
                         <Text className="text-foreground">{formatAmountToCurrency(ts.fee)}</Text>
 
                         {ts.entryPoint.rfid === 'AUTOSWEEP' ? (
-                          <View className="rounded-lg bg-green-300 px-2 py-1 dark:bg-green-700 ">
+                          <Pressable
+                            className="rounded-lg bg-green-300 px-2 py-1 dark:bg-green-700"
+                            onPressIn={() => {
+                              Toast.show('AutoSweep RFID');
+                            }}
+                          >
                             <Text className=" text-xs text-green-700 dark:text-green-200">A</Text>
-                          </View>
+                          </Pressable>
                         ) : (
-                          <View className="rounded-lg bg-blue-300 px-2 py-1 dark:bg-blue-700 ">
+                          <Pressable
+                            className="rounded-lg bg-blue-300 px-2 py-1 dark:bg-blue-700"
+                            onPressIn={() => {
+                              Toast.show('EasyTrip RFID');
+                            }}
+                          >
                             <Text className=" text-xs text-blue-700 dark:text-blue-200">E</Text>
-                          </View>
+                          </Pressable>
                         )}
                       </View>
                     </View>
