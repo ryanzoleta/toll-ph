@@ -1,6 +1,6 @@
 import { SafeAreaView, View, Text, TextInput, ScrollView, Pressable } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useAllPointsStore, useSelectedPoints } from '@/lib/stores';
+import { useAllPointsStore, useReachables, useSelectedPoints } from '@/lib/stores';
 import { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
@@ -8,15 +8,20 @@ export default function Selector() {
   const params = useLocalSearchParams();
   const { allPoints } = useAllPointsStore();
   const { setOrigin, setDestination } = useSelectedPoints();
+  const { reachables } = useReachables();
 
   const [input, setInput] = useState('');
-  const [filteredPoints, setFilteredPoints] = useState(allPoints);
+
+  const initialPoints =
+    reachables.length > 0 ? allPoints.filter((point) => reachables.includes(point)) : allPoints;
+
+  const [filteredPoints, setFilteredPoints] = useState(initialPoints);
 
   const isOrigin = params.isOrigin === '1';
 
   useEffect(() => {
     setFilteredPoints(
-      allPoints.filter(
+      initialPoints.filter(
         (point) =>
           point.name.toLowerCase().includes(input.toLowerCase()) ||
           point.expresway_id.toLowerCase().includes(input.toLowerCase())

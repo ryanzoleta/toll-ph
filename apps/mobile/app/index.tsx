@@ -9,6 +9,7 @@ import {
   Point,
   TollSegment,
   useAllPointsStore,
+  useReachables,
   useSavedTrips,
   useSelectedPoints,
 } from '@/lib/stores';
@@ -30,6 +31,7 @@ function index() {
   const [externalConnections, setExternalConnections] = useState<
     ReturnType<typeof getExternalConnections>
   >([]);
+  const { setReachables } = useReachables();
 
   const { savedTrips, fetchSavedTrips, setSavedTrips } = useSavedTrips();
 
@@ -224,6 +226,21 @@ function index() {
     }
 
     setExternalConnections(_externalConnections);
+
+    const _externalReachables = _externalConnections
+      .map((c) => getReachables(c.externalConnectedPoint?.id))
+      .reduce((acc, val) => acc.concat(val), []);
+
+    const _reachables = [...originReachables, ..._externalReachables]
+      .map((c) => allPoints.find((p) => p.id === c?.id) ?? c)
+      .reduce((acc, val) => {
+        if (!acc.find((p) => p.id === val?.id)) acc.push(val as Point);
+        return acc;
+      }, [] as Point[]);
+
+    console.log('reachables', _reachables.length);
+
+    setReachables(_reachables);
   }, [origin, destination]);
 
   return (

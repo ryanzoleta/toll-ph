@@ -54,3 +54,13 @@ export const useSavedTrips = create<SavedTripsState>((set) => ({
     set({ savedTrips });
   },
 }));
+
+type ReachablesState = {
+  reachables: Point[];
+  setReachables: (reachables: Point[]) => void;
+};
+
+export const useReachables = create<ReachablesState>((set) => ({
+  reachables: [],
+  setReachables: (reachables: Point[]) => set({ reachables }),
+}));
