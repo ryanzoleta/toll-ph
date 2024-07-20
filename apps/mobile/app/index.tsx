@@ -28,6 +28,19 @@ function index() {
     ReturnType<typeof getExternalConnections>
   >([]);
 
+  function formatAmountToCurrency(amount: number, currencySymbol?: string): string {
+    const userLang = navigator.language ?? 'en-US';
+    const currencyNumber = new Intl.NumberFormat(userLang, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
+
+    if (currencySymbol) {
+      return `${currencySymbol} ${currencyNumber}`;
+    }
+    return `₱${currencyNumber}`;
+  }
+
   function fetchPoint(id: number) {
     return allPoints.find((p) => p.id === id);
   }
@@ -326,24 +339,48 @@ function index() {
           </Pressable>
         </View>
 
-        <View>
-          {tollFee > 0 && (
+        {tollFee > 0 && (
+          <View className="rounded-lg bg-slate-900 p-3">
             <View className="flex flex-col gap-3">
-              <Text className="text-foreground text-xl font-bold">Total Toll Fee</Text>
-              <Text className="text-foreground text-3xl font-extrabold">₱{tollFee}</Text>
-              <View>
+              <Text className="text-xl text-slate-500">Total Toll Fee</Text>
+              <Text className="text-foreground text-5xl font-extrabold tracking-tighter">
+                {formatAmountToCurrency(tollFee)}
+              </Text>
+
+              <View className="flex flex-col gap-1">
                 {tollSegments.map((ts, i) => (
-                  <View key={i} className="flex flex-col gap-3">
-                    <Text className="text-foreground text-lg font-bold">
-                      {ts.entryPoint.name} to {ts.exitPoint.name}
-                    </Text>
-                    <Text className="text-foreground text-xl font-bold">₱{ts.fee}</Text>
+                  <View key={i} className="flex flex-row justify-between">
+                    <View className="flex flex-row gap-1">
+                      <Text className="text-foreground">{ts.entryPoint.name}</Text>
+                      <Text className="text-slate-500">→</Text>
+                      <Text className="text-foreground">{ts.exitPoint.name}</Text>
+                    </View>
+
+                    <View className="flex flex-row gap-1">
+                      <Text className="text-foreground">{formatAmountToCurrency(ts.fee)}</Text>
+
+                      {ts.entryPoint.rfid === 'AUTOSWEEP' ? (
+                        <View className="rounded-lg bg-green-300 px-2 py-1 dark:bg-green-700 ">
+                          <Text className=" text-xs text-green-700 dark:text-green-200">A</Text>
+                        </View>
+                      ) : (
+                        <View className="rounded-lg bg-blue-300 px-2 py-1 dark:bg-blue-700 ">
+                          <Text className=" text-xs text-blue-700 dark:text-blue-200">E</Text>
+                        </View>
+                      )}
+                    </View>
                   </View>
                 ))}
               </View>
+
+              <Pressable className="bg-secondary rounded-lg p-2 transition-opacity duration-100 active:opacity-90">
+                <Text className="text-secondary-foreground text-center text-lg font-bold ">
+                  Save
+                </Text>
+              </Pressable>
             </View>
-          )}
-        </View>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );
