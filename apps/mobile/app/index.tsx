@@ -345,7 +345,7 @@ function index() {
 
           <View className="flex flex-col gap-3">
             <Pressable
-              className="bg-success rounded-lg p-3 transition-all duration-100 active:opacity-90"
+              className="bg-success rounded-lg p-3 transition-opacity duration-100 active:opacity-90"
               onPress={calculate}
             >
               <Text className="text-success-foreground text-center text-xl font-bold">
@@ -354,7 +354,7 @@ function index() {
             </Pressable>
 
             <Pressable
-              className="bg-secondary rounded-lg p-3 transition-all duration-100 active:opacity-90"
+              className="bg-secondary rounded-lg p-3 transition-opacity duration-100 active:opacity-90"
               onPress={() => {
                 setTollFee(0);
                 setTollSegments([]);
