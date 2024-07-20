@@ -5,16 +5,17 @@ import { useColorScheme } from 'nativewind';
 import colors from 'tailwindcss/colors';
 import { ReactNode, useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { Point, useAllPointsStore, useSelectedPoints } from '@/lib/stores';
+import {
+  Point,
+  TollSegment,
+  useAllPointsStore,
+  useSavedTrips,
+  useSelectedPoints,
+} from '@/lib/stores';
 import tollMatrix from '../data/toll_matrix.json';
 import connections from '../data/connections.json';
 import Toast from 'react-native-root-toast';
-
-export type TollSegment = {
-  entryPoint: Point;
-  exitPoint: Point;
-  fee: number;
-};
+import { formatAmountToCurrency } from '@/lib/utils';
 
 function index() {
   const { colorScheme, toggleColorScheme } = useColorScheme();
@@ -29,18 +30,11 @@ function index() {
     ReturnType<typeof getExternalConnections>
   >([]);
 
-  function formatAmountToCurrency(amount: number, currencySymbol?: string): string {
-    const userLang = navigator.language ?? 'en-US';
-    const currencyNumber = new Intl.NumberFormat(userLang, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(amount);
+  const { savedTrips, fetchSavedTrips, setSavedTrips } = useSavedTrips();
 
-    if (currencySymbol) {
-      return `${currencySymbol} ${currencyNumber}`;
-    }
-    return `₱${currencyNumber}`;
-  }
+  useEffect(() => {
+    fetchSavedTrips();
+  }, []);
 
   function fetchPoint(id: number) {
     return allPoints.find((p) => p.id === id);
@@ -220,10 +214,10 @@ function index() {
 
         <View className="flex h-full flex-row items-center gap-5">
           <Link
-            href="/matrix"
+            href="/saved"
             className="text-foreground text-lg transition-opacity duration-100 active:opacity-70"
           >
-            Matrix
+            Saved
           </Link>
 
           <Pressable
@@ -392,11 +386,29 @@ function index() {
                   ))}
                 </View>
 
-                <Pressable className="bg-secondary rounded-lg p-2 transition-opacity duration-100 active:opacity-90">
-                  <Text className="text-secondary-foreground text-center text-lg font-bold ">
-                    Save
-                  </Text>
-                </Pressable>
+                {savedResult ? (
+                  <View className="rounded-lg p-2 transition-opacity duration-100 ">
+                    <Text className="text-muted text-center text-lg ">Saved!</Text>
+                  </View>
+                ) : (
+                  <Pressable
+                    className="bg-secondary rounded-lg p-2 transition-opacity duration-100 active:opacity-90"
+                    onPress={() => {
+                      if (savedResult) return;
+
+                      Toast.show('Saved trip');
+                      setSavedResult(true);
+                      setSavedTrips([
+                        ...savedTrips,
+                        { totalFee: tollFee, tollSegments, vehicleClass: 1 },
+                      ]);
+                    }}
+                  >
+                    <Text className="text-secondary-foreground text-center text-lg font-bold ">
+                      Save
+                    </Text>
+                  </Pressable>
+                )}
               </View>
             </View>
           )}
