@@ -10,8 +10,7 @@
       },
       "ios": {
         "buildConfiguration": "Debug"
-      },
-      "developmentClient": true
+      }
     },
     "preview": {
       "distribution": "internal",
