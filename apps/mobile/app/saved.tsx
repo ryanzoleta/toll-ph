@@ -5,12 +5,16 @@ import { ArrowLeft } from 'lucide-react-native';
 import { useState } from 'react';
 import { Alert, Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import colors from 'tailwindcss/colors';
+import SafeViewAndroid from '../components/SafeAreaView';
 
 function index() {
   const { savedTrips } = useSavedTrips();
 
   return (
-    <SafeAreaView className="bg-background flex min-h-screen flex-col gap-3">
+    <SafeAreaView
+      className="bg-background flex min-h-screen flex-col gap-3"
+      style={SafeViewAndroid.AndroidSafeArea}
+    >
       <View className="flex flex-row items-center gap-5 px-5 ">
         <Pressable
           className="transition-opacity duration-100 active:opacity-50"

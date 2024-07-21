@@ -1,8 +1,11 @@
-import { SafeAreaView, View, Text, TextInput, ScrollView, Pressable } from 'react-native';
+import { SafeAreaView, View, Text, TextInput, ScrollView, Pressable, Platform } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useAllPointsStore, useReachables, useSelectedPoints } from '@/lib/stores';
 import { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
+import SafeViewAndroid from '../../components/SafeAreaView';
+import { ArrowLeft } from 'lucide-react-native';
+import colors from 'tailwindcss/colors';
 
 export default function Selector() {
   const params = useLocalSearchParams();
@@ -30,18 +33,29 @@ export default function Selector() {
   }, [input]);
 
   return (
-    <SafeAreaView className="bg-background min-h-screen">
+    <SafeAreaView className="bg-background min-h-screen" style={SafeViewAndroid.AndroidSafeArea}>
       <View className="flex flex-col">
-        {isOrigin ? (
-          <Text className="text-foreground px-5 pt-5 text-3xl font-bold">Pick Point of Origin</Text>
-        ) : (
-          <Text className="text-foreground px-5 pt-5 text-3xl font-bold">
-            Pick Destination Point
-          </Text>
-        )}
+        <View className="flex flex-row items-center gap-3 pt-3">
+          {Platform.OS === 'android' && (
+            <Pressable
+              className="pl-5 transition-opacity duration-100 active:opacity-50"
+              onPressIn={() => {
+                router.back();
+              }}
+            >
+              <ArrowLeft color={colors.slate[500]} />
+            </Pressable>
+          )}
+
+          {isOrigin ? (
+            <Text className="text-foreground px-5 text-3xl font-bold">Pick Point of Origin</Text>
+          ) : (
+            <Text className="text-foreground px-5 text-3xl font-bold">Pick Destination</Text>
+          )}
+        </View>
 
         <TextInput
-          className="bg-secondary text-secondary-foreground m-3 rounded-lg p-3 align-top"
+          className="bg-secondary text-secondary-foreground placeholder:text-muted m-3 rounded-lg p-3 align-top"
           textAlignVertical="center"
           placeholder="Search for exit name or expressway"
           value={input}

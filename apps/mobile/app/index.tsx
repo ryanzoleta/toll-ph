@@ -18,6 +18,7 @@ import connections from '../data/connections.json';
 import Toast from 'react-native-root-toast';
 import { formatAmountToCurrency } from '@/lib/utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SafeViewAndroid from '../components/SafeAreaView';
 
 function index() {
   const { colorScheme, setColorScheme } = useColorScheme();
@@ -244,7 +245,10 @@ function index() {
   }, [origin, destination]);
 
   return (
-    <SafeAreaView className="bg-background flex min-h-screen flex-col gap-3">
+    <SafeAreaView
+      className="bg-background flex min-h-screen flex-col gap-3"
+      style={SafeViewAndroid.AndroidSafeArea}
+    >
       <View className="flex flex-row items-center justify-between px-5 ">
         <Text className="text-foreground text-4xl font-extrabold tracking-tight">toll.ph</Text>
 
