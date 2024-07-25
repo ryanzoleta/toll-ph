@@ -22,10 +22,6 @@
   <meta
     name="keywords"
     content="Philippines, Expressways, Toll, NLEX, SLEX, SCTEX, TPLEX, CALAX, CAVITEX, NAIAX, calculator" />
-  <script
-    async
-    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6227779501096169"
-    crossorigin="anonymous"></script>
 </svelte:head>
 
 <ModeWatcher />
