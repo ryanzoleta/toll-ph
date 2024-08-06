@@ -11,6 +11,7 @@
   </div>
 
   <div class="flex flex-row gap-5">
+    <a href="/support" class="text-xs text-slate-500 hover:underline">Support</a>
     <a href="/privacy" class="text-xs text-slate-500 hover:underline">Privacy</a>
     <a href="/terms" class="text-xs text-slate-500 hover:underline">Terms</a>
   </div>
