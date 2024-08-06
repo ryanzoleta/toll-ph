@@ -13,7 +13,7 @@
       class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
       >Matrix</a>
     <a
-      href="/matrix"
+      href="/apps"
       class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
       >Apps</a>
 
