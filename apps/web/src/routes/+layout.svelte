@@ -18,10 +18,10 @@
   <title>Toll.ph - Philippine Expressway Toll Fee Calculator</title>
   <meta name="robots" content="index, follow" />
   <meta name="application-name" content="Toll.ph" />
-  <meta name="description" content="Philippine Expressways Toll Fee Calculator" />
+  <meta name="description" content="Philippine Toll Fee Calculator" />
   <meta
     name="keywords"
-    content="Philippines, Expressways, Toll, NLEX, SLEX, SCTEX, TPLEX, CALAX, CAVITEX, NAIAX, calculator" />
+    content="Philippines, Expressways, Toll, NLEX, SLEX, SCTEX, TPLEX, CALAX, CAVITEX, NAIAX, calculator, Baguio" />
 </svelte:head>
 
 <ModeWatcher />
