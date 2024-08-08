@@ -3,6 +3,7 @@
   import Button from '$lib/components/ui/button/button.svelte';
   import { Sun, Moon } from 'lucide-svelte';
   import AppStore from '$lib/assets/images/appstore.svg';
+  import { track } from '@vercel/analytics';
 
   export let showCalculatorButton = false;
 </script>
@@ -22,7 +23,12 @@
       class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
       >Apps</a> -->
 
-    <a href="https://apps.apple.com/us/app/toll-ph/id6572299762" target="_blank">
+    <a
+      href="https://apps.apple.com/us/app/toll-ph/id6572299762"
+      target="_blank"
+      on:click={() => {
+        track('AppStore');
+      }}>
       <img src={AppStore} alt="Download on the App Store" width="120" />
     </a>
 

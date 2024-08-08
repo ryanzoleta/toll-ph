@@ -10,6 +10,7 @@
   import * as Tooltip from '$lib/components/ui/tooltip';
   import * as Select from '$lib/components/ui/select';
   import Sortable from 'sortablejs';
+  import { track } from '@vercel/analytics';
 
   export let data;
 
@@ -39,6 +40,13 @@
 
   function saveResult() {
     if (tollFee === 0) return;
+
+    track('Save', {
+      totalFee: tollFee,
+      origin: tollSegments[0].entryPoint.name,
+      destination: tollSegments[tollSegments.length - 1].exitPoint.name,
+      vehicleClass: vehicleClass.value,
+    });
 
     savedTrips = [
       ...savedTrips,
@@ -78,6 +86,11 @@
 
   function calculate() {
     if (!pointOrigin || !pointDestination) return;
+
+    track('Calculate', {
+      origin: pointOrigin?.name,
+      destination: pointDestination?.name,
+    });
 
     tollSegments = [];
     tollFee = 0;
