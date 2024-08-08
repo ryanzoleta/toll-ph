@@ -2,10 +2,14 @@
   import { toggleMode } from 'mode-watcher';
   import Button from '$lib/components/ui/button/button.svelte';
   import { Sun, Moon } from 'lucide-svelte';
+
+  export let showCalculatorButton = false;
 </script>
 
 <div class="flex place-content-between place-items-center">
-  <a href="/" class="text-3xl font-bold text-slate-950 dark:text-slate-300"><h1>toll.ph</h1></a>
+  <div class="flex flex-row items-center gap-5">
+    <a href="/" class="text-3xl font-bold text-slate-950 dark:text-slate-300"><h1>toll.ph</h1></a>
+  </div>
 
   <div class="flex flex-row items-center gap-5">
     <a
@@ -16,6 +20,10 @@
       href="/apps"
       class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
       >Apps</a>
+
+    {#if showCalculatorButton}
+      <Button href="/">Use the Calculator!</Button>
+    {/if}
 
     <Button on:click={toggleMode} variant="outline" size="icon">
       <Sun

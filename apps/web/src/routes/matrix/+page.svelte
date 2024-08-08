@@ -46,7 +46,7 @@
 
 <div class="flex flex-col items-center">
   <div class="mx-5 flex w-11/12 flex-col gap-10 pt-5">
-    <Header />
+    <Header showCalculatorButton />
 
     <div>
       <h2 class="text-2xl font-bold tracking-tight">Toll Matrix/Table</h2>
