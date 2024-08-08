@@ -257,6 +257,16 @@
   }
 </script>
 
+<svelte:head>
+  <title>Toll.ph - Philippine Toll Fee Calculator</title>
+  <meta name="robots" content="index, follow" />
+  <meta name="application-name" content="Toll.ph" />
+  <meta name="description" content="Philippine Toll Fee Calculator" />
+  <meta
+    name="keywords"
+    content="Philippines, Expressways, Toll, NLEX, SLEX, SCTEX, TPLEX, CALAX, CAVITEX, NAIAX, calculator, Baguio" />
+</svelte:head>
+
 <div class="mx-5 flex flex-col gap-5 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
   <Header />
 
@@ -349,7 +359,7 @@
           <p class="hidden text-center text-sm text-slate-500 md:block">Saved!</p>
         {:else}
           <Button
-            class="hidden bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 md:block"
+            class="hidden bg-slate-300 text-slate-600 hover:bg-slate-400 md:block dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
             on:click={saveResult}>Save</Button>
         {/if}
       </div>
@@ -409,7 +419,7 @@
         <p class="block text-center text-sm text-slate-500 md:hidden">Saved!</p>
       {:else}
         <Button
-          class="block bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 md:hidden"
+          class="block bg-slate-300 text-slate-600 hover:bg-slate-400 md:hidden dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
           on:click={saveResult}>Save</Button>
       {/if}
     </div>

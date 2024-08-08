@@ -44,6 +44,16 @@
   ];
 </script>
 
+<svelte:head>
+  <title>Toll.ph - Philippine Toll Matrix</title>
+  <meta name="robots" content="index, follow" />
+  <meta name="application-name" content="Toll.ph" />
+  <meta name="description" content="Philippine Toll Fee Matrix" />
+  <meta
+    name="keywords"
+    content="Philippines, Expressways, Toll, NLEX, SLEX, SCTEX, TPLEX, CALAX, CAVITEX, NAIAX, calculator, matrix, Baguio" />
+</svelte:head>
+
 <div class="flex flex-col items-center">
   <div class="mx-5 flex w-11/12 flex-col gap-10 pt-5">
     <Header showCalculatorButton />
