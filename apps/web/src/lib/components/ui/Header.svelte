@@ -2,6 +2,7 @@
   import { toggleMode } from 'mode-watcher';
   import Button from '$lib/components/ui/button/button.svelte';
   import { Sun, Moon } from 'lucide-svelte';
+  import AppStore from '$lib/assets/images/appstore.svg';
 
   export let showCalculatorButton = false;
 </script>
@@ -16,10 +17,14 @@
       href="/matrix"
       class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
       >Matrix</a>
-    <a
+    <!-- <a
       href="/apps"
       class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
-      >Apps</a>
+      >Apps</a> -->
+
+    <a href="https://apps.apple.com/us/app/toll-ph/id6572299762" target="_blank">
+      <img src={AppStore} alt="Download on the App Store" width="120" />
+    </a>
 
     {#if showCalculatorButton}
       <Button href="/">Use the Calculator!</Button>
