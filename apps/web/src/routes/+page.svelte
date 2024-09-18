@@ -277,7 +277,7 @@
   <meta name="description" content="Philippine Toll Fee Calculator" />
   <meta
     name="keywords"
-    content="Philippines, Expressways, Toll, NLEX, SLEX, SCTEX, TPLEX, CALAX, CAVITEX, NAIAX, calculator, Baguio" />
+    content="Philippines, Expressways, Toll, NLEX, SLEX, SCTEX, TPLEX, CALAX, CAVITEX, NAIAX, calculator, Baguio, Toll Pinas, Toll Pilipinas, Toll Guru" />
 </svelte:head>
 
 <div class="mx-5 flex flex-col gap-5 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
