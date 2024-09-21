@@ -271,7 +271,7 @@
 </script>
 
 <svelte:head>
-  <title>Toll.ph - Philippine Toll Fee Calculator</title>
+  <title>Toll Calculator Philippines</title>
   <meta name="robots" content="index, follow" />
   <meta name="application-name" content="Toll.ph" />
   <meta name="description" content="Philippine Toll Fee Calculator" />

@@ -45,7 +45,7 @@
 </script>
 
 <svelte:head>
-  <title>Toll.ph - Philippine Toll Matrix</title>
+  <title>Toll Fe Matrix Philippines</title>
   <meta name="robots" content="index, follow" />
   <meta name="application-name" content="Toll.ph" />
   <meta name="description" content="Philippine Toll Fee Matrix" />
