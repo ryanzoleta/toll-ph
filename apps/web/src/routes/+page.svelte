@@ -84,8 +84,10 @@
     return parseFloat(matrix?.toll_matrix.fee ?? '0');
   }
 
-  function calculate() {
+  function calculate(pointOrigin: Point | null, pointDestination: Point | null) {
+    console.log('calculate start');
     if (!pointOrigin || !pointDestination) return;
+    console.log('calculate not returned');
 
     track('Calculate', {
       origin: pointOrigin?.name,
@@ -341,7 +343,9 @@
   <div class="flex flex-col gap-3">
     <button
       class="rounded-md bg-green-300 py-3 font-bold text-green-800 transition duration-100 hover:bg-green-400 dark:bg-green-800 dark:text-green-200 dark:hover:bg-green-700"
-      on:click={calculate}>Calculate</button>
+      on:click={() => {
+        calculate(pointOrigin, pointDestination);
+      }}>Calculate</button>
     <button
       class="rounded-md bg-gray-200 py-3 font-bold text-gray-600 transition duration-100 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
       on:click={() => {
@@ -360,7 +364,9 @@
       class="flex flex-col gap-5 rounded-lg bg-slate-100 p-5 dark:bg-slate-900 dark:text-slate-200">
       <div class="flex flex-row items-center justify-between">
         <div class="flex flex-col">
-          <h2 class="text-gray-500">Total Toll Fees</h2>
+          <h2 class="text-lg font-light text-gray-500">
+            {pointOrigin?.name} → {pointDestination?.name}
+          </h2>
           <div class="flex flex-col gap-5">
             <p class="text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-200">
               {formatAmountToCurrency(tollFee)}
@@ -401,7 +407,7 @@
                 {formatAmountToCurrency(segment.fee)}
               </p>
 
-              <Tooltip.Root openDelay={200}>
+              <Tooltip.Root openDelay={100}>
                 <Tooltip.Trigger>
                   {#if segment.entryPoint.rfid === 'AUTOSWEEP'}
                     <div
@@ -437,6 +443,60 @@
       {/if}
     </div>
   {/if}
+
+  <div class="flex flex-row items-center gap-2">
+    <button
+      class="bg-muted rounded-lg p-2 text-xs text-slate-400"
+      on:click={() => {
+        const po =
+          data.points.find(
+            (p) => p.name?.toLowerCase() === 'buendia' && p.expresswayId === 'SKYWAY'
+          ) ?? null;
+        const pd = data.points.find((p) => p.name?.toLowerCase() === 'batangas') ?? null;
+        pointOrigin = po;
+        pointDestination = pd;
+        setTimeout(() => {
+          calculate(po, pd);
+        }, 1);
+      }}>Buendia → Batangas</button>
+    <button
+      class="bg-muted rounded-lg p-2 text-xs text-slate-400"
+      on:click={() => {
+        const po =
+          data.points.find(
+            (p) => p.name?.toLowerCase() === 'balintawak' && p.expresswayId === 'NLEX'
+          ) ?? null;
+        const pd = data.points.find((p) => p.name?.toLowerCase() === 'rosario/baguio') ?? null;
+        pointOrigin = po;
+        pointDestination = pd;
+        setTimeout(() => {
+          calculate(po, pd);
+        }, 1);
+      }}>Balintawak → Baguio</button>
+    <button
+      class="bg-muted rounded-lg p-2 text-xs text-slate-400"
+      on:click={() => {
+        const po = data.points.find((p) => p.name?.toLowerCase() === 'calamba') ?? null;
+        const pd = data.points.find((p) => p.name?.toLowerCase() === 'naia terminal 1') ?? null;
+        pointOrigin = po;
+        pointDestination = pd;
+        setTimeout(() => {
+          calculate(po, pd);
+        }, 1);
+      }}>Calamba → NAIA T1</button>
+
+    <button
+      class="bg-muted rounded-lg p-2 text-xs text-slate-400"
+      on:click={() => {
+        const po = data.points.find((p) => p.name?.toLowerCase() === 'bacoor') ?? null;
+        const pd = data.points.find((p) => p.name?.toLowerCase() === 'tipo/subic') ?? null;
+        pointOrigin = po;
+        pointDestination = pd;
+        setTimeout(() => {
+          calculate(po, pd);
+        }, 1);
+      }}>Bacoor → Subic</button>
+  </div>
 
   {#if savedTrips.length > 0}
     <div class="flex flex-col gap-5">
