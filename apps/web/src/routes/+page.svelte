@@ -10,7 +10,6 @@
   import * as Tooltip from '$lib/components/ui/tooltip';
   import * as Select from '$lib/components/ui/select';
   import Sortable from 'sortablejs';
-  import { track } from '@vercel/analytics';
 
   export let data;
 
