@@ -22,12 +22,7 @@
       </div>
 
       <div class="flex flex-col items-center">
-        <a
-          href="https://apps.apple.com/us/app/toll-ph/id6572299762"
-          target="_blank"
-          on:click={() => {
-            track('AppStore');
-          }}>
+        <a href="https://apps.apple.com/us/app/toll-ph/id6572299762" target="_blank">
           <img src={AppStore} alt="Download on the App Store" width="150" />
         </a>
       </div>

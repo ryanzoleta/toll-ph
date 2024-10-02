@@ -40,13 +40,6 @@
   function saveResult() {
     if (tollFee === 0) return;
 
-    track('Save', {
-      totalFee: tollFee,
-      origin: tollSegments[0].entryPoint.name,
-      destination: tollSegments[tollSegments.length - 1].exitPoint.name,
-      vehicleClass: vehicleClass.value,
-    });
-
     savedTrips = [
       ...savedTrips,
       {
@@ -87,11 +80,6 @@
     console.log('calculate start');
     if (!pointOrigin || !pointDestination) return;
     console.log('calculate not returned');
-
-    track('Calculate', {
-      origin: pointOrigin?.name,
-      destination: pointDestination?.name,
-    });
 
     tollSegments = [];
     tollFee = 0;
