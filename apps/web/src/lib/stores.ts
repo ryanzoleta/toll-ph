@@ -6,3 +6,5 @@ import type { Point } from '$lib/data/schema';
 export const points = writable<Point[]>([]);
 export const expressways = writable<Expressway[]>([]);
 export const tollFeeMatrix = writable<TollFeeMatrix[]>([]);
+
+export const showDonation = writable<boolean>(true);

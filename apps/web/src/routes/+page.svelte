@@ -10,6 +10,7 @@
   import * as Tooltip from '$lib/components/ui/tooltip';
   import * as Select from '$lib/components/ui/select';
   import Sortable from 'sortablejs';
+  import Coffee from '$lib/components/ui/Coffee.svelte';
 
   export let data;
 
@@ -485,6 +486,8 @@
           }, 1);
         }}>Bacoor → Subic</button>
     </div>
+  {:else}
+    <Coffee />
   {/if}
 
   {#if savedTrips.length > 0}
