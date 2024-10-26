@@ -11,6 +11,7 @@
   import * as Select from '$lib/components/ui/select';
   import Sortable from 'sortablejs';
   import Coffee from '$lib/components/ui/Coffee.svelte';
+  import { fade } from 'svelte/transition';
 
   export let data;
 
@@ -349,7 +350,8 @@
 
   {#if tollFee > 0}
     <div
-      class="flex flex-col gap-5 rounded-lg bg-slate-100 p-5 dark:bg-slate-900 dark:text-slate-200">
+      class="flex flex-col gap-5 rounded-lg bg-slate-100 p-5 dark:bg-slate-900 dark:text-slate-200"
+      in:fade>
       <div class="flex flex-row items-center justify-between">
         <div class="flex flex-col">
           <h2 class="text-lg font-light text-gray-500">

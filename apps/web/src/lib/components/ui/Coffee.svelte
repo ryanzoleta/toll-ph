@@ -1,11 +1,13 @@
 <script lang="ts">
   import { showDonation } from '$lib/stores';
   import { X } from 'lucide-svelte';
+  import { fade } from 'svelte/transition';
 </script>
 
 {#if $showDonation}
   <div
-    class="flex flex-col gap-5 rounded-lg bg-slate-100 p-5 dark:bg-slate-900 dark:text-slate-200">
+    class="flex flex-col gap-5 rounded-lg bg-slate-100 p-5 dark:bg-slate-900 dark:text-slate-200"
+    in:fade>
     <div class="flex justify-between">
       <p class="text-slate-500">Did you find this useful? If so, why not...</p>
 
