@@ -431,59 +431,61 @@
     </div>
   {/if}
 
-  <div class="flex flex-row flex-wrap items-center justify-center gap-2">
-    <button
-      class="bg-muted rounded-lg p-2 text-xs text-slate-400"
-      on:click={() => {
-        const po =
-          data.points.find(
-            (p) => p.name?.toLowerCase() === 'buendia' && p.expresswayId === 'SKYWAY'
-          ) ?? null;
-        const pd = data.points.find((p) => p.name?.toLowerCase() === 'batangas') ?? null;
-        pointOrigin = po;
-        pointDestination = pd;
-        setTimeout(() => {
-          calculate(po, pd);
-        }, 1);
-      }}>Buendia → Batangas</button>
-    <button
-      class="bg-muted rounded-lg p-2 text-xs text-slate-400"
-      on:click={() => {
-        const po =
-          data.points.find(
-            (p) => p.name?.toLowerCase() === 'balintawak' && p.expresswayId === 'NLEX'
-          ) ?? null;
-        const pd = data.points.find((p) => p.name?.toLowerCase() === 'rosario/baguio') ?? null;
-        pointOrigin = po;
-        pointDestination = pd;
-        setTimeout(() => {
-          calculate(po, pd);
-        }, 1);
-      }}>Balintawak → Baguio</button>
-    <button
-      class="bg-muted rounded-lg p-2 text-xs text-slate-400"
-      on:click={() => {
-        const po = data.points.find((p) => p.name?.toLowerCase() === 'calamba') ?? null;
-        const pd = data.points.find((p) => p.name?.toLowerCase() === 'naia terminal 1') ?? null;
-        pointOrigin = po;
-        pointDestination = pd;
-        setTimeout(() => {
-          calculate(po, pd);
-        }, 1);
-      }}>Calamba → NAIA T1</button>
+  {#if tollFee <= 0}
+    <div class="flex flex-row flex-wrap items-center justify-center gap-2">
+      <button
+        class="bg-muted rounded-lg p-2 text-xs text-slate-400"
+        on:click={() => {
+          const po =
+            data.points.find(
+              (p) => p.name?.toLowerCase() === 'buendia' && p.expresswayId === 'SKYWAY'
+            ) ?? null;
+          const pd = data.points.find((p) => p.name?.toLowerCase() === 'batangas') ?? null;
+          pointOrigin = po;
+          pointDestination = pd;
+          setTimeout(() => {
+            calculate(po, pd);
+          }, 1);
+        }}>Buendia → Batangas</button>
+      <button
+        class="bg-muted rounded-lg p-2 text-xs text-slate-400"
+        on:click={() => {
+          const po =
+            data.points.find(
+              (p) => p.name?.toLowerCase() === 'balintawak' && p.expresswayId === 'NLEX'
+            ) ?? null;
+          const pd = data.points.find((p) => p.name?.toLowerCase() === 'rosario/baguio') ?? null;
+          pointOrigin = po;
+          pointDestination = pd;
+          setTimeout(() => {
+            calculate(po, pd);
+          }, 1);
+        }}>Balintawak → Baguio</button>
+      <button
+        class="bg-muted rounded-lg p-2 text-xs text-slate-400"
+        on:click={() => {
+          const po = data.points.find((p) => p.name?.toLowerCase() === 'calamba') ?? null;
+          const pd = data.points.find((p) => p.name?.toLowerCase() === 'naia terminal 1') ?? null;
+          pointOrigin = po;
+          pointDestination = pd;
+          setTimeout(() => {
+            calculate(po, pd);
+          }, 1);
+        }}>Calamba → NAIA T1</button>
 
-    <button
-      class="bg-muted rounded-lg p-2 text-xs text-slate-400"
-      on:click={() => {
-        const po = data.points.find((p) => p.name?.toLowerCase() === 'bacoor') ?? null;
-        const pd = data.points.find((p) => p.name?.toLowerCase() === 'tipo/subic') ?? null;
-        pointOrigin = po;
-        pointDestination = pd;
-        setTimeout(() => {
-          calculate(po, pd);
-        }, 1);
-      }}>Bacoor → Subic</button>
-  </div>
+      <button
+        class="bg-muted rounded-lg p-2 text-xs text-slate-400"
+        on:click={() => {
+          const po = data.points.find((p) => p.name?.toLowerCase() === 'bacoor') ?? null;
+          const pd = data.points.find((p) => p.name?.toLowerCase() === 'tipo/subic') ?? null;
+          pointOrigin = po;
+          pointDestination = pd;
+          setTimeout(() => {
+            calculate(po, pd);
+          }, 1);
+        }}>Bacoor → Subic</button>
+    </div>
+  {/if}
 
   {#if savedTrips.length > 0}
     <div class="flex flex-col gap-5">
