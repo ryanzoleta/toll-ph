@@ -2,11 +2,12 @@
   import { toggleMode } from 'mode-watcher';
   import Button from '$lib/components/ui/button/button.svelte';
   import { Sun, Moon } from 'lucide-svelte';
+  import AppStore from '$lib/assets/images/appstore.svg';
 
   export let showCalculatorButton = false;
 </script>
 
-<div class="flex place-content-between place-items-center">
+<div class="flex place-content-between place-items-center py-2 md:py-0">
   <div class="flex flex-row items-center gap-5">
     <a href="/" class="text-3xl font-bold text-slate-950 dark:text-slate-300"><h1>toll.ph</h1></a>
   </div>
@@ -16,6 +17,9 @@
       href="/matrix"
       class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
       >Matrix</a>
+    <a href="https://apps.apple.com/us/app/toll-ph/id6572299762" target="_blank">
+      <img src={AppStore} alt="App Store Link" />
+    </a>
     <!-- <a
       href="/apps"
       class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
