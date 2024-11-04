@@ -93,7 +93,7 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-5 rounded-xl bg-slate-900 p-5 md:w-1/3">
+    <div class="bg-muted flex flex-col gap-5 rounded-xl p-5 md:w-1/3">
       <p>Jump to:</p>
 
       <div class="flex flex-col gap-1">

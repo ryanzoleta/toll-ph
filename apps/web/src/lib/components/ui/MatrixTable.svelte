@@ -48,7 +48,7 @@
       <Table.Head>ENTRY/EXIT</Table.Head>
 
       {#each getUniqueEntryPoints(tollNetwork.id) as p, index}
-        <Table.Head class={cn('text-center', hoveredIndex === index ? 'bg-muted/50' : '')}>
+        <Table.Head class={cn('text-center', hoveredIndex === index ? 'bg-muted/100' : '')}>
           <button
             class="h-full w-full"
             on:mouseleave={() => {
@@ -64,7 +64,8 @@
     </Table.Row>
   </Table.Header>
   <Table.Body class="h-fit">
-    {#each getUniqueExitPoints(tollNetwork.id) as p}      <Table.Row>
+    {#each getUniqueExitPoints(tollNetwork.id) as p}
+      <Table.Row>
         <Table.Cell>{p.name}</Table.Cell>
         {#each getUniqueEntryPoints(tollNetwork.id) as p2, index}
           {@const m = tollMatrix.find((m) => {
@@ -74,7 +75,7 @@
               m.toll_matrix.vehicleClass === vehicleClass.value
             );
           })?.toll_matrix}
-          <Table.Cell class={cn('relative h-full', hoveredIndex === index ? 'bg-muted/50' : '')}>
+          <Table.Cell class={cn('relative h-full', hoveredIndex === index ? 'bg-muted/100' : '')}>
             <button
               class="absolute top-0 block h-full w-full"
               on:mouseleave={() => {
