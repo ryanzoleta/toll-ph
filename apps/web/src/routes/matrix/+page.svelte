@@ -103,6 +103,13 @@
       </div>
     </div>
 
+    <div
+      class="w-full rounded-xl border border-green-500 bg-green-100 p-5 md:w-fit dark:bg-green-950">
+      <h4 class="font-bold dark:text-green-100">Hey!</h4>
+      <p>Driving across <span class="italic">multiple</span> expressways?</p>
+      <p>Try the <a href="/" class="font-bold underline hover:opacity-50">calculator</a>!</p>
+    </div>
+
     <div class="flex flex-col gap-24">
       {#each data.tollNetworks as tollNetwork}
         <div class="flex flex-col gap-2">
