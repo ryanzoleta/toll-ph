@@ -59,46 +59,48 @@
   <div class="mx-5 flex w-11/12 flex-col gap-10 pt-5">
     <Header showCalculatorButton />
 
-    <div>
+    <div class="flex flex-col items-center gap-5 md:flex-row md:justify-between">
       <h2 class="text-2xl font-bold tracking-tight">Toll Matrix/Table</h2>
+
+      <div class="flex flex-col gap-2 sm:w-1/3 md:w-1/5">
+        <h3 class="font-bold text-slate-700 md:text-right dark:text-slate-300">Vehicle Class</h3>
+
+        <Select.Root bind:selected={vehicleClass} items={vehicleClassList}>
+          <Select.Trigger class="">
+            <Select.Value placeholder="Vehicle Class" asChild let:label>
+              {#if label}
+                <p class="font-bold">{label.substring(0, 8)}</p>
+              {:else}
+                <p>Vehicle Class</p>
+              {/if}
+            </Select.Value>
+          </Select.Trigger>
+          <Select.Content>
+            <Select.Item value={1} class="flex flex-col items-start">
+              <p class="font-bold">Class 1</p>
+              <p class="text-slate-500">Car, Jeepney, Van, Pick-Up, Motorcycle (400c and up)</p>
+            </Select.Item>
+            <Select.Item value={2} class="flex flex-col items-start">
+              <p class="font-bold">Class 2</p>
+              <p class="text-slate-500">Bus, Truck</p>
+            </Select.Item>
+            <Select.Item value={3} class="flex flex-col items-start">
+              <p class="font-bold">Class 3</p>
+              <p class="text-slate-500">Large Truck, Large Truck with Trailer</p>
+            </Select.Item>
+          </Select.Content>
+        </Select.Root>
+      </div>
     </div>
 
-    <div class="flex flex-col gap-2 sm:w-1/3">
-      <h3 class="font-bold text-slate-700 dark:text-slate-300">Vehicle Class</h3>
-
-      <Select.Root bind:selected={vehicleClass} items={vehicleClassList}>
-        <Select.Trigger class="">
-          <Select.Value placeholder="Vehicle Class" asChild let:label>
-            {#if label}
-              <p class="font-bold">{label.substring(0, 8)}</p>
-            {:else}
-              <p>Vehicle Class</p>
-            {/if}
-          </Select.Value>
-        </Select.Trigger>
-        <Select.Content>
-          <Select.Item value={1} class="flex flex-col items-start">
-            <p class="font-bold">Class 1</p>
-            <p class="text-slate-500">Car, Jeepney, Van, Pick-Up, Motorcycle (400c and up)</p>
-          </Select.Item>
-          <Select.Item value={2} class="flex flex-col items-start">
-            <p class="font-bold">Class 2</p>
-            <p class="text-slate-500">Bus, Truck</p>
-          </Select.Item>
-          <Select.Item value={3} class="flex flex-col items-start">
-            <p class="font-bold">Class 3</p>
-            <p class="text-slate-500">Large Truck, Large Truck with Trailer</p>
-          </Select.Item>
-        </Select.Content>
-      </Select.Root>
-    </div>
-
-    <div class="flex flex-row gap-5">
+    <div class="flex flex-col gap-5 rounded-xl bg-slate-900 p-5 md:w-1/3">
       <p>Jump to:</p>
 
-      {#each data.tollNetworks as tollNetwork}
-        <a href="#{tollNetwork.id}" class="text-slate-500 hover:underline">{tollNetwork.name}</a>
-      {/each}
+      <div class="flex flex-col gap-1">
+        {#each data.tollNetworks as tollNetwork}
+          <a href="#{tollNetwork.id}" class="text-slate-500 hover:underline">{tollNetwork.name}</a>
+        {/each}
+      </div>
     </div>
 
     <div class="flex flex-col gap-10">
@@ -107,43 +109,6 @@
           <h3 class="text-xl font-bold" id={tollNetwork.id}>{tollNetwork.name}</h3>
 
           <MatrixTable {tollNetwork} tollMatrix={data.tollMatrix} {vehicleClass} />
-
-          <!-- <Table.Root>
-            <Table.Header>
-              <Table.Row>
-                <Table.Head>ENTRY/EXIT</Table.Head>
-
-                {#each getUniqueEntryPoints(tollNetwork.id) as p}
-                  <Table.Head>{p.name}</Table.Head>
-                {/each}
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {#each getUniqueExitPoints(tollNetwork.id) as p}
-                <Table.Row>
-                  <Table.Cell>{p.name}</Table.Cell>
-                  {#each getUniqueEntryPoints(tollNetwork.id) as p2}
-                    {@const m = data.tollMatrix.find((m) => {
-                      return (
-                        m.entryPoint.id === p2.id &&
-                        m.exitPoint.id === p.id &&
-                        m.toll_matrix.vehicleClass === vehicleClass.value
-                      );
-                    })?.toll_matrix}
-                    <Table.Cell>
-                      <button
-                        class="h-full w-full flex-1"
-                        on:mouseover={() => {
-                          console.log('hello');
-                        }}>
-                        {m?.fee ?? ''}{m?.fee ? (m?.reversible ? '' : '*') : ''}
-                      </button>
-                    </Table.Cell>
-                  {/each}
-                </Table.Row>
-              {/each}
-            </Table.Body>
-          </Table.Root> -->
         </div>
       {/each}
     </div>
