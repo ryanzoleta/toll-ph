@@ -3,8 +3,21 @@
   import Button from '$lib/components/ui/button/button.svelte';
   import { Sun, Moon } from 'lucide-svelte';
   import AppStore from '$lib/assets/images/appstore.svg';
+  import PlayStore from '$lib/assets/images/playstore.png';
+  import { onMount } from 'svelte';
 
   export let showCalculatorButton = false;
+  let os: 'apple' | 'android' | undefined = undefined;
+
+  onMount(() => {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+
+    if (userAgent.includes('ios') || userAgent.includes('mac')) {
+      os = 'apple';
+    } else if (userAgent.includes('android')) {
+      os = 'android';
+    }
+  });
 </script>
 
 <div class="flex place-content-between place-items-center py-2 md:py-0">
@@ -17,13 +30,22 @@
       href="/matrix"
       class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
       >Matrix</a>
-    <a href="https://apps.apple.com/us/app/toll-ph/id6572299762" target="_blank">
-      <img src={AppStore} alt="App Store Link" />
-    </a>
-    <!-- <a
-      href="/apps"
-      class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
-      >Apps</a> -->
+
+    {#if os}
+      {#if os === 'apple'}
+        <a
+          href="https://apps.apple.com/app/apple-store/id6572299762?pt=126844345&ct=WebApp&mt=8"
+          target="_blank">
+          <img src={AppStore} alt="App Store Link" class="h-10" />
+        </a>
+      {:else}
+        <a
+          href="https://play.google.com/store/apps/details?id=com.ryanzoleta.tollph&pcampaignid=web_share"
+          target="_blank">
+          <img src={PlayStore} alt="Play Store Link" class="h-10" />
+        </a>
+      {/if}
+    {/if}
 
     {#if showCalculatorButton}
       <Button href="/">Use the Calculator!</Button>
