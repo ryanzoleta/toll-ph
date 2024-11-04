@@ -64,8 +64,7 @@
     </Table.Row>
   </Table.Header>
   <Table.Body class="h-fit">
-    {#each getUniqueExitPoints(tollNetwork.id) as p}
-      <Table.Row>
+    {#each getUniqueExitPoints(tollNetwork.id) as p}      <Table.Row>
         <Table.Cell>{p.name}</Table.Cell>
         {#each getUniqueEntryPoints(tollNetwork.id) as p2, index}
           {@const m = tollMatrix.find((m) => {
