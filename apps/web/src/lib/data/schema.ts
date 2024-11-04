@@ -74,3 +74,11 @@ export type Point = InferSelectModel<typeof point> & {
 } & { expresswayId?: string | null };
 export type TollMatrix = InferSelectModel<typeof tollMatrix>;
 export type TollNetwork = InferSelectModel<typeof tollNetwork>;
+
+export type TollMatrixFull = {
+  toll_matrix: TollMatrix;
+  entryPoint: Point;
+  exitPoint: Point;
+  entryExpressway: Expressway;
+  exitExpressway: Expressway;
+};

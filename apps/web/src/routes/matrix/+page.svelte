@@ -3,6 +3,7 @@
   import * as Table from '$lib/components/ui/table';
   import type { Point } from '$lib/data/schema.js';
   import Header from '$lib/components/ui/Header.svelte';
+  import MatrixTable from '$lib/components/ui/MatrixTable.svelte';
 
   export let data;
 
@@ -105,7 +106,9 @@
         <div class="flex flex-col gap-2">
           <h3 class="text-xl font-bold" id={tollNetwork.id}>{tollNetwork.name}</h3>
 
-          <Table.Root>
+          <MatrixTable {tollNetwork} tollMatrix={data.tollMatrix} {vehicleClass} />
+
+          <!-- <Table.Root>
             <Table.Header>
               <Table.Row>
                 <Table.Head>ENTRY/EXIT</Table.Head>
@@ -127,13 +130,20 @@
                         m.toll_matrix.vehicleClass === vehicleClass.value
                       );
                     })?.toll_matrix}
-                    <Table.Cell
-                      >{m?.fee ?? ''}{m?.fee ? (m?.reversible ? '' : '*') : ''}</Table.Cell>
+                    <Table.Cell>
+                      <button
+                        class="h-full w-full flex-1"
+                        on:mouseover={() => {
+                          console.log('hello');
+                        }}>
+                        {m?.fee ?? ''}{m?.fee ? (m?.reversible ? '' : '*') : ''}
+                      </button>
+                    </Table.Cell>
                   {/each}
                 </Table.Row>
               {/each}
             </Table.Body>
-          </Table.Root>
+          </Table.Root> -->
         </div>
       {/each}
     </div>
