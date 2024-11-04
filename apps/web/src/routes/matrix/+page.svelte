@@ -103,7 +103,7 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-10">
+    <div class="flex flex-col gap-24">
       {#each data.tollNetworks as tollNetwork}
         <div class="flex flex-col gap-2">
           <h3 class="text-xl font-bold" id={tollNetwork.id}>{tollNetwork.name}</h3>
