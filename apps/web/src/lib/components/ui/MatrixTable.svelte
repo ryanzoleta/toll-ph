@@ -48,8 +48,18 @@
       <Table.Head>ENTRY/EXIT</Table.Head>
 
       {#each getUniqueEntryPoints(tollNetwork.id) as p, index}
-        <Table.Head class={cn('text-center', hoveredIndex === index ? 'bg-muted/50' : '')}
-          >{p.name}</Table.Head>
+        <Table.Head class={cn('text-center', hoveredIndex === index ? 'bg-muted/50' : '')}>
+          <button
+            class="h-full w-full"
+            on:mouseleave={() => {
+              hoveredIndex = -1;
+            }}
+            on:mouseenter={() => {
+              hoveredIndex = index;
+            }}>
+            {p.name}
+          </button>
+        </Table.Head>
       {/each}
     </Table.Row>
   </Table.Header>
