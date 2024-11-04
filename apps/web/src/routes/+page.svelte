@@ -516,4 +516,6 @@
       </p>
     </div>
   {/if}
+
+  <div class="h-56 w-1 md:h-0" />
 </div>
