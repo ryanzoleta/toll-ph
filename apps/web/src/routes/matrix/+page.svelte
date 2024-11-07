@@ -4,6 +4,8 @@
   import type { Point } from '$lib/data/schema.js';
   import Header from '$lib/components/ui/Header.svelte';
   import MatrixTable from '$lib/components/ui/MatrixTable.svelte';
+  import Coffee from '$lib/components/ui/Coffee.svelte';
+  import { Button } from '$lib/components/ui/button';
 
   export let data;
 
@@ -57,7 +59,7 @@
 
 <div class="flex flex-col items-center">
   <div class="mx-5 flex w-11/12 flex-col gap-10 pt-5">
-    <Header showCalculatorButton />
+    <Header />
 
     <div class="flex flex-col items-center gap-5 md:flex-row md:justify-between">
       <h2 class="text-2xl font-bold tracking-tight">Toll Matrix/Table</h2>
@@ -103,11 +105,17 @@
       </div>
     </div>
 
-    <div
-      class="w-full rounded-xl border border-green-500 bg-green-100 p-5 md:w-fit dark:bg-green-950">
-      <h4 class="font-bold dark:text-green-100">Hey!</h4>
-      <p>Driving across <span class="italic">multiple</span> expressways?</p>
-      <p>Try the <a href="/" class="font-bold underline hover:opacity-50">calculator</a>!</p>
+    <div class="flex flex-col gap-5">
+      <div
+        class="flex w-full flex-col gap-3 rounded-xl border border-green-500 bg-green-100 p-5 md:w-fit dark:bg-green-950">
+        <h4 class="font-bold dark:text-green-100">Hey!</h4>
+        <p>Driving across <span class="italic">multiple</span> expressways?</p>
+        <Button href="/" class="w-fit">Try the Calculator!</Button>
+      </div>
+
+      <div>
+        <Coffee mini />
+      </div>
     </div>
 
     <div class="flex flex-col gap-24">
