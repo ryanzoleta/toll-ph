@@ -31,6 +31,9 @@
 						<td>Entry/Exit</td>
 
 						{#each points as point}
+							<!-- <td class="text-nowrap">
+								{point.name} ({point.id})
+							</td> -->
 							<td class="text-nowrap">
 								{point.name} ({point.id})
 							</td>
@@ -44,6 +47,7 @@
 							<td class="text-nowrap">{entry.name} ({entry.id})</td>
 
 							{#each points as exit}
+								<!-- <td class="text-nowrap">{entry.name}</td> -->
 								<td>
 									<input
 										type="number"
