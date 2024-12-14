@@ -18,6 +18,7 @@ export async function load() {
 		points,
 		expressways,
 		tollNetworks,
-		tollMatrix
+		tollMatrix,
+		key: API_KEY
 	};
 }

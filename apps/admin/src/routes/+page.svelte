@@ -1,5 +1,18 @@
 <script lang="ts">
+	import type { TollMatrix } from '$lib/types.js';
+
 	let { data } = $props();
+
+	async function handleFeeChange(tm: TollMatrix) {
+		const res = await fetch(`http://localhost:5173/api/toll_matrix?key=${data.key}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(tm)
+		});
+		console.log(await res.json());
+	}
 </script>
 
 <div class="flex w-full flex-col gap-10 p-5">
@@ -19,7 +32,7 @@
 
 						{#each points as point}
 							<td class="text-nowrap">
-								{point.name}
+								{point.name} ({point.id})
 							</td>
 						{/each}
 					</tr>
@@ -28,18 +41,32 @@
 				<tbody>
 					{#each points as entry}
 						<tr>
-							<td>{entry.name}</td>
+							<td class="text-nowrap">{entry.name} ({entry.id})</td>
 
 							{#each points as exit}
-								<td
-									>{data.tollMatrix.find((tm) => {
-										return (
-											tm.entryPointId === exit.id &&
-											tm.exitPointId === entry.id &&
-											tm.vehicleClass === 1
-										);
-									})?.fee}</td
-								>
+								<td>
+									<input
+										type="number"
+										value={data.tollMatrix.find((tm) => {
+											return (
+												tm.entryPointId === exit.id &&
+												tm.exitPointId === entry.id &&
+												tm.vehicleClass === 1
+											);
+										})?.fee}
+										onchange={(event) => {
+											if (!event.target) return;
+
+											handleFeeChange({
+												entryPointId: exit.id,
+												exitPointId: entry.id,
+												vehicleClass: 1,
+												reversible: false,
+												fee: Number(event.target.value).toFixed(0)
+											});
+										}}
+									/>
+								</td>
 							{/each}
 						</tr>
 					{/each}
