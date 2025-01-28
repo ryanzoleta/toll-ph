@@ -5,6 +5,7 @@
   import AppStore from '$lib/assets/images/appstore.svg';
   import PlayStore from '$lib/assets/images/playstore.png';
   import { onMount } from 'svelte';
+  import Coffee from '$lib/components/ui/Coffee.svelte';
 
   export let showCalculatorButton = false;
   let os: 'apple' | 'android' | undefined = undefined;

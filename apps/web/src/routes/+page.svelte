@@ -488,8 +488,6 @@
           }, 1);
         }}>Bacoor → Subic</button>
     </div>
-  {:else}
-    <Coffee />
   {/if}
 
   {#if savedTrips.length > 0}

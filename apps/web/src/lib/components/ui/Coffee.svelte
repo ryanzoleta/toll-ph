@@ -12,7 +12,7 @@
       ><img
         src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
         alt="Buy Me A Coffee"
-        style="height: 54px !important;width: 196px !important;" /></a>
+        class="h-10" /></a>
   {:else}
     <div
       class="flex w-full flex-col gap-5 rounded-lg border border-yellow-500 bg-yellow-100 p-5 dark:bg-yellow-950 dark:text-slate-200"

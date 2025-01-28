@@ -112,10 +112,6 @@
         <p>Driving across <span class="italic">multiple</span> expressways?</p>
         <Button href="/" class="w-fit">Try the Calculator!</Button>
       </div>
-
-      <div>
-        <Coffee mini />
-      </div>
     </div>
 
     <div class="flex flex-col gap-24">
