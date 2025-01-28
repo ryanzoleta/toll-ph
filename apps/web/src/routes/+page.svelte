@@ -18,6 +18,8 @@
   let pointOrigin: Point | null = null;
   let pointDestination: Point | null = null;
   let tollFee = 0;
+  let autoSweepTotal = 0;
+  let easyTripTotal = 0;
 
   let pointOriginInput = '';
   let pointDestinationInput = '';
@@ -85,6 +87,8 @@
 
     tollSegments = [];
     tollFee = 0;
+    easyTripTotal = 0;
+    autoSweepTotal = 0;
     savedResult = false;
 
     if (pointOrigin.tollNetworkId === pointDestination.tollNetworkId) {
@@ -135,6 +139,14 @@
 
             i = -1;
           }
+        }
+      }
+
+      for (let segment of tollSegments) {
+        if (segment.entryPoint.rfid === 'AUTOSWEEP') {
+          autoSweepTotal += segment.fee;
+        } else {
+          easyTripTotal += segment.fee;
         }
       }
     }
@@ -423,6 +435,37 @@
           </div>
         {/each}
       </div>
+
+      {#if autoSweepTotal > 0 && easyTripTotal > 0}
+        <hr />
+
+        <div class="flex flex-col gap-1 text-sm md:text-base">
+          <div class="flex flex-row items-center justify-between">
+            <div class="flex flex-row items-center gap-1">
+              <div
+                class="rounded-lg bg-green-300 px-2 py-1 font-mono text-xs text-green-700 dark:bg-green-700 dark:text-green-200">
+                A
+              </div>
+
+              <p class="text-green-700">AutoSweep Total</p>
+            </div>
+
+            <p class="text-green-700">{formatAmountToCurrency(autoSweepTotal)}</p>
+          </div>
+
+          <div class="flex flex-row justify-between">
+            <div class="flex flex-row items-center gap-1">
+              <div
+                class="items-center rounded-lg bg-blue-300 px-2 py-1 font-mono text-xs text-blue-700 dark:bg-blue-900 dark:text-blue-400">
+                E
+              </div>
+              <p class="text-blue-700">EasyTrip Total</p>
+            </div>
+
+            <p class="text-blue-700">{formatAmountToCurrency(easyTripTotal)}</p>
+          </div>
+        </div>
+      {/if}
 
       {#if savedResult}
         <p class="block text-center text-sm text-slate-500 md:hidden">Saved!</p>
