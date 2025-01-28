@@ -376,7 +376,7 @@
       <div class="flex flex-col gap-1 text-sm md:text-base">
         {#each tollSegments as segment}
           <div class="flex flex-row justify-between">
-            <div class="hidden flex-1 flex-row gap-1 md:flex">
+            <div class="hidden flex-1 flex-row items-center gap-1 md:flex">
               <p class="flex-1 text-slate-500 dark:text-slate-500">
                 {segment.entryPoint.expresswayId}
               </p>
@@ -384,7 +384,7 @@
             {#if segment.entryPoint.id === segment.exitPoint.id}
               <p class="flex-1 text-center">{segment.entryPoint.name}</p>
             {:else}
-              <div class="flex flex-row gap-2">
+              <div class="flex flex-row items-center gap-2">
                 <p class="">{segment.entryPoint.name}</p>
                 <p class="text-slate-500 dark:text-slate-500">→</p>
                 <p class="">{segment.exitPoint.name}</p>
@@ -392,7 +392,7 @@
               </div>
             {/if}
 
-            <div class="flex flex-1 flex-row gap-2">
+            <div class="flex flex-1 flex-row items-center gap-2">
               <p class="flex-1 text-right text-slate-500 dark:text-slate-500">
                 {formatAmountToCurrency(segment.fee)}
               </p>
