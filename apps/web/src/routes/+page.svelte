@@ -30,6 +30,8 @@
   let localStorageLoaded = false;
   let savedResult = false;
 
+  let usageCount = 0;
+
   onMount(() => {
     savedTrips = JSON.parse(localStorage.getItem('savedTrips') ?? '[]');
     localStorageLoaded = true;
@@ -81,6 +83,7 @@
   }
 
   function calculate(pointOrigin: Point | null, pointDestination: Point | null) {
+    usageCount += 1;
     console.log('calculate start');
     if (!pointOrigin || !pointDestination) return;
     console.log('calculate not returned');
@@ -530,6 +533,10 @@
             calculate(po, pd);
           }, 1);
         }}>Bacoor → Subic</button>
+    </div>
+  {:else if usageCount > 3}
+    <div>
+      <Coffee />
     </div>
   {/if}
 
