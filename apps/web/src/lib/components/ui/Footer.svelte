@@ -14,7 +14,8 @@
     <a
       href="https://www.buymeacoffee.com/ryanarnold"
       target="_blank"
-      class="text-center text-xs text-slate-500 hover:underline">Buy me a kape</a>
+      class="plausible-event-name=coffee text-center text-xs text-slate-500 hover:underline"
+      >Buy me a kape</a>
     <a
       href="https://forms.gle/BG6voJJ2ZLtZdcmVA"
       target="_blank"

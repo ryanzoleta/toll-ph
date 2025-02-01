@@ -36,13 +36,15 @@
       {#if os === 'apple'}
         <a
           href="https://apps.apple.com/app/apple-store/id6572299762?pt=126844345&ct=WebApp&mt=8"
-          target="_blank">
+          target="_blank"
+          class="plausible-event-name=appstore">
           <img src={AppStore} alt="App Store Link" class="h-10" />
         </a>
       {:else}
         <a
           href="https://play.google.com/store/apps/details?id=com.ryanzoleta.tollph&pcampaignid=web_share"
-          target="_blank">
+          target="_blank"
+          class="plausible-event-name=playstore">
           <img src={PlayStore} alt="Play Store Link" class="h-10" />
         </a>
       {/if}

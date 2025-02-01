@@ -346,7 +346,7 @@
 
   <div class="flex flex-col gap-3">
     <button
-      class="rounded-md bg-green-300 py-3 font-bold text-green-800 transition duration-100 hover:bg-green-400 dark:bg-green-800 dark:text-green-200 dark:hover:bg-green-700"
+      class="plausible-event-name=calculate rounded-md bg-green-300 py-3 font-bold text-green-800 transition duration-100 hover:bg-green-400 dark:bg-green-800 dark:text-green-200 dark:hover:bg-green-700"
       on:click={() => {
         calculate(pointOrigin, pointDestination);
       }}>Calculate</button>
