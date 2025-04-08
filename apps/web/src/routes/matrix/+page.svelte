@@ -107,17 +107,29 @@
 
     <div class="flex flex-col gap-5">
       <div
-        class="flex w-full flex-col gap-3 rounded-xl border border-green-500 bg-green-100 p-5 md:w-fit dark:bg-green-950">
-        <h4 class="font-bold dark:text-green-100">Hey!</h4>
-        <p>Driving across <span class="italic">multiple</span> expressways?</p>
+        class="flex w-full flex-row items-center gap-3 rounded-xl border border-green-500 bg-green-100 p-5 md:w-fit dark:bg-green-950">
+        <p class="text-lg">Driving across <span class="italic">multiple</span> expressways?</p>
         <Button href="/" class="w-fit">Try the Calculator!</Button>
       </div>
     </div>
 
-    <div class="flex flex-col gap-24">
+    <div class="flex flex-col gap-10">
       {#each data.tollNetworks as tollNetwork}
-        <div class="flex flex-col gap-2">
-          <h3 class="text-xl font-bold" id={tollNetwork.id}>{tollNetwork.name}</h3>
+        <div
+          class="flex flex-col gap-5 rounded-xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-900">
+          <div class="flex flex-col gap-2">
+            <h3 class="text-2xl font-bold" id={tollNetwork.id}>{tollNetwork.name}</h3>
+
+            <div class="flex flex-row gap-3 dark:text-slate-500">
+              {#each data.expressways.filter((e) => e.tollNetworkId === tollNetwork.id) as expressway, index}
+                <p>{expressway.name}</p>
+
+                {#if index < data.expressways.filter((e) => e.tollNetworkId === tollNetwork.id).length - 1}
+                  <p>•</p>
+                {/if}
+              {/each}
+            </div>
+          </div>
 
           <MatrixTable {tollNetwork} tollMatrix={data.tollMatrix} {vehicleClass} />
         </div>

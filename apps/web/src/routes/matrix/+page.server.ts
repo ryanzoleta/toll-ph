@@ -24,9 +24,12 @@ export async function load() {
 
   const tollNetworks = await db.select().from(tollNetwork);
 
+  const expressways = await db.select().from(expressway);
+
   return {
     tollMatrix: tollMatrixResults,
     points,
     tollNetworks: tollNetworks.sort((a, b) => (a.sequence || 0) - (b.sequence || 0)),
+    expressways,
   };
 }

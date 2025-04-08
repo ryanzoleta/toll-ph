@@ -366,7 +366,7 @@
   {#if tollFee > 0}
     <div
       class="flex flex-col gap-5 rounded-lg bg-slate-100 p-5 dark:bg-slate-900 dark:text-slate-200"
-      in:fade>
+      in:fade={{ duration: 100 }}>
       <div class="flex flex-row items-center justify-between">
         <div class="flex flex-col">
           <h2 class="text-lg font-light text-gray-500">
