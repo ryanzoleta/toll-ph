@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 
 export async function load() {
+  console.log('Loading matrix data...');
   const entryPoint = alias(point, 'entryPoint');
   const exitPoint = alias(point, 'exitPoint');
   const entryExpressway = alias(expressway, 'entryExpressway');
