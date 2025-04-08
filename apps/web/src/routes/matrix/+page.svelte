@@ -95,12 +95,13 @@
       </div>
     </div>
 
-    <div class="bg-muted flex flex-col gap-5 rounded-xl p-5 md:w-1/3">
+    <div class="flex flex-col gap-5 rounded-xl bg-slate-100 p-5 md:w-1/3 dark:bg-slate-900">
       <p>Jump to:</p>
 
       <div class="flex flex-col gap-1">
         {#each data.tollNetworks as tollNetwork}
-          <a href="#{tollNetwork.id}" class="text-slate-500 hover:underline">{tollNetwork.name}</a>
+          <a href="#{tollNetwork.id}" class="text-slate-600 hover:underline dark:text-slate-400"
+            >{tollNetwork.name}</a>
         {/each}
       </div>
     </div>

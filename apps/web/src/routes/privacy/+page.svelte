@@ -12,8 +12,6 @@
   <div class="flex flex-col gap-5">
     <h2 class="text-xl font-bold">Privacy Policy</h2>
 
-    <p>Toll Rates updated as of March 30, 2025</p>
-
     <p>Toll.ph does not collect any data and information from users.</p>
 
     <p>
