@@ -1,6 +1,30 @@
 import pandas as pd
+import psycopg2
 
-statements = []
+
+class UpdateTask:
+
+    def __init__(self, entry_name, exit_name, vehicle_class, new_fee, expressway):
+        self.entry_name = entry_name
+        self.exit_name = exit_name
+        self.vehicle_class = vehicle_class
+        self.new_fee = new_fee
+        self.expressway = expressway
+
+    def select_stmt(self):
+
+        return f"""
+            select *
+            from
+                toll_matrix
+            where
+                    entry_point_id = (select id from point where trim(name) = '{self.entry_name}' and expresway_id = '{self.expressway}')
+            and   exit_point_id = (select id from point where trim(name) = '{self.exit_name}' and expresway_id = '{self.expressway}')
+            and   vehicle_class = {self.vehicle_class}
+            """
+
+
+update_tasks = []
 
 file_path = "class1.xlsx"
 
@@ -29,17 +53,37 @@ for sheet_name, df in all_sheets.items():
                 continue
             val = row[col_name]
 
-            stmt = f"""
-            select *
-            from
-                toll_matrix
-            where
-                    entry_point_id = (select id from point where trim(name) = '{col_name}' and expresway_id = 'TPLEX')
-            and   exit_point_id = (select id from point where trim(name) = '{exit_point}' and expresway_id = 'TPLEX')
-            and   vehicle_class = 1
-            """
-
-            statements.append(stmt)
+            update_tasks.append(UpdateTask(col_name, exit_point, 1, val, sheet_name))
 
 
-print(statements)
+conn = psycopg2.connect(
+    dbname="railway",
+    user="postgres",
+    password="YvLQDahSioySlJoaSFNpXOdrVTBIBKHK",
+    host="monorail.proxy.rlwy.net",  # usually "localhost" if running locally
+    port="40021",  # default PostgreSQL port
+)
+
+# Open a cursor to perform database operations
+cur = conn.cursor()
+
+# Execute a query
+
+for task in update_tasks:
+    cur.execute(task.select_stmt())
+    # Retrieve query results
+    records = cur.fetchall()
+
+    if len(records) == 0:
+        print(f"No records found for {task.entry_name} to {task.exit_name}")
+        continue
+
+    for record in records:
+        print(
+            f"{task.entry_name} to {task.exit_name}  Old: {record[2]} -> {task.new_fee}"
+        )
+
+
+# Close the cursor and connection
+cur.close()
+conn.close()
