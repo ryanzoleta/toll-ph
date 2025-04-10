@@ -1,6 +1,8 @@
 import pandas as pd
 import psycopg2
 
+VEHICLE_CLASS = 2
+
 
 class UpdateTask:
 
@@ -12,7 +14,6 @@ class UpdateTask:
         self.expressway = expressway
 
     def select_stmt(self):
-
         return f"""
             select *
             from
@@ -23,10 +24,21 @@ class UpdateTask:
             and   vehicle_class = {self.vehicle_class}
             """
 
+    def update_stmt(self):
+        return f"""
+            update
+                toll_matrix
+            set fee = {self.new_fee}
+            where
+                    entry_point_id = (select id from point where trim(name) = '{self.entry_name}' and expresway_id = '{self.expressway}')
+            and   exit_point_id = (select id from point where trim(name) = '{self.exit_name}' and expresway_id = '{self.expressway}')
+            and   vehicle_class = {self.vehicle_class}
+            """
+
 
 update_tasks = []
 
-file_path = "class1.xlsx"
+file_path = f"class{VEHICLE_CLASS}.xlsx"
 
 df = pd.read_excel(file_path)
 
@@ -51,9 +63,11 @@ for sheet_name, df in all_sheets.items():
             # Check if the cell is empty
             if pd.isna(row[col_name]):
                 continue
-            val = row[col_name]
+            val = float(row[col_name])
 
-            update_tasks.append(UpdateTask(col_name, exit_point, 1, val, sheet_name))
+            update_tasks.append(
+                UpdateTask(col_name, exit_point, VEHICLE_CLASS, val, sheet_name)
+            )
 
 
 conn = psycopg2.connect(
@@ -64,14 +78,10 @@ conn = psycopg2.connect(
     port="40021",  # default PostgreSQL port
 )
 
-# Open a cursor to perform database operations
 cur = conn.cursor()
-
-# Execute a query
 
 for task in update_tasks:
     cur.execute(task.select_stmt())
-    # Retrieve query results
     records = cur.fetchall()
 
     if len(records) == 0:
@@ -83,7 +93,12 @@ for task in update_tasks:
             f"{task.entry_name} to {task.exit_name}  Old: {record[2]} -> {task.new_fee}"
         )
 
+        try:
+            cur.execute(task.update_stmt())
+        except Exception as e:
+            print(e)
 
-# Close the cursor and connection
+
+conn.commit()
 cur.close()
 conn.close()
