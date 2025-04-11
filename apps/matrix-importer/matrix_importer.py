@@ -2,7 +2,7 @@ import pandas as pd
 import psycopg2
 import sys
 
-VEHICLE_CLASS = 2
+VEHICLE_CLASS = 3
 
 print(sys.argv[0])
 
