@@ -1,7 +1,10 @@
 import pandas as pd
 import psycopg2
+import sys
 
 VEHICLE_CLASS = 2
+
+print(sys.argv[0])
 
 
 class UpdateTask:
@@ -15,23 +18,51 @@ class UpdateTask:
 
     def select_stmt(self):
         return f"""
-            select *
+           select *
             from
-                toll_matrix
+                toll_matrix tm
             where
-                    entry_point_id = (select id from point where trim(name) = '{self.entry_name}' and expresway_id = '{self.expressway}')
-            and   exit_point_id = (select id from point where trim(name) = '{self.exit_name}' and expresway_id = '{self.expressway}')
+                    tm.entry_point_id = (select
+                                            p.id
+                                        from
+                                            point p
+                                            inner join expressway e on p.expresway_id = e.id
+                                        where
+                                            trim(p.name) = '{self.entry_name}'
+                                        and e.toll_network_id = '{self.expressway}')
+            and   tm.exit_point_id = (select
+                                            p.id
+                                        from
+                                            point p
+                                            inner join expressway e on p.expresway_id = e.id
+                                        where
+                                            trim(p.name) = '{self.exit_name}'
+                                        and e.toll_network_id = '{self.expressway}')
             and   vehicle_class = {self.vehicle_class}
+            
             """
 
     def update_stmt(self):
         return f"""
-            update
-                toll_matrix
+           update toll_matrix tm
             set fee = {self.new_fee}
             where
-                    entry_point_id = (select id from point where trim(name) = '{self.entry_name}' and expresway_id = '{self.expressway}')
-            and   exit_point_id = (select id from point where trim(name) = '{self.exit_name}' and expresway_id = '{self.expressway}')
+                    tm.entry_point_id = (select
+                                            p.id
+                                        from
+                                            point p
+                                            inner join expressway e on p.expresway_id = e.id
+                                        where
+                                            trim(p.name) = '{self.entry_name}'
+                                        and e.toll_network_id = '{self.expressway}')
+            and   tm.exit_point_id = (select
+                                            p.id
+                                        from
+                                            point p
+                                            inner join expressway e on p.expresway_id = e.id
+                                        where
+                                            trim(p.name) = '{self.exit_name}'
+                                        and e.toll_network_id = '{self.expressway}')
             and   vehicle_class = {self.vehicle_class}
             """
 
@@ -52,7 +83,7 @@ for sheet_name, df in all_sheets.items():
         if index == 0:
             continue
 
-        exit_point = row[0]
+        exit_point = row.iloc[0]
 
         i = 0
         for col_name in df.columns:

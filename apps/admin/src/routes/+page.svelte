@@ -2,6 +2,7 @@
 	import type { TollMatrix } from '$lib/types.js';
 
 	let { data } = $props();
+	let vehiclceClass = $state(1);
 
 	async function handleFeeChange(tm: TollMatrix) {
 		const res = await fetch(`http://localhost:5173/api/toll_matrix?key=${data.key}`, {
@@ -17,6 +18,14 @@
 
 <div class="flex w-full flex-col gap-10 p-5">
 	<h1 class="text-lg font-bold">Toll.ph Admin Panel</h1>
+
+	<div>
+		<select name="vehicleClass" id="vehicleClass" bind:value={vehiclceClass}>
+			<option value={1}>Class 1</option>
+			<option value={2}>Class 2</option>
+			<option value={3}>Class 3</option>
+		</select>
+	</div>
 
 	{#each data.tollNetworks as tollNetwork}
 		{@const points = data.points
@@ -55,7 +64,7 @@
 											return (
 												tm.entryPointId === exit.id &&
 												tm.exitPointId === entry.id &&
-												tm.vehicleClass === 1
+												tm.vehicleClass === vehiclceClass
 											);
 										})?.fee}
 										onchange={(event) => {
@@ -64,7 +73,7 @@
 											handleFeeChange({
 												entryPointId: exit.id,
 												exitPointId: entry.id,
-												vehicleClass: 1,
+												vehicleClass: vehiclceClass,
 												reversible: false,
 												fee: Number(event.target.value).toFixed(0)
 											});
