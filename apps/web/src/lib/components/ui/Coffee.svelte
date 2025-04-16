@@ -19,7 +19,7 @@
       in:fade>
       <div class="flex justify-between">
         <p class="text-yellow-800 dark:text-yellow-500">
-          Did you find this useful? If so, why not...
+          Toll.ph is built and maintained by a single individual. If you found this useful, why not show your support by fueling my crippling caffeine addiction?
         </p>
 
         <button
