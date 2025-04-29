@@ -39,13 +39,6 @@
           src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
           alt="Buy Me A Coffee"
           style="height: 54px !important;width: 196px !important;" /></a>
-
-      <p class="text-yellow-800 dark:text-yellow-500">
-        Or, donate via <a
-          href="https://paypal.me/ryanarnoldzoleta"
-          target="_blank"
-          class="text-yellow-800 underline hover:opacity-50 dark:text-yellow-500">PayPal</a>
-      </p>
     </div>
   {/if}
 {/if}

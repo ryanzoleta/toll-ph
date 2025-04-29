@@ -79,11 +79,16 @@
     }}
     on:blur={() => {
       setTimeout(() => {
+        if (selectedIndex > -1 && displaySearchResults && searchResults.length > 0) {
+          setPoint = searchResults[selectedIndex];
+        }
+
         displaySearchResults = false;
+
         if (searchResults.length === 1) {
           setPoint = searchResults[0];
         }
-      }, 100);
+      }, 200);
     }}
     on:keydown={(e) => {
       if (e.key === 'ArrowUp') {
@@ -124,6 +129,9 @@
         {index === searchResults.length - 1 ? 'rounded-b-md' : ''}"
           on:mouseenter={() => {
             selectedIndex = index;
+          }}
+          on:mouseleave={() => {
+            selectedIndex = -1;
           }}
           on:click={() => {
             setPoint = point;
