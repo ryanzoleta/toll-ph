@@ -28,15 +28,15 @@
     <p>Toll.ph does not collect any data and information from users.</p>
 
     <p>
-      Toll.ph uses <a href="https://vercel.com/products/observability" target="_blank"
-        >Vercel Analytics</a>
-      to collect anonymous, privacy-focused usaged data solely for the purpose of knowing things like
+      Toll.ph uses <a href="https://plausible.io/" target="_blank" class="text-slate-500 underline"
+        >Plausible Analytics</a>
+      to collect anonymous, privacy-focused usage data solely for the purpose of knowing things like
       how many people visits and uses the website, what percentage of users are on which operating systems,
       the country or region from which the website was accessed, the website from which the user entered
       toll.ph, and if anyone actually use a particular feature. The data is not and cannot be asssociated
-      with a specific user. Vercel Analytics' privacy policy can be found here:
-      <a href="https://vercel.com/docs/analytics/privacy-policy" class="text-slate-500 underline"
-        >https://vercel.com/docs/analytics/privacy-policy</a>
+      with a specific user. Plausible Analytics' privacy policy can be found here:
+      <a href="https://plausible.io/privacy" class="text-slate-500 underline"
+        >https://plausible.io/privacy</a>
     </p>
 
     <p>
