@@ -1,10 +1,8 @@
 <script lang="ts">
   import * as Select from '$lib/components/ui/select';
-  import * as Table from '$lib/components/ui/table';
   import type { Point } from '$lib/data/schema.js';
   import Header from '$lib/components/ui/Header.svelte';
   import MatrixTable from '$lib/components/ui/MatrixTable.svelte';
-  import Coffee from '$lib/components/ui/Coffee.svelte';
   import { Button } from '$lib/components/ui/button';
 
   export let data;
