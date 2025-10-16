@@ -3,6 +3,7 @@ import psycopg2
 import sys
 
 VEHICLE_CLASS = 3
+TO_PROCESS_SHEETS = ["NLEX_SCTEX"]
 
 print(sys.argv[0])
 
@@ -77,6 +78,9 @@ all_sheets = pd.read_excel(file_path, sheet_name=None)
 
 # Iterate through each sheet
 for sheet_name, df in all_sheets.items():
+    if sheet_name not in TO_PROCESS_SHEETS:
+        continue
+
     print(f"\nSheet: {sheet_name}")
 
     for index, row in df.iterrows():
@@ -120,8 +124,13 @@ for task in update_tasks:
         continue
 
     for record in records:
+
+        if record[2] == task.new_fee:
+            print(f'Skipping {task.entry_name} to {task.exit_name}')
+            continue
+
         print(
-            f"{task.entry_name} to {task.exit_name}  Old: {record[2]} -> {task.new_fee}"
+            f"{task.entry_name} to {task.exit_name}: {record[2]} -> {task.new_fee}"
         )
 
         try:
