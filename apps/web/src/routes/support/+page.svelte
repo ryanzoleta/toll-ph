@@ -15,9 +15,9 @@
 
       <p>
         Please email <a
-          href="mailto:ryanzoleta@proton.me"
-          class="text-slate-500 underline hover:opacity-90">ryanzoleta@proton.me</a> for any concerns
-        regarding the Toll PH website or app.
+          href="mailto:contact@toll.ph"
+          class="text-slate-500 underline hover:opacity-90">contact@toll.ph</a> for any concerns regarding
+        the Toll PH website or app.
       </p>
     </div>
 
