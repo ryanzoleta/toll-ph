@@ -31,7 +31,10 @@
         </button>
       </div>
 
-      <a href="https://www.buymeacoffee.com/ryanarnold" target="_blank"
+      <a
+        href="https://www.buymeacoffee.com/ryanarnold"
+        target="_blank"
+        class="plausible-event-name=coffee"
         ><img
           src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
           alt="Buy Me A Coffee"

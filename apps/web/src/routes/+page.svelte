@@ -94,16 +94,16 @@
     autoSweepTotal = 0;
     savedResult = false;
 
-    if (vehicleClass.value === 2) {
-      // @ts-ignore
-      plausible('calculate-2');
-    } else if (vehicleClass.value === 3) {
-      // @ts-ignore
-      plausible('calculate-3');
-    }
+    // if (vehicleClass.value === 2) {
+    //   // @ts-ignore
+    //   plausible('calculate-2');
+    // } else if (vehicleClass.value === 3) {
+    //   // @ts-ignore
+    //   plausible('calculate-3');
+    // }
 
-    // @ts-ignore
-    plausible('calculate');
+    // // @ts-ignore
+    // plausible('calculate');
 
     if (pointOrigin.tollNetworkId === pointDestination.tollNetworkId) {
       tollSegments = [
@@ -357,7 +357,11 @@
 
   <div class="flex flex-col gap-3">
     <button
-      class="rounded-md bg-green-300 py-3 font-bold text-green-800 transition duration-100 hover:bg-green-400 dark:bg-green-800 dark:text-green-200 dark:hover:bg-green-700"
+      class="plausible-event-name={vehicleClass.value === 2
+        ? 'calculate-2'
+        : vehicleClass.value === 3
+        ? 'calculate-3'
+        : 'calculate'} rounded-md bg-green-300 py-3 font-bold text-green-800 transition duration-100 hover:bg-green-400 dark:bg-green-800 dark:text-green-200 dark:hover:bg-green-700"
       on:click={() => {
         calculate(pointOrigin, pointDestination);
       }}>Calculate</button>
