@@ -23,7 +23,7 @@
 
 <div class="flex place-content-between place-items-center py-2 md:py-0">
   <div class="flex flex-row items-center gap-5">
-    <a href="/" class="text-3xl font-bold text-slate-950 dark:text-slate-300"><h1>toll.ph</h1></a>
+    <a href="/" class="text-3xl font-bold text-slate-950 dark:text-slate-300"><h1>Toll PH</h1></a>
   </div>
 
   <div class="flex flex-row items-center gap-5">
