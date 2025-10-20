@@ -7,36 +7,6 @@
 
   export let data;
 
-  function getUniqueEntryPoints(tollNetworkId: string) {
-    return data.tollMatrix
-      .filter((matrix) => matrix.entryExpressway.tollNetworkId === tollNetworkId)
-      .reduce((points, matrix) => {
-        const returns = [];
-
-        if (!points.find((p) => p.id === matrix.entryPoint.id)) {
-          returns.push(matrix.entryPoint);
-        }
-
-        return [...points, ...returns];
-      }, [] as Point[])
-      .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
-  }
-
-  function getUniqueExitPoints(tollNetworkId: string) {
-    return data.tollMatrix
-      .filter((matrix) => matrix.entryExpressway.tollNetworkId === tollNetworkId)
-      .reduce((points, matrix) => {
-        const returns = [];
-
-        if (!points.find((p) => p.id === matrix.exitPoint.id)) {
-          returns.push(matrix.exitPoint);
-        }
-
-        return [...points, ...returns];
-      }, [] as Point[])
-      .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
-  }
-
   let vehicleClass = { value: 1, label: 'Class 1' };
   let vehicleClassList = [
     { value: 1, label: 'Class 1' },
@@ -63,7 +33,7 @@
       <h2 class="text-2xl font-bold tracking-tight">Toll Matrix/Table</h2>
     </div>
 
-    <div class="flex flex-col gap-5 rounded-xl bg-slate-100 p-5 md:w-1/3 dark:bg-slate-900">
+    <div class="flex flex-col gap-5 rounded-xl bg-slate-100 p-5 dark:bg-slate-900 md:w-1/3">
       <p>Jump to:</p>
 
       <div class="flex flex-col gap-1">
@@ -76,7 +46,7 @@
 
     <div class="flex flex-col gap-5">
       <div
-        class="flex w-full flex-row items-center gap-3 rounded-xl border border-green-500 bg-green-100 p-5 md:w-fit dark:bg-green-950">
+        class="flex w-full flex-row items-center gap-3 rounded-xl border border-green-500 bg-green-100 p-5 dark:bg-green-950 md:w-fit">
         <p class="text-lg">Driving across <span class="italic">multiple</span> expressways?</p>
         <Button href="/" class="w-fit">Try the Calculator!</Button>
       </div>

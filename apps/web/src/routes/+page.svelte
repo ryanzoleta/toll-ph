@@ -94,17 +94,6 @@
     autoSweepTotal = 0;
     savedResult = false;
 
-    // if (vehicleClass.value === 2) {
-    //   // @ts-ignore
-    //   plausible('calculate-2');
-    // } else if (vehicleClass.value === 3) {
-    //   // @ts-ignore
-    //   plausible('calculate-3');
-    // }
-
-    // // @ts-ignore
-    // plausible('calculate');
-
     if (pointOrigin.tollNetworkId === pointDestination.tollNetworkId) {
       tollSegments = [
         {
