@@ -287,11 +287,6 @@
   <Header showPro />
 
   <div class="flex flex-col gap-5">
-    <p class="text-sm text-slate-500">
-      Use this to calculate the toll fee for a trip in the entire Philippine Luzon expressway
-      network, from Baguio to Batangas to Cavite.
-    </p>
-
     <div class="flex flex-col gap-2">
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Vehicle Class</h3>
 
