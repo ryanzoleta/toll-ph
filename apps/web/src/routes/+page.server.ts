@@ -37,7 +37,8 @@ export async function load() {
     .select()
     .from(tollMatrix)
     .innerJoin(entryPoint, eq(tollMatrix.entryPointId, entryPoint.id))
-    .innerJoin(exitPoint, eq(tollMatrix.exitPointId, exitPoint.id));
+    .innerJoin(exitPoint, eq(tollMatrix.exitPointId, exitPoint.id))
+    .where(eq(tollMatrix.vehicleClass, 1));
 
   const connectingPoint = alias(point, 'connecting_point');
   const connectingExpressway = alias(expressway, 'connecting_expressway');
