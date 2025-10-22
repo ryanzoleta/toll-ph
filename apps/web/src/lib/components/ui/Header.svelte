@@ -8,6 +8,7 @@
   import Coffee from '$lib/components/ui/Coffee.svelte';
 
   export let showCalculatorButton = false;
+  export let showPro = false;
   let os: 'apple' | 'android' | undefined = undefined;
 
   onMount(() => {
@@ -23,7 +24,14 @@
 
 <div class="flex place-content-between place-items-center py-2 md:py-0">
   <div class="flex flex-row items-center gap-5">
-    <a href="/" class="text-3xl font-bold text-slate-950 dark:text-slate-300"><h1>toll.ph</h1></a>
+    <a href={showPro ? '/pro' : '/'} class="text-3xl font-bold text-slate-950 dark:text-slate-300"
+      ><h1>
+        toll.ph
+        {#if showPro}
+          <span class="text-3xl italic text-sky-400 dark:text-sky-600">pro</span>
+        {/if}
+      </h1>
+    </a>
   </div>
 
   <div class="flex flex-row items-center gap-5">
