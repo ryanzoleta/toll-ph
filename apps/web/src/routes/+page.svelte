@@ -12,6 +12,7 @@
   import Sortable from 'sortablejs';
   import Coffee from '$lib/components/ui/Coffee.svelte';
   import { fade } from 'svelte/transition';
+  import { ChevronDown, Lock, LockKeyhole } from 'lucide-svelte';
 
   export let data;
 
@@ -274,6 +275,10 @@
       },
     });
   }
+
+  $: if (vehicleClass.value > 1) {
+    vehicleClass = { value: 1, label: 'Class 1' };
+  }
 </script>
 
 <svelte:head>
@@ -313,13 +318,20 @@
             <p class="font-bold">Class 1</p>
             <p class="text-slate-500">Car, Jeepney, Van, Pick-Up, Motorcycle (400c and up)</p>
           </Select.Item>
-          <Select.Item value={2} class="flex flex-col items-start">
-            <p class="font-bold">Class 2</p>
-            <p class="text-slate-500">Bus, Truck</p>
+          <Select.Item value={2} class="flex flex-row items-center justify-between gap-2" disabled>
+            <div class="flex flex-col">
+              <p class="font-bold text-slate-600">Class 2</p>
+              <p class="text-slate-700">Bus, Truck</p>
+            </div>
+            <Button variant="default" size="sm" disabled={false}>Unlock with Pro</Button>
           </Select.Item>
-          <Select.Item value={3} class="flex flex-col items-start">
-            <p class="font-bold">Class 3</p>
-            <p class="text-slate-500">Large Truck, Large Truck with Trailer</p>
+          <Select.Item value={3} class="flex flex-row items-center justify-between gap-2" disabled>
+            <div class="flex flex-col">
+              <p class="font-bold text-slate-600">Class 3</p>
+              <p class="text-slate-700">Large Truck, Large Truck with Trailer</p>
+            </div>
+
+            <Button variant="default" size="sm" disabled={false}>Unlock with Pro</Button>
           </Select.Item>
         </Select.Content>
       </Select.Root>
