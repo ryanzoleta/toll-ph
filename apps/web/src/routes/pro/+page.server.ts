@@ -1,9 +1,19 @@
+import { auth } from '$lib/auth';
 import { db } from '$lib/data/db';
 import { connection, expressway, point, tollMatrix, tollNetwork } from '$lib/data/schema';
+import { redirect, RequestEvent } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 
-export async function load() {
+export async function load(event: RequestEvent) {
+  const session = await auth.api.getSession({
+    headers: event.request.headers,
+  });
+
+  if (!session) {
+    throw redirect(302, '/signin');
+  }
+
   const points = await db
     .select({
       id: point.id,

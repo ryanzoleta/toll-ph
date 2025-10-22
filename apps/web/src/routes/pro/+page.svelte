@@ -12,8 +12,13 @@
   import Sortable from 'sortablejs';
   import Coffee from '$lib/components/ui/Coffee.svelte';
   import { fade } from 'svelte/transition';
+  import HeaderPro from '$lib/components/HeaderPro.svelte';
 
   export let data;
+
+  const points = data.points ?? [];
+  const tollMatrix = data.tollMatrix ?? [];
+  const connections = data.connections ?? [];
 
   let pointOrigin: Point | null = null;
   let pointDestination: Point | null = null;
@@ -61,7 +66,7 @@
   }
 
   function queryTollMatrix(origin: Point, destination: Point) {
-    let matrix = data.tollMatrix.find(
+    let matrix = tollMatrix.find(
       (tm) =>
         tm.entry_point.id === origin.id &&
         tm.exit_point.id === destination.id &&
@@ -70,7 +75,7 @@
 
     if (matrix !== null && matrix !== undefined) return parseFloat(matrix?.toll_matrix.fee ?? '0');
 
-    matrix = data.tollMatrix.find(
+    matrix = tollMatrix.find(
       (tm) =>
         tm.entry_point.id === destination.id &&
         tm.exit_point.id === origin.id &&
@@ -154,15 +159,15 @@
 
   function getReachables(pointId: number) {
     const returnValue = [
-      ...data.tollMatrix.filter((tm) => tm.entry_point.id === pointId).map((tm) => tm.exit_point),
-      ...data.tollMatrix
+      ...tollMatrix.filter((tm) => tm.entry_point.id === pointId).map((tm) => tm.exit_point),
+      ...tollMatrix
         .filter((tm) => tm.exit_point.id === pointId && tm.toll_matrix.reversible)
         .map((tm) => tm.entry_point),
     ];
 
     // this is crazy, but this is needed to allow southbound connections to NAIAX (e.g., Skyway Buendia to NAIAX)
     if (pointId === 1) {
-      const point1 = data.points.find((p) => p.id === 1);
+      const point1 = points.find((p) => p.id === 1);
       if (point1) {
         returnValue.push(point1);
       }
@@ -172,14 +177,14 @@
   }
 
   function getExternalConnections(reachablePointIds: number[]) {
-    const conn = data.connections
+    const conn = connections
       .filter((c) => reachablePointIds.includes(c.point.id))
       .map((c) => ({
         reachableConnectedPoint: c.point,
         externalConnectedPoint: c.connecting_point,
       }));
 
-    const connReversed = data.connections
+    const connReversed = connections
       .filter((c) => reachablePointIds.includes(c.connecting_point.id))
       .map((c) => ({
         reachableConnectedPoint: c.connecting_point,
@@ -222,7 +227,7 @@
   }
 
   $: reachables = [...originReachables, ...externalReachables]
-    .map((c) => data.points.find((p) => p.id === c.id) ?? c)
+    .map((c) => points.find((p) => p.id === c.id) ?? c)
     .reduce((acc, val) => {
       if (!acc.find((p) => p.id === val.id)) acc.push(val);
       return acc;
@@ -284,7 +289,7 @@
 </svelte:head>
 
 <div class="mx-5 flex flex-col gap-5 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
-  <Header showPro />
+  <HeaderPro />
 
   <div class="flex flex-col gap-5">
     <div class="flex flex-col gap-2">
@@ -321,7 +326,7 @@
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Origin</h3>
       <PointSelector
         bind:input={pointOriginInput}
-        points={data.points}
+        {points}
         placeholder="Enter point of origin"
         bind:setPoint={pointOrigin} />
     </div>

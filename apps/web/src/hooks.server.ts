@@ -1,21 +1,26 @@
+import { auth } from '$lib/auth'; // path to your auth file
+import { svelteKitHandler } from 'better-auth/svelte-kit';
+import { building } from '$app/environment';
+
 export async function handle({ event, resolve }) {
-  // Handle OPTIONS preflight request
-  if (event.request.method === 'OPTIONS') {
-    return new Response(null, {
-      headers: {
-        'Access-Control-Allow-Origin': 'http://localhost:5174',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
-    });
-  }
+  // // Handle OPTIONS preflight request
+  // if (event.request.method === 'OPTIONS') {
+  //   return new Response(null, {
+  //     headers: {
+  //       'Access-Control-Allow-Origin': 'http://localhost:5174',
+  //       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  //       'Access-Control-Allow-Headers': 'Content-Type',
+  //     },
+  //   });
+  // }
 
-  const response = await resolve(event);
+  // const response = await resolve(event);
 
-  // Add CORS headers for other requests
-  response.headers.set('Access-Control-Allow-Origin', 'http://localhost:5174');
-  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+  // // Add CORS headers for other requests
+  // response.headers.set('Access-Control-Allow-Origin', 'http://localhost:5174');
+  // response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  // response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
 
-  return response;
+  // return response;
+  return svelteKitHandler({ event, resolve, auth, building });
 }

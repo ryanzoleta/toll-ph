@@ -34,13 +34,13 @@
     </a>
   </div>
 
-  <div class="flex flex-row items-center gap-5">
+  <div class="flex flex-row items-center gap-2">
     <a
       href="/matrix"
       class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
       >Matrix</a>
 
-    {#if os && !showPro}
+    <!-- {#if os && !showPro}
       {#if os === 'apple'}
         <a
           href="https://apps.apple.com/app/apple-store/id6572299762?pt=126844345&ct=WebApp&mt=8"
@@ -54,11 +54,7 @@
           <img src={PlayStore} alt="Play Store Link" class="h-10" />
         </a>
       {/if}
-    {/if}
-
-    {#if showCalculatorButton}
-      <Button href="/">Use the Calculator!</Button>
-    {/if}
+    {/if} -->
 
     <Button on:click={toggleMode} variant="outline" size="icon">
       <Sun
@@ -67,5 +63,12 @@
         class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
       <span class="sr-only">Toggle theme</span>
     </Button>
+
+    <Button href="/signin" variant="outline">Sign In</Button>
+    <!-- <Button href="/signup">Sign Up</Button> -->
+
+    {#if showCalculatorButton}
+      <Button href="/">Use the Calculator!</Button>
+    {/if}
   </div>
 </div>
