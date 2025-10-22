@@ -30,8 +30,6 @@
   let localStorageLoaded = false;
   let savedResult = false;
 
-  let usageCount = 0;
-
   onMount(() => {
     savedTrips = JSON.parse(localStorage.getItem('savedTrips') ?? '[]');
     localStorageLoaded = true;
@@ -83,7 +81,6 @@
   }
 
   function calculate(pointOrigin: Point | null, pointDestination: Point | null) {
-    usageCount += 1;
     console.log('calculate start');
     if (!pointOrigin || !pointDestination) return;
     console.log('calculate not returned');
@@ -231,7 +228,7 @@
       return acc;
     }, [] as Point[]);
 
-  let vehicleClass = { value: 1, label: 'Class 1' };
+  let vehicleClass = { value: 2, label: 'Class 2' };
   let vehicleClassList = [
     { value: 1, label: 'Class 1' },
     { value: 2, label: 'Class 2' },
@@ -363,7 +360,7 @@
         pointDestinationInput = '';
         tollFee = 0;
         tollSegments = [];
-        vehicleClass = { value: 1, label: 'Class 1' };
+        vehicleClass = { value: 2, label: 'Class 2' };
       }}>Clear</button>
   </div>
 
@@ -481,66 +478,6 @@
           class="block bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 md:hidden"
           on:click={saveResult}>Save</Button>
       {/if}
-    </div>
-  {/if}
-
-  {#if tollFee <= 0}
-    <div class="flex flex-row flex-wrap items-center justify-center gap-2">
-      <button
-        class="bg-muted rounded-lg p-2 text-xs text-slate-400"
-        on:click={() => {
-          const po =
-            data.points.find(
-              (p) => p.name?.toLowerCase() === 'buendia' && p.expresswayId === 'SKYWAY'
-            ) ?? null;
-          const pd = data.points.find((p) => p.name?.toLowerCase() === 'batangas') ?? null;
-          pointOrigin = po;
-          pointDestination = pd;
-          setTimeout(() => {
-            calculate(po, pd);
-          }, 1);
-        }}>Buendia → Batangas</button>
-      <button
-        class="bg-muted rounded-lg p-2 text-xs text-slate-400"
-        on:click={() => {
-          const po =
-            data.points.find(
-              (p) => p.name?.toLowerCase() === 'balintawak' && p.expresswayId === 'NLEX'
-            ) ?? null;
-          const pd = data.points.find((p) => p.name?.toLowerCase() === 'rosario/baguio') ?? null;
-          pointOrigin = po;
-          pointDestination = pd;
-          setTimeout(() => {
-            calculate(po, pd);
-          }, 1);
-        }}>Balintawak → Baguio</button>
-      <button
-        class="bg-muted rounded-lg p-2 text-xs text-slate-400"
-        on:click={() => {
-          const po = data.points.find((p) => p.name?.toLowerCase() === 'calamba') ?? null;
-          const pd = data.points.find((p) => p.name?.toLowerCase() === 'naia terminal 1') ?? null;
-          pointOrigin = po;
-          pointDestination = pd;
-          setTimeout(() => {
-            calculate(po, pd);
-          }, 1);
-        }}>Calamba → NAIA T1</button>
-
-      <button
-        class="bg-muted rounded-lg p-2 text-xs text-slate-400"
-        on:click={() => {
-          const po = data.points.find((p) => p.name?.toLowerCase() === 'bacoor') ?? null;
-          const pd = data.points.find((p) => p.name?.toLowerCase() === 'tipo/subic') ?? null;
-          pointOrigin = po;
-          pointDestination = pd;
-          setTimeout(() => {
-            calculate(po, pd);
-          }, 1);
-        }}>Bacoor → Subic</button>
-    </div>
-  {:else if usageCount > 2}
-    <div>
-      <Coffee />
     </div>
   {/if}
 

@@ -40,7 +40,7 @@
       class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
       >Matrix</a>
 
-    {#if os}
+    {#if os && !showPro}
       {#if os === 'apple'}
         <a
           href="https://apps.apple.com/app/apple-store/id6572299762?pt=126844345&ct=WebApp&mt=8"
