@@ -10,6 +10,9 @@
   import type { Session } from 'better-auth/types';
 
   export let session: Session | null;
+  export let showSignIn = false;
+  export let showSignUp = false;
+
   let os: 'apple' | 'android' | undefined = undefined;
   let loading = false;
 
@@ -59,8 +62,12 @@
             <Loader2 class="h-4 w-4 animate-spin" />
           {/if}
           Logout</Button>
+      {:else if showSignIn}
+        <Button href="/signin" variant="outline">Sign in</Button>
+      {:else if showSignUp}
+        <Button href="/signup" variant="outline">Sign up</Button>
       {:else}
-        <Button href="/signin" variant="outline">Sign In</Button>
+        <Button href="/signin" variant="outline">Sign up</Button>
       {/if}
 
       <Button on:click={toggleMode} variant="outline" size="icon">

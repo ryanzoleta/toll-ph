@@ -71,7 +71,7 @@
   <title>Sign In | Toll.ph Pro</title>
 </svelte:head>
 
-<HeaderPro session={null} />
+<HeaderPro session={null} showSignUp />
 
 <main class="mx-auto max-w-lg flex-1 space-y-5 px-6 py-10">
   <a
@@ -133,10 +133,11 @@
         </div>
       </form>
     </Card.Content>
-    <Card.Footer class="w-full border-t bg-slate-900 pt-6 ">
-      <p class="w-full text-center text-sm text-slate-500">
-        Don't have an account? <a href="/signup" class="hover:underline dark:text-slate-300"
-          >Sign up</a>
+    <Card.Footer class="w-full rounded-b-md border-t bg-slate-200 pt-6 dark:bg-slate-900">
+      <p class="w-full text-center text-sm text-slate-400 dark:text-slate-500">
+        Don't have an account? <a
+          href="/signup"
+          class="text-slate-700 hover:underline dark:text-slate-300">Sign up</a>
       </p>
     </Card.Footer>
   </Card.Root>
