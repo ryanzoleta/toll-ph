@@ -290,9 +290,9 @@
     content="Philippines, Expressways, Toll, NLEX, SLEX, SCTEX, TPLEX, CALAX, CAVITEX, NAIAX, calculator, Baguio, Toll Pinas, Toll Pilipinas, Toll Guru" />
 </svelte:head>
 
-<div class="mx-5 flex flex-col gap-5 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
-  <HeaderPro {session} />
+<HeaderPro {session} />
 
+<div class="mx-5 flex flex-col gap-5 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
   <div class="flex flex-col gap-5">
     <div class="flex flex-col gap-2">
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Vehicle Class</h3>
