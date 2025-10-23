@@ -8,9 +8,9 @@
   import { AlertCircle, ArrowLeft, Loader2 } from 'lucide-svelte';
   import * as Card from '$lib/components/ui/card/index.js';
   import GoogleIcon from '$lib/assets/images/google_neutral.svg';
+  import SignInGoogle from '$lib/components/SignInGoogle.svelte';
 
   let loading = false;
-  let loadingGoogle = false;
   let errorMessage = '';
 
   async function signIn(email: string, password: string) {
@@ -48,19 +48,6 @@
         },
       }
     );
-  }
-
-  async function signInWithGoogle() {
-    loadingGoogle = true;
-    const { data, error } = await authClient.signIn.social({
-      provider: 'google',
-      callbackURL: '/pro',
-    });
-
-    if (error && error.message) {
-      loadingGoogle = false;
-      errorMessage = error.message;
-    }
   }
 
   let email = '';
@@ -117,19 +104,7 @@
             <hr class="flex-grow border-slate-200 dark:border-slate-700" />
           </div>
 
-          <Button
-            variant="outline"
-            class="flex flex-row items-center gap-2"
-            on:click={signInWithGoogle}
-            disabled={loadingGoogle}>
-            {#if loadingGoogle}
-              <Loader2 class="h-4 w-4 animate-spin" />
-            {:else}
-              <img src={GoogleIcon} alt="Google Icon" class="h-6 w-6" />
-            {/if}
-
-            Sign in with Google
-          </Button>
+          <SignInGoogle>Sign in with Google</SignInGoogle>
         </div>
       </form>
     </Card.Content>

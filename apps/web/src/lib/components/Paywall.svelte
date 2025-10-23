@@ -9,6 +9,7 @@
   } from '$lib/components/ui/dialog';
   import { TruckIcon, TablePropertiesIcon, CircleDollarSignIcon } from 'lucide-svelte';
   import Button from '$lib/components/ui/button/button.svelte';
+  import SignInGoogle from '$lib/components/SignInGoogle.svelte';
 
   export let show = false;
 </script>
@@ -87,7 +88,11 @@
       </div>
 
       <div class="flex flex-col gap-2">
-        <Button variant="default" size="sm">Sign up for Pro (30 day free trial)</Button>
+        <Button variant="default" size="sm" href="/signup"
+          >Sign up for Pro (30 day free trial)</Button>
+
+        <SignInGoogle>Sign up with Google</SignInGoogle>
+
         <p class="text-center text-sm text-slate-500">No credit card required</p>
       </div>
     </div>
