@@ -1,16 +1,17 @@
 <script lang="ts">
   import { toggleMode } from 'mode-watcher';
   import Button from '$lib/components/ui/button/button.svelte';
-  import { Sun, Moon } from 'lucide-svelte';
+  import { Sun, Moon, Loader2 } from 'lucide-svelte';
   import AppStore from '$lib/assets/images/appstore.svg';
   import PlayStore from '$lib/assets/images/playstore.png';
   import { onMount } from 'svelte';
   import Coffee from '$lib/components/ui/Coffee.svelte';
   import { authClient } from '$lib/auth-client';
+  import type { Session } from 'better-auth/types';
 
-  export let showCalculatorButton = false;
-  export let authed = false;
+  export let session: Session | null;
   let os: 'apple' | 'android' | undefined = undefined;
+  let loading = false;
 
   onMount(() => {
     const userAgent = window.navigator.userAgent.toLowerCase();
@@ -23,8 +24,10 @@
   });
 
   async function logout() {
+    loading = true;
     await authClient.signOut();
     window.location.href = '/signin';
+    loading = false;
   }
 </script>
 
@@ -46,8 +49,16 @@
         class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
         >Matrix</a>
 
-      {#if authed}
-        <Button on:click={logout} variant="outline">Logout</Button>
+      {#if session}
+        <Button
+          on:click={logout}
+          variant="outline"
+          disabled={loading}
+          class="flex flex-row items-center gap-2">
+          {#if loading}
+            <Loader2 class="h-4 w-4 animate-spin" />
+          {/if}
+          Logout</Button>
       {:else}
         <Button href="/signin" variant="outline">Sign In</Button>
       {/if}

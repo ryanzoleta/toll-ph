@@ -14,6 +14,7 @@ export async function load(event: RequestEvent) {
     throw redirect(302, '/signin');
   }
 
+  console.debug('Querying points...');
   const points = await db
     .select({
       id: point.id,
@@ -28,7 +29,9 @@ export async function load(event: RequestEvent) {
     .innerJoin(expressway, eq(point.expresswayId, expressway.id))
     .innerJoin(tollNetwork, eq(expressway.tollNetworkId, tollNetwork.id))
     .orderBy(point.expresswayId, point.sequence);
+  console.debug('Points queried, found', points.length);
 
+  console.debug('Querying expressways...');
   const expressways = await db
     .select({
       id: expressway.id,
@@ -39,7 +42,9 @@ export async function load(event: RequestEvent) {
     .from(expressway)
     .innerJoin(tollNetwork, eq(tollNetwork.id, expressway.tollNetworkId))
     .orderBy(expressway.sequence);
+  console.debug('Expressways queried, found', expressways.length);
 
+  console.debug('Querying toll matrix...');
   const entryPoint = alias(point, 'entry_point');
   const exitPoint = alias(point, 'exit_point');
 
@@ -48,11 +53,13 @@ export async function load(event: RequestEvent) {
     .from(tollMatrix)
     .innerJoin(entryPoint, eq(tollMatrix.entryPointId, entryPoint.id))
     .innerJoin(exitPoint, eq(tollMatrix.exitPointId, exitPoint.id));
+  console.debug('Toll matrix queried, found', matrix.length);
 
   const connectingPoint = alias(point, 'connecting_point');
   const connectingExpressway = alias(expressway, 'connecting_expressway');
   const connectingTollNetwork = alias(tollNetwork, 'connecting_toll_network');
 
+  console.debug('Querying connections...');
   const connections = await db
     .select({
       connection,
@@ -83,11 +90,13 @@ export async function load(event: RequestEvent) {
       connectingTollNetwork,
       eq(connectingExpressway.tollNetworkId, connectingTollNetwork.id)
     );
+  console.debug('Connections queried, found', connections.length);
 
   return {
     points: points,
     expressways,
     tollMatrix: matrix,
     connections,
+    session,
   };
 }

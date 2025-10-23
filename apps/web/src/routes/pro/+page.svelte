@@ -16,6 +16,8 @@
 
   export let data;
 
+  const session = data.session;
+
   const points = data.points ?? [];
   const tollMatrix = data.tollMatrix ?? [];
   const connections = data.connections ?? [];
@@ -289,7 +291,7 @@
 </svelte:head>
 
 <div class="mx-5 flex flex-col gap-5 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
-  <HeaderPro />
+  <HeaderPro {session} />
 
   <div class="flex flex-col gap-5">
     <div class="flex flex-col gap-2">

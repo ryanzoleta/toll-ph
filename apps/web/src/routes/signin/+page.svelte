@@ -7,8 +7,10 @@
   import { Label } from '$lib/components/ui/label';
   import { AlertCircle, ArrowLeft, Loader2 } from 'lucide-svelte';
   import * as Card from '$lib/components/ui/card/index.js';
+  import GoogleIcon from '$lib/assets/images/google_neutral.svg';
 
   let loading = false;
+  let loadingGoogle = false;
   let errorMessage = '';
 
   async function signIn(email: string, password: string) {
@@ -48,11 +50,28 @@
     );
   }
 
+  async function signInWithGoogle() {
+    loadingGoogle = true;
+    const { data, error } = await authClient.signIn.social({
+      provider: 'google',
+      callbackURL: '/pro',
+    });
+
+    if (error && error.message) {
+      loadingGoogle = false;
+      errorMessage = error.message;
+    }
+  }
+
   let email = '';
   let password = '';
 </script>
 
-<HeaderPro />
+<svelte:head>
+  <title>Sign In | Toll.ph Pro</title>
+</svelte:head>
+
+<HeaderPro session={null} />
 
 <main class="mx-auto max-w-lg flex-1 space-y-5 px-6 py-10">
   <a
@@ -90,14 +109,35 @@
               <Loader2 class="h-4 w-4 animate-spin" />
             {/if}
 
-            Sign In</Button>
+            Sign in</Button>
 
-          <Button variant="outline">Sign In with Google</Button>
+          <div class="my-2 flex items-center">
+            <hr class="flex-grow border-slate-200 dark:border-slate-700" />
+            <span class="mx-3 text-center text-sm text-slate-500">or</span>
+            <hr class="flex-grow border-slate-200 dark:border-slate-700" />
+          </div>
+
+          <Button
+            variant="outline"
+            class="flex flex-row items-center gap-2"
+            on:click={signInWithGoogle}
+            disabled={loadingGoogle}>
+            {#if loadingGoogle}
+              <Loader2 class="h-4 w-4 animate-spin" />
+            {:else}
+              <img src={GoogleIcon} alt="Google Icon" class="h-6 w-6" />
+            {/if}
+
+            Sign in with Google
+          </Button>
         </div>
       </form>
     </Card.Content>
-    <!-- <Card.Footer>
-      <p>Card Footer</p>
-    </Card.Footer> -->
+    <Card.Footer class="w-full border-t bg-slate-900 pt-6 ">
+      <p class="w-full text-center text-sm text-slate-500">
+        Don't have an account? <a href="/signup" class="hover:underline dark:text-slate-300"
+          >Sign up</a>
+      </p>
+    </Card.Footer>
   </Card.Root>
 </main>
