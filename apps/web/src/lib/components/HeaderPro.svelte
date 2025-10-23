@@ -31,6 +31,12 @@
     await authClient.signOut();
     window.location.href = '/';
   }
+
+  async function checkout() {
+    await authClient.checkout({
+      slug: 'pro',
+    });
+  }
 </script>
 
 <header>
@@ -52,6 +58,8 @@
         >Matrix</a>
 
       {#if session}
+        <Button on:click={checkout}>Subscribe</Button>
+
         <Button
           on:click={logout}
           variant="outline"
