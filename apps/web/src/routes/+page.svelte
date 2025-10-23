@@ -538,7 +538,7 @@
           }, 1);
         }}>Bacoor → Subic</button>
     </div>
-  {:else if usageCount > 2}
+  {:else if usageCount > 1}
     <div>
       <Coffee />
     </div>
