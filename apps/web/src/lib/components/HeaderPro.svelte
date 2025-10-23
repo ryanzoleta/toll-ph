@@ -29,8 +29,7 @@
   async function logout() {
     loading = true;
     await authClient.signOut();
-    window.location.href = '/signin';
-    loading = false;
+    window.location.href = '/';
   }
 </script>
 
