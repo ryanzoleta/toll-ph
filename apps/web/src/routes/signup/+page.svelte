@@ -89,7 +89,7 @@
               <Loader2 class="h-4 w-4 animate-spin" />
             {/if}
 
-            Sign up</Button>
+            Sign up for Pro (30 day free trial)</Button>
 
           <div class="my-2 flex items-center">
             <hr class="flex-grow border-slate-200 dark:border-slate-700" />
