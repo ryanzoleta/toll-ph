@@ -7,14 +7,27 @@
   import { onMount } from 'svelte';
   import Coffee from '$lib/components/ui/Coffee.svelte';
   import { authClient } from '$lib/auth-client';
-  import type { Session } from 'better-auth/types';
+  import type { Session, User } from '$lib/data/schema';
+  import { differenceInDays } from 'date-fns';
 
-  export let session: Session | null;
+  export let session: any | null = null;
+  export let user: User | null = null;
+
   export let showSignIn = false;
   export let showSignUp = false;
 
   let os: 'apple' | 'android' | undefined = undefined;
   let loading = false;
+
+  function getRemainingTrialDays(): number {
+    if (!user?.createdAt) return 0;
+
+    const trialEndDate = new Date(user.createdAt);
+    trialEndDate.setDate(trialEndDate.getDate() + 30); // Add 30 days to trial start
+
+    const remainingDays = differenceInDays(trialEndDate, new Date());
+    return Math.max(0, remainingDays); // Ensure we don't return negative days
+  }
 
   onMount(() => {
     const userAgent = window.navigator.userAgent.toLowerCase();
@@ -51,14 +64,16 @@
       </a>
     </div>
 
-    <div class="flex flex-row items-center gap-5">
+    <div class="flex flex-row items-center gap-3">
       <a
         href="/matrix"
         class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
         >Matrix</a>
 
-      {#if session}
-        <Button on:click={checkout}>Subscribe</Button>
+      {#if session && user}
+        <Button on:click={checkout}>
+          Subscribe Now ({getRemainingTrialDays()} days left in trial)
+        </Button>
 
         <Button
           on:click={logout}

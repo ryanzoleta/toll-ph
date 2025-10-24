@@ -144,3 +144,6 @@ export const verification = pgTable('verification', {
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
 });
+
+export type User = InferSelectModel<typeof user>;
+export type Session = InferSelectModel<typeof session>;

@@ -13,10 +13,12 @@
   import Coffee from '$lib/components/ui/Coffee.svelte';
   import { fade } from 'svelte/transition';
   import HeaderPro from '$lib/components/HeaderPro.svelte';
+  import type { User } from '$lib/data/schema';
 
   export let data;
 
   const session = data.session;
+  const user = (data.session.user as User) ?? null;
 
   const points = data.points ?? [];
   const tollMatrix = data.tollMatrix ?? [];
@@ -290,7 +292,7 @@
     content="Philippines, Expressways, Toll, NLEX, SLEX, SCTEX, TPLEX, CALAX, CAVITEX, NAIAX, calculator, Baguio, Toll Pinas, Toll Pilipinas, Toll Guru" />
 </svelte:head>
 
-<HeaderPro {session} />
+<HeaderPro {session} {user} />
 
 <div class="mx-5 flex flex-col gap-5 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
   <div class="flex flex-col gap-5">
