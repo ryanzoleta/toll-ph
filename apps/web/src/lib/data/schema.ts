@@ -147,3 +147,33 @@ export const verification = pgTable('verification', {
 
 export type User = InferSelectModel<typeof user>;
 export type Session = InferSelectModel<typeof session>;
+
+// Types for the pro page load function queries
+export type PointWithExpresswayAndNetwork = {
+  id: number;
+  name: string | null;
+  expresswayId: string | null;
+  expresswaySequence: number | null;
+  sequence: number | null;
+  tollNetworkId: string | null;
+  rfid: 'AUTOSWEEP' | 'EASYTRIP' | null;
+};
+
+export type ExpresswayWithNetwork = {
+  id: string;
+  name: string | null;
+  tollNetworkId: string | null;
+  rfid: 'AUTOSWEEP' | 'EASYTRIP' | null;
+};
+
+export type TollMatrixWithPoints = {
+  toll_matrix: TollMatrix;
+  entry_point: Point;
+  exit_point: Point;
+};
+
+export type ConnectionWithPoints = {
+  connection: InferSelectModel<typeof connection>;
+  point: PointWithExpresswayAndNetwork;
+  connecting_point: PointWithExpresswayAndNetwork;
+};
