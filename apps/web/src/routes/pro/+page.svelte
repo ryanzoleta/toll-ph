@@ -294,221 +294,233 @@
 
 <HeaderPro {session} {user} />
 
-<div class="mx-5 flex flex-col gap-5 sm:mx-auto sm:w-3/5 sm:pt-5 md:w-1/2 lg:w-2/5 xl:w-4/12">
-  <div class="flex flex-col gap-5">
-    <div class="flex flex-col gap-2">
-      <h3 class="font-bold text-slate-700 dark:text-slate-300">Vehicle Class</h3>
-
-      <Select.Root bind:selected={vehicleClass} items={vehicleClassList}>
-        <Select.Trigger class="h-fit border-0 bg-slate-200 p-3 text-base dark:bg-slate-800">
-          <Select.Value placeholder="Vehicle Class" asChild let:label>
-            {#if label}
-              <p class="font-bold">{label.substring(0, 8)}</p>
-            {:else}
-              <p>Vehicle Class</p>
-            {/if}
-          </Select.Value>
-        </Select.Trigger>
-        <Select.Content>
-          <Select.Item value={1} class="flex flex-col items-start">
-            <p class="font-bold">Class 1</p>
-            <p class="text-slate-500">Car, Jeepney, Van, Pick-Up, Motorcycle (400c and up)</p>
-          </Select.Item>
-          <Select.Item value={2} class="flex flex-col items-start">
-            <p class="font-bold">Class 2</p>
-            <p class="text-slate-500">Bus, Truck</p>
-          </Select.Item>
-          <Select.Item value={3} class="flex flex-col items-start">
-            <p class="font-bold">Class 3</p>
-            <p class="text-slate-500">Large Truck, Large Truck with Trailer</p>
-          </Select.Item>
-        </Select.Content>
-      </Select.Root>
-    </div>
-
-    <div class="flex flex-col gap-2">
-      <h3 class="font-bold text-slate-700 dark:text-slate-300">Origin</h3>
-      <PointSelector
-        bind:input={pointOriginInput}
-        {points}
-        placeholder="Enter point of origin"
-        bind:setPoint={pointOrigin} />
-    </div>
-
-    <div class="flex flex-col gap-2">
-      <h3 class="font-bold text-slate-700 dark:text-slate-300">Destination</h3>
-      <PointSelector
-        bind:input={pointDestinationInput}
-        points={reachables}
-        placeholder="Enter point of destination"
-        bind:setPoint={pointDestination} />
-    </div>
-  </div>
-
-  <div class="flex flex-col gap-3">
-    <button
-      class="plausible-event-name={vehicleClass.value === 2
-        ? 'calculate-2'
-        : vehicleClass.value === 3
-        ? 'calculate-3'
-        : 'calculate'} rounded-md bg-green-300 py-3 font-bold text-green-800 transition duration-100 hover:bg-green-400 dark:bg-green-800 dark:text-green-200 dark:hover:bg-green-700"
-      on:click={() => {
-        calculate(pointOrigin, pointDestination);
-      }}>Calculate</button>
-    <button
-      class="rounded-md bg-gray-200 py-3 font-bold text-gray-600 transition duration-100 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
-      on:click={() => {
-        pointOrigin = null;
-        pointDestination = null;
-        pointOriginInput = '';
-        pointDestinationInput = '';
-        tollFee = 0;
-        tollSegments = [];
-        vehicleClass = { value: 2, label: 'Class 2' };
-      }}>Clear</button>
-  </div>
-
-  {#if tollFee > 0}
+<main class="flex w-full flex-1 flex-col items-center">
+  <div class="flex h-full w-full flex-1 flex-row">
     <div
-      class="flex flex-col gap-5 rounded-lg bg-slate-100 p-5 dark:bg-slate-900 dark:text-slate-200"
-      in:fade={{ duration: 100 }}>
-      <div class="flex flex-row items-center justify-between">
-        <div class="flex flex-col">
-          <h2 class="text-lg font-light text-gray-500">
-            {pointOrigin?.name} → {pointDestination?.name}
-          </h2>
-          <div class="flex flex-col gap-5">
-            <p class="text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-200">
-              {formatAmountToCurrency(tollFee)}
-            </p>
-          </div>
+      class="flex w-1/3 flex-col gap-5 border-r border-slate-200 px-10 py-5 dark:border-slate-800">
+      <h2 class="text-2xl font-bold">Calculator</h2>
+
+      <div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-2">
+          <h3 class="font-bold text-slate-700 dark:text-slate-300">Vehicle Class</h3>
+
+          <Select.Root bind:selected={vehicleClass} items={vehicleClassList}>
+            <Select.Trigger class="h-fit border-0 bg-slate-200 p-3 text-base dark:bg-slate-800">
+              <Select.Value placeholder="Vehicle Class" asChild let:label>
+                {#if label}
+                  <p class="font-bold">{label.substring(0, 8)}</p>
+                {:else}
+                  <p>Vehicle Class</p>
+                {/if}
+              </Select.Value>
+            </Select.Trigger>
+            <Select.Content>
+              <Select.Item value={1} class="flex flex-col items-start">
+                <p class="font-bold">Class 1</p>
+                <p class="text-slate-500">Car, Jeepney, Van, Pick-Up, Motorcycle (400c and up)</p>
+              </Select.Item>
+              <Select.Item value={2} class="flex flex-col items-start">
+                <p class="font-bold">Class 2</p>
+                <p class="text-slate-500">Bus, Truck</p>
+              </Select.Item>
+              <Select.Item value={3} class="flex flex-col items-start">
+                <p class="font-bold">Class 3</p>
+                <p class="text-slate-500">Large Truck, Large Truck with Trailer</p>
+              </Select.Item>
+            </Select.Content>
+          </Select.Root>
         </div>
 
-        {#if savedResult}
-          <p class="hidden text-center text-sm text-slate-500 md:block">Saved!</p>
-        {:else}
-          <Button
-            class="hidden bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 md:block"
-            on:click={saveResult}>Save</Button>
-        {/if}
+        <div class="flex flex-col gap-2">
+          <h3 class="font-bold text-slate-700 dark:text-slate-300">Origin</h3>
+          <PointSelector
+            bind:input={pointOriginInput}
+            {points}
+            placeholder="Enter point of origin"
+            bind:setPoint={pointOrigin} />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <h3 class="font-bold text-slate-700 dark:text-slate-300">Destination</h3>
+          <PointSelector
+            bind:input={pointDestinationInput}
+            points={reachables}
+            placeholder="Enter point of destination"
+            bind:setPoint={pointDestination} />
+        </div>
       </div>
 
-      <div class="flex flex-col gap-1 text-sm md:text-base">
-        {#each tollSegments as segment}
-          <div class="flex flex-row justify-between">
-            <div class="hidden flex-1 flex-row items-center gap-1 md:flex">
-              <p class="flex-1 text-slate-500 dark:text-slate-500">
-                {segment.entryPoint.expresswayId}
-              </p>
-            </div>
-            {#if segment.entryPoint.id === segment.exitPoint.id}
-              <p class="flex-1 text-center">{segment.entryPoint.name}</p>
-            {:else}
-              <div class="flex flex-row items-center gap-2">
-                <p class="">{segment.entryPoint.name}</p>
-                <p class="text-slate-500 dark:text-slate-500">→</p>
-                <p class="">{segment.exitPoint.name}</p>
-                <p class="block text-slate-500 md:hidden">({segment.entryPoint.expresswayId})</p>
-              </div>
-            {/if}
-
-            <div class="flex flex-1 flex-row items-center gap-2">
-              <p class="flex-1 text-right text-slate-500 dark:text-slate-500">
-                {formatAmountToCurrency(segment.fee)}
-              </p>
-
-              <Tooltip.Root openDelay={100}>
-                <Tooltip.Trigger>
-                  {#if segment.entryPoint.rfid === 'AUTOSWEEP'}
-                    <div
-                      class="rounded-lg bg-green-300 px-2 py-1 font-mono text-xs text-green-700 dark:bg-green-700 dark:text-green-200">
-                      A
-                    </div>
-                  {:else}
-                    <div
-                      class="rounded-lg bg-blue-300 px-2 py-1 font-mono text-xs text-blue-700 dark:bg-blue-900 dark:text-blue-400">
-                      E
-                    </div>
-                  {/if}
-                </Tooltip.Trigger>
-                <Tooltip.Content>
-                  {#if segment.entryPoint.rfid === 'AUTOSWEEP'}
-                    <p>AutoSweep RFID</p>
-                  {:else}
-                    <p>EasyTrip RFID</p>
-                  {/if}
-                </Tooltip.Content>
-              </Tooltip.Root>
-            </div>
-          </div>
-        {/each}
+      <div class="flex flex-col gap-3">
+        <button
+          class="plausible-event-name={vehicleClass.value === 2
+            ? 'calculate-2'
+            : vehicleClass.value === 3
+            ? 'calculate-3'
+            : 'calculate'} rounded-md bg-green-300 py-3 font-bold text-green-800 transition duration-100 hover:bg-green-400 dark:bg-green-800 dark:text-green-200 dark:hover:bg-green-700"
+          on:click={() => {
+            calculate(pointOrigin, pointDestination);
+          }}>Calculate</button>
+        <button
+          class="rounded-md bg-gray-200 py-3 font-bold text-gray-600 transition duration-100 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+          on:click={() => {
+            pointOrigin = null;
+            pointDestination = null;
+            pointOriginInput = '';
+            pointDestinationInput = '';
+            tollFee = 0;
+            tollSegments = [];
+            vehicleClass = { value: 2, label: 'Class 2' };
+          }}>Clear</button>
       </div>
 
-      {#if autoSweepTotal > 0 && easyTripTotal > 0}
-        <hr />
-
-        <div class="flex flex-col gap-1 text-sm md:text-base">
+      {#if tollFee > 0}
+        <div
+          class="flex flex-col gap-5 rounded-lg bg-slate-100 p-5 dark:bg-slate-900 dark:text-slate-200"
+          in:fade={{ duration: 100 }}>
           <div class="flex flex-row items-center justify-between">
-            <div class="flex flex-row items-center gap-1">
-              <div
-                class="rounded-lg bg-green-300 px-2 py-1 font-mono text-xs text-green-700 dark:bg-green-700 dark:text-green-200">
-                A
+            <div class="flex flex-col">
+              <h2 class="text-lg font-light text-gray-500">
+                {pointOrigin?.name} → {pointDestination?.name}
+              </h2>
+              <div class="flex flex-col gap-5">
+                <p
+                  class="text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-200">
+                  {formatAmountToCurrency(tollFee)}
+                </p>
               </div>
-
-              <p class="text-green-700">AutoSweep Total</p>
             </div>
 
-            <p class="text-green-700">{formatAmountToCurrency(autoSweepTotal)}</p>
+            {#if savedResult}
+              <p class="hidden text-center text-sm text-slate-500 md:block">Saved!</p>
+            {:else}
+              <Button
+                class="hidden bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 md:block"
+                on:click={saveResult}>Save</Button>
+            {/if}
           </div>
 
-          <div class="flex flex-row justify-between">
-            <div class="flex flex-row items-center gap-1">
-              <div
-                class="items-center rounded-lg bg-blue-300 px-2 py-1 font-mono text-xs text-blue-700 dark:bg-blue-900 dark:text-blue-400">
-                E
+          <div class="flex flex-col gap-1 text-sm md:text-base">
+            {#each tollSegments as segment}
+              <div class="flex flex-row justify-between">
+                <div class="hidden flex-1 flex-row items-center gap-1 md:flex">
+                  <p class="flex-1 text-slate-500 dark:text-slate-500">
+                    {segment.entryPoint.expresswayId}
+                  </p>
+                </div>
+                {#if segment.entryPoint.id === segment.exitPoint.id}
+                  <p class="flex-1 text-center">{segment.entryPoint.name}</p>
+                {:else}
+                  <div class="flex flex-row items-center gap-2">
+                    <p class="">{segment.entryPoint.name}</p>
+                    <p class="text-slate-500 dark:text-slate-500">→</p>
+                    <p class="">{segment.exitPoint.name}</p>
+                    <p class="block text-slate-500 md:hidden">
+                      ({segment.entryPoint.expresswayId})
+                    </p>
+                  </div>
+                {/if}
+
+                <div class="flex flex-1 flex-row items-center gap-2">
+                  <p class="flex-1 text-right text-slate-500 dark:text-slate-500">
+                    {formatAmountToCurrency(segment.fee)}
+                  </p>
+
+                  <Tooltip.Root openDelay={100}>
+                    <Tooltip.Trigger>
+                      {#if segment.entryPoint.rfid === 'AUTOSWEEP'}
+                        <div
+                          class="rounded-lg bg-green-300 px-2 py-1 font-mono text-xs text-green-700 dark:bg-green-700 dark:text-green-200">
+                          A
+                        </div>
+                      {:else}
+                        <div
+                          class="rounded-lg bg-blue-300 px-2 py-1 font-mono text-xs text-blue-700 dark:bg-blue-900 dark:text-blue-400">
+                          E
+                        </div>
+                      {/if}
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>
+                      {#if segment.entryPoint.rfid === 'AUTOSWEEP'}
+                        <p>AutoSweep RFID</p>
+                      {:else}
+                        <p>EasyTrip RFID</p>
+                      {/if}
+                    </Tooltip.Content>
+                  </Tooltip.Root>
+                </div>
               </div>
-              <p class="text-blue-700">EasyTrip Total</p>
-            </div>
-
-            <p class="text-blue-700">{formatAmountToCurrency(easyTripTotal)}</p>
+            {/each}
           </div>
+
+          {#if autoSweepTotal > 0 && easyTripTotal > 0}
+            <hr />
+
+            <div class="flex flex-col gap-1 text-sm md:text-base">
+              <div class="flex flex-row items-center justify-between">
+                <div class="flex flex-row items-center gap-1">
+                  <div
+                    class="rounded-lg bg-green-300 px-2 py-1 font-mono text-xs text-green-700 dark:bg-green-700 dark:text-green-200">
+                    A
+                  </div>
+
+                  <p class="text-green-700">AutoSweep Total</p>
+                </div>
+
+                <p class="text-green-700">{formatAmountToCurrency(autoSweepTotal)}</p>
+              </div>
+
+              <div class="flex flex-row justify-between">
+                <div class="flex flex-row items-center gap-1">
+                  <div
+                    class="items-center rounded-lg bg-blue-300 px-2 py-1 font-mono text-xs text-blue-700 dark:bg-blue-900 dark:text-blue-400">
+                    E
+                  </div>
+                  <p class="text-blue-700">EasyTrip Total</p>
+                </div>
+
+                <p class="text-blue-700">{formatAmountToCurrency(easyTripTotal)}</p>
+              </div>
+            </div>
+          {/if}
+
+          {#if savedResult}
+            <p class="block text-center text-sm text-slate-500 md:hidden">Saved!</p>
+          {:else}
+            <Button
+              class="block bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 md:hidden"
+              on:click={saveResult}>Save</Button>
+          {/if}
         </div>
       {/if}
 
-      {#if savedResult}
-        <p class="block text-center text-sm text-slate-500 md:hidden">Saved!</p>
-      {:else}
-        <Button
-          class="block bg-slate-300 text-slate-600 hover:bg-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 md:hidden"
-          on:click={saveResult}>Save</Button>
+      {#if savedTrips.length > 0}
+        <div class="flex flex-col gap-5">
+          <div class="w-full border-b border-b-slate-200 dark:border-b-slate-800" />
+          <h3 class="text-center text-sm text-slate-700">saved trips</h3>
+
+          <div class="flex flex-col gap-5" bind:this={container}>
+            {#key savedTrips}
+              {#each savedTrips as trip}
+                <Trip
+                  {trip}
+                  on:delete={() => {
+                    deleteTrip(trip);
+                  }} />
+              {/each}
+            {/key}
+          </div>
+
+          <p class="mb-5 text-center text-sm text-slate-700">
+            total amount: {formatAmountToCurrency(
+              savedTrips.reduce((acc, val) => acc + val.totalFee, 0)
+            )}
+          </p>
+        </div>
       {/if}
     </div>
-  {/if}
 
-  {#if savedTrips.length > 0}
-    <div class="flex flex-col gap-5">
-      <div class="w-full border-b border-b-slate-200 dark:border-b-slate-800" />
-      <h3 class="text-center text-sm text-slate-700">saved trips</h3>
-
-      <div class="flex flex-col gap-5" bind:this={container}>
-        {#key savedTrips}
-          {#each savedTrips as trip}
-            <Trip
-              {trip}
-              on:delete={() => {
-                deleteTrip(trip);
-              }} />
-          {/each}
-        {/key}
-      </div>
-
-      <p class="mb-5 text-center text-sm text-slate-700">
-        total amount: {formatAmountToCurrency(
-          savedTrips.reduce((acc, val) => acc + val.totalFee, 0)
-        )}
-      </p>
+    <div class="w-2/3 px-10 py-5">
+      <h2 class="text-2xl font-bold">Saved Trips</h2>
     </div>
-  {/if}
-
-  <div class="h-56 w-1 md:h-0" />
-</div>
+  </div>
+</main>

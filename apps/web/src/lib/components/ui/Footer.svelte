@@ -1,4 +1,5 @@
-<div class="flex flex-col justify-between gap-5 p-5 pt-10 md:flex-row">
+<div
+  class="flex flex-col justify-between gap-5 border-t border-slate-200 p-5 pt-5 dark:border-slate-800 md:flex-row">
   <div class="flex flex-row justify-center gap-5 md:justify-start">
     <p class="text-center text-xs text-slate-500 md:text-left">
       Source: <a
