@@ -295,9 +295,9 @@
 <HeaderPro {session} {user} />
 
 <main class="flex w-full flex-1 flex-col items-center">
-  <div class="flex h-full w-full flex-1 flex-row">
+  <div class="flex h-full w-full flex-1 flex-col md:flex-row">
     <div
-      class="flex w-1/3 flex-col gap-5 border-r border-slate-200 px-10 py-5 dark:border-slate-800">
+      class="flex w-full flex-col gap-5 border-slate-200 px-10 py-5 dark:border-slate-800 md:w-1/3 md:border-r">
       <h2 class="text-2xl font-bold">Calculator</h2>
 
       <div class="flex flex-col gap-5">
