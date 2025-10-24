@@ -2,6 +2,8 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
+import { User } from './data/schema';
+import { differenceInDays } from 'date-fns';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -93,4 +95,14 @@ export function formatAmountToCurrency(amount: number, currencySymbol?: string):
     return `${currencySymbol} ${currencyNumber}`;
   }
   return `₱${currencyNumber}`;
+}
+
+const TRIAL_DAYS = 30;
+
+export function getRemainingTrialDays(user: User): number {
+  const trialEndDate = new Date(user.createdAt);
+  trialEndDate.setDate(trialEndDate.getDate() + TRIAL_DAYS);
+
+  const remainingDays = differenceInDays(trialEndDate, new Date());
+  return Math.max(0, remainingDays);
 }

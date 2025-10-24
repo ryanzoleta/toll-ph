@@ -9,6 +9,7 @@
   import { authClient } from '$lib/auth-client';
   import type { Session, User } from '$lib/data/schema';
   import { differenceInDays } from 'date-fns';
+  import { getRemainingTrialDays } from '$lib/utils';
 
   export let session: any | null = null;
   export let user: User | null = null;
@@ -18,16 +19,6 @@
 
   let os: 'apple' | 'android' | undefined = undefined;
   let loading = false;
-
-  function getRemainingTrialDays(): number {
-    if (!user?.createdAt) return 0;
-
-    const trialEndDate = new Date(user.createdAt);
-    trialEndDate.setDate(trialEndDate.getDate() + 30); // Add 30 days to trial start
-
-    const remainingDays = differenceInDays(trialEndDate, new Date());
-    return Math.max(0, remainingDays); // Ensure we don't return negative days
-  }
 
   onMount(() => {
     const userAgent = window.navigator.userAgent.toLowerCase();
@@ -72,7 +63,7 @@
 
       {#if session && user}
         <Button on:click={checkout}>
-          Subscribe Now ({getRemainingTrialDays()} days left in trial)
+          Subscribe Now ({getRemainingTrialDays(user)} days left in trial)
         </Button>
 
         <Button
