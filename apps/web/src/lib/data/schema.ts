@@ -145,6 +145,24 @@ export const verification = pgTable('verification', {
     .notNull(),
 });
 
+export const savedTrip = pgTable('saved_trip', {
+  id: text('id').primaryKey(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  pointOriginId: integer('point_origin_id')
+    .references(() => point.id)
+    .notNull(),
+  pointDestinationId: integer('point_destination_id')
+    .references(() => point.id)
+    .notNull(),
+  vehicleClass: integer('vehicle_class').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
 export type User = InferSelectModel<typeof user>;
 export type Session = InferSelectModel<typeof session>;
 

@@ -10,6 +10,7 @@ import {
   ConnectionWithPoints,
   tollMatrix,
   tollNetwork,
+  savedTrip as savedTripsTable,
 } from '$lib/data/schema';
 import { redirect, RequestEvent } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
@@ -146,11 +147,22 @@ export async function load(event: RequestEvent) {
   if (!cachedConnections) {
     await redis.set('load:connections', JSON.stringify(connections), 'EX', 60 * 60 * 24);
   }
+
+  console.debug('Querying saved trips...');
+  console.time('Querying saved trips done after');
+
+  const savedTrips = await db
+    .select()
+    .from(savedTripsTable)
+    .where(eq(savedTripsTable.userId, session.user.id));
+  console.timeEnd('Querying saved trips done after');
+
   return {
     points: points,
     expressways,
     tollMatrix: matrix,
     connections,
     session,
+    savedTrips,
   };
 }
