@@ -146,7 +146,7 @@ export const verification = pgTable('verification', {
 });
 
 export const savedTrip = pgTable('saved_trip', {
-  id: text('id').primaryKey(),
+  id: serial('id').primaryKey(),
   userId: text('user_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
@@ -162,6 +162,8 @@ export const savedTrip = pgTable('saved_trip', {
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
 });
+
+export type SavedTrip = InferSelectModel<typeof savedTrip>;
 
 export type User = InferSelectModel<typeof user>;
 export type Session = InferSelectModel<typeof session>;

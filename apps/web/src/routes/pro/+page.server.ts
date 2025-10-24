@@ -33,6 +33,7 @@ export async function load(event: RequestEvent) {
   console.time('Querying points done after');
 
   const cachedPoints = await redis.get('load:points');
+  if (cachedPoints) console.log('using cached');
 
   let points: PointWithExpresswayAndNetwork[] = cachedPoints
     ? (console.log('using cached points'),
@@ -62,6 +63,7 @@ export async function load(event: RequestEvent) {
   console.time('Querying expressways done after');
 
   const cachedExpressways = await redis.get('load:expressways');
+  if (cachedExpressways) console.log('using cached expressways');
 
   const expressways = cachedExpressways
     ? (JSON.parse(cachedExpressways) as ExpresswayWithNetwork[])
@@ -84,6 +86,7 @@ export async function load(event: RequestEvent) {
   console.time('Querying toll matrix done after');
 
   const cachedMatrix = await redis.get('load:toll_matrix');
+  if (cachedMatrix) console.log('using cached toll matrix');
 
   const entryPoint = alias(point, 'entry_point');
   const exitPoint = alias(point, 'exit_point');
@@ -109,6 +112,7 @@ export async function load(event: RequestEvent) {
   console.time('Querying connections done after');
 
   const cachedConnections = await redis.get('load:connections');
+  if (cachedConnections) console.log('using cached connections');
 
   const connections = cachedConnections
     ? (JSON.parse(cachedConnections) as ConnectionWithPoints[])

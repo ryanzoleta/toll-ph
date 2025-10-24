@@ -4,7 +4,7 @@
   import { formatAmountToCurrency } from '$lib/utils.js';
   import Button from '$lib/components/ui/button/button.svelte';
   import Header from '$lib/components/ui/Header.svelte';
-  import type { Point } from '$lib/data/schema.js';
+  import type { Point, SavedTrip } from '$lib/data/schema.js';
   import type { TollSegment, TripResult } from '$lib/types.js';
   import { onMount } from 'svelte';
   import * as Tooltip from '$lib/components/ui/tooltip';
@@ -14,6 +14,7 @@
   import { fade } from 'svelte/transition';
   import HeaderPro from '$lib/components/HeaderPro.svelte';
   import type { User } from '$lib/data/schema';
+  import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query';
 
   export let data;
 
@@ -53,14 +54,22 @@
   function saveResult() {
     if (tollFee === 0) return;
 
-    savedTrips = [
-      ...savedTrips,
-      {
-        totalFee: tollFee,
-        tollSegments,
-        vehicleClass: vehicleClass.value,
-      },
-    ];
+    if (!pointOrigin || !pointDestination) return;
+
+    $addSavedTrip.mutate({
+      pointOriginId: pointOrigin.id,
+      pointDestinationId: pointDestination.id,
+      vehicleClass: vehicleClass.value,
+    });
+
+    // savedTrips = [
+    //   ...savedTrips,
+    //   {
+    //     totalFee: tollFee,
+    //     tollSegments,
+    //     vehicleClass: vehicleClass.value,
+    //   },
+    // ];
 
     savedResult = true;
   }
@@ -280,6 +289,58 @@
       },
     });
   }
+
+  const savedTripsQuery = createQuery({
+    queryKey: ['savedTrips'],
+    queryFn: async () => {
+      const response = await fetch('/api/saved');
+      return (await response.json()) as SavedTrip[];
+    },
+  });
+
+  const queryClient = useQueryClient();
+
+  const addSavedTrip = createMutation({
+    mutationFn: async ({
+      pointOriginId,
+      pointDestinationId,
+      vehicleClass,
+    }: {
+      pointOriginId: number;
+      pointDestinationId: number;
+      vehicleClass: number;
+    }) => {
+      const response = (await (
+        await fetch('/api/saved', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            pointOriginId,
+            pointDestinationId,
+            vehicleClass,
+          }),
+        })
+      ).json()) as Omit<SavedTrip, 'id' | 'createdAt' | 'updatedAt'>;
+      return response;
+    },
+    onMutate: async (savedTrip: Omit<SavedTrip, 'id' | 'createdAt' | 'updatedAt' | 'userId'>) => {
+      await queryClient.cancelQueries({ queryKey: ['savedTrips'] });
+      const previousTransactions = queryClient.getQueryData<SavedTrip[]>(['savedTrips']);
+      queryClient.setQueryData<Omit<SavedTrip, 'id' | 'createdAt' | 'updatedAt' | 'userId'>[]>(
+        ['savedTrips'],
+        (old) => {
+          return [...(old ?? []), savedTrip];
+        }
+      );
+
+      return { previousTransactions };
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['savedTrips'] });
+    },
+  });
 </script>
 
 <svelte:head>
@@ -521,6 +582,18 @@
 
     <div class="flex-1 px-10 py-5">
       <h2 class="text-2xl font-bold">Saved Trips</h2>
+
+      {#if $savedTripsQuery.isLoading}
+        <p>Loading...</p>
+      {:else if $savedTripsQuery.data}
+        {#each $savedTripsQuery.data as trip}
+          <div class="flex flex-row justify-between">
+            <p>{points.find((p) => p.id === trip.pointOriginId)?.name}</p>
+            <p>{points.find((p) => p.id === trip.pointDestinationId)?.name}</p>
+            <p>{vehicleClassList.find((v) => v.value === trip.vehicleClass)?.label}</p>
+          </div>
+        {/each}
+      {/if}
     </div>
   </div>
 </main>
