@@ -15,6 +15,7 @@ export async function load(event: RequestEvent) {
   }
 
   console.debug('Querying points...');
+  console.time('Querying points done after');
   const points = await db
     .select({
       id: point.id,
@@ -29,9 +30,10 @@ export async function load(event: RequestEvent) {
     .innerJoin(expressway, eq(point.expresswayId, expressway.id))
     .innerJoin(tollNetwork, eq(expressway.tollNetworkId, tollNetwork.id))
     .orderBy(point.expresswayId, point.sequence);
-  console.debug('Points queried, found', points.length);
+  console.timeEnd('Querying points done after');
 
   console.debug('Querying expressways...');
+  console.time('Querying expressways done after');
   const expressways = await db
     .select({
       id: expressway.id,
@@ -42,9 +44,9 @@ export async function load(event: RequestEvent) {
     .from(expressway)
     .innerJoin(tollNetwork, eq(tollNetwork.id, expressway.tollNetworkId))
     .orderBy(expressway.sequence);
-  console.debug('Expressways queried, found', expressways.length);
-
+  console.timeEnd('Querying expressways done after');
   console.debug('Querying toll matrix...');
+  console.time('Querying toll matrix done after');
   const entryPoint = alias(point, 'entry_point');
   const exitPoint = alias(point, 'exit_point');
 
@@ -53,13 +55,14 @@ export async function load(event: RequestEvent) {
     .from(tollMatrix)
     .innerJoin(entryPoint, eq(tollMatrix.entryPointId, entryPoint.id))
     .innerJoin(exitPoint, eq(tollMatrix.exitPointId, exitPoint.id));
-  console.debug('Toll matrix queried, found', matrix.length);
+  console.timeEnd('Querying toll matrix done after');
 
   const connectingPoint = alias(point, 'connecting_point');
   const connectingExpressway = alias(expressway, 'connecting_expressway');
   const connectingTollNetwork = alias(tollNetwork, 'connecting_toll_network');
 
   console.debug('Querying connections...');
+  console.time('Querying connections done after');
   const connections = await db
     .select({
       connection,
@@ -90,8 +93,7 @@ export async function load(event: RequestEvent) {
       connectingTollNetwork,
       eq(connectingExpressway.tollNetworkId, connectingTollNetwork.id)
     );
-  console.debug('Connections queried, found', connections.length);
-
+  console.timeEnd('Querying connections done after');
   return {
     points: points,
     expressways,
