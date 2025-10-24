@@ -297,7 +297,7 @@
 <main class="flex w-full flex-1 flex-col items-center">
   <div class="flex h-full w-full flex-1 flex-col md:flex-row">
     <div
-      class="flex w-full flex-col gap-5 border-slate-200 px-10 py-5 dark:border-slate-800 md:w-1/3 md:border-r">
+      class="flex w-full flex-col gap-5 overflow-y-scroll border-slate-200 px-10 py-5 dark:border-slate-800 md:w-1/2 md:border-r lg:w-1/3">
       <h2 class="text-2xl font-bold">Calculator</h2>
 
       <div class="flex flex-col gap-5">
@@ -519,7 +519,7 @@
       {/if}
     </div>
 
-    <div class="w-2/3 px-10 py-5">
+    <div class="flex-1 px-10 py-5">
       <h2 class="text-2xl font-bold">Saved Trips</h2>
     </div>
   </div>
