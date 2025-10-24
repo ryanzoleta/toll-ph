@@ -11,6 +11,7 @@ import {
   tollMatrix,
   tollNetwork,
   savedTrip as savedTripsTable,
+  savedTrip,
 } from '$lib/data/schema';
 import { redirect, RequestEvent } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
@@ -29,17 +30,37 @@ export async function load(event: RequestEvent) {
     throw redirect(302, '/signin');
   }
 
-  console.debug('Querying points...');
-  console.time('Querying points done after');
+  console.time('Loading pro page took');
+
+  const dataFetchResults = await Promise.all([
+    fetchPoints(),
+    fetchExpressways(),
+    fetchTollMatrix(),
+    fetchConnections(),
+    fetchSavedTrips(session.user.id),
+  ]);
+  const [points, expressways, tollMatrix, connections, savedTrips] = dataFetchResults;
+
+  console.timeEnd('Loading pro page took');
+
+  return {
+    points,
+    expressways,
+    tollMatrix,
+    connections,
+    session,
+    savedTrips,
+  };
+}
+
+async function fetchPoints() {
+  console.time('Fetching points took');
 
   const cachedPoints = await redis.get('load:points');
-  if (cachedPoints) console.log('using cached');
 
   let points: PointWithExpresswayAndNetwork[] = cachedPoints
-    ? (console.log('using cached points'),
-      JSON.parse(cachedPoints) as PointWithExpresswayAndNetwork[])
-    : (console.log('not using cached points'),
-      await db
+    ? (JSON.parse(cachedPoints) as PointWithExpresswayAndNetwork[])
+    : await db
         .select({
           id: point.id,
           name: point.name,
@@ -52,18 +73,21 @@ export async function load(event: RequestEvent) {
         .from(point)
         .innerJoin(expressway, eq(point.expresswayId, expressway.id))
         .innerJoin(tollNetwork, eq(expressway.tollNetworkId, tollNetwork.id))
-        .orderBy(point.expresswayId, point.sequence));
-  console.timeEnd('Querying points done after');
+        .orderBy(point.expresswayId, point.sequence);
 
   if (!cachedPoints) {
     await redis.set('load:points', JSON.stringify(points), 'EX', 60 * 60 * 24);
   }
 
-  console.debug('Querying expressways...');
-  console.time('Querying expressways done after');
+  console.timeEnd('Fetching points took');
+
+  return points;
+}
+
+async function fetchExpressways() {
+  console.time('Fetching expressways took');
 
   const cachedExpressways = await redis.get('load:expressways');
-  if (cachedExpressways) console.log('using cached expressways');
 
   const expressways = cachedExpressways
     ? (JSON.parse(cachedExpressways) as ExpresswayWithNetwork[])
@@ -77,16 +101,19 @@ export async function load(event: RequestEvent) {
         .from(expressway)
         .innerJoin(tollNetwork, eq(tollNetwork.id, expressway.tollNetworkId))
         .orderBy(expressway.sequence);
-  console.timeEnd('Querying expressways done after');
+  console.timeEnd('Fetching expressways took');
 
   if (!cachedExpressways) {
     await redis.set('load:expressways', JSON.stringify(expressways), 'EX', 60 * 60 * 24);
   }
-  console.debug('Querying toll matrix...');
-  console.time('Querying toll matrix done after');
+
+  return expressways;
+}
+
+async function fetchTollMatrix() {
+  console.time('Fetching toll matrix took');
 
   const cachedMatrix = await redis.get('load:toll_matrix');
-  if (cachedMatrix) console.log('using cached toll matrix');
 
   const entryPoint = alias(point, 'entry_point');
   const exitPoint = alias(point, 'exit_point');
@@ -98,21 +125,23 @@ export async function load(event: RequestEvent) {
         .from(tollMatrix)
         .innerJoin(entryPoint, eq(tollMatrix.entryPointId, entryPoint.id))
         .innerJoin(exitPoint, eq(tollMatrix.exitPointId, exitPoint.id));
-  console.timeEnd('Querying toll matrix done after');
+  console.timeEnd('Fetching toll matrix took');
 
   if (!cachedMatrix) {
     await redis.set('load:toll_matrix', JSON.stringify(matrix), 'EX', 60 * 60 * 24);
   }
 
+  return matrix;
+}
+
+async function fetchConnections() {
   const connectingPoint = alias(point, 'connecting_point');
   const connectingExpressway = alias(expressway, 'connecting_expressway');
   const connectingTollNetwork = alias(tollNetwork, 'connecting_toll_network');
 
-  console.debug('Querying connections...');
-  console.time('Querying connections done after');
+  console.time('Fetching connections took');
 
   const cachedConnections = await redis.get('load:connections');
-  if (cachedConnections) console.log('using cached connections');
 
   const connections = cachedConnections
     ? (JSON.parse(cachedConnections) as ConnectionWithPoints[])
@@ -146,27 +175,21 @@ export async function load(event: RequestEvent) {
           connectingTollNetwork,
           eq(connectingExpressway.tollNetworkId, connectingTollNetwork.id)
         );
-  console.timeEnd('Querying connections done after');
+  console.timeEnd('Fetching connections took');
 
   if (!cachedConnections) {
     await redis.set('load:connections', JSON.stringify(connections), 'EX', 60 * 60 * 24);
   }
 
-  console.debug('Querying saved trips...');
-  console.time('Querying saved trips done after');
+  return connections;
+}
 
+async function fetchSavedTrips(userId: string) {
+  console.time('Fetching saved trips took');
   const savedTrips = await db
     .select()
     .from(savedTripsTable)
-    .where(eq(savedTripsTable.userId, session.user.id));
-  console.timeEnd('Querying saved trips done after');
-
-  return {
-    points: points,
-    expressways,
-    tollMatrix: matrix,
-    connections,
-    session,
-    savedTrips,
-  };
+    .where(eq(savedTripsTable.userId, userId));
+  console.timeEnd('Fetching saved trips took');
+  return savedTrips;
 }
