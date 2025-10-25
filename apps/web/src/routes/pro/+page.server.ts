@@ -118,7 +118,7 @@ async function fetchTollMatrix() {
   const entryPoint = alias(point, 'entry_point');
   const exitPoint = alias(point, 'exit_point');
 
-  const matrix = cachedMatrix
+  const matrix: TollMatrixWithPoints[] = cachedMatrix
     ? (JSON.parse(cachedMatrix) as TollMatrixWithPoints[])
     : await db
         .select()
@@ -143,7 +143,7 @@ async function fetchConnections() {
 
   const cachedConnections = await redis.get('load:connections');
 
-  const connections = cachedConnections
+  const connections: ConnectionWithPoints[] = cachedConnections
     ? (JSON.parse(cachedConnections) as ConnectionWithPoints[])
     : await db
         .select({
@@ -152,6 +152,7 @@ async function fetchConnections() {
             id: point.id,
             name: point.name,
             expresswayId: point.expresswayId,
+            expresswaySequence: expressway.sequence,
             sequence: point.sequence,
             tollNetworkId: expressway.tollNetworkId,
             rfid: tollNetwork.rfid,
@@ -160,6 +161,7 @@ async function fetchConnections() {
             id: connectingPoint.id,
             name: connectingPoint.name,
             expresswayId: connectingPoint.expresswayId,
+            expresswaySequence: connectingExpressway.sequence,
             sequence: connectingPoint.sequence,
             tollNetworkId: connectingExpressway.tollNetworkId,
             rfid: connectingTollNetwork.rfid,

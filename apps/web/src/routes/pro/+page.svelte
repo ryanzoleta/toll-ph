@@ -19,6 +19,7 @@
   import { EllipsisVerticalIcon } from 'lucide-svelte';
   import * as Table from '$lib/components/ui/table';
   import SavedTripRow from '$lib/components/SavedTripRow.svelte';
+  import { calculate } from '$lib/calculate.js';
 
   export let data;
 
@@ -102,7 +103,7 @@
     return parseFloat(matrix?.toll_matrix.fee ?? '0');
   }
 
-  function calculate(pointOrigin: Point | null, pointDestination: Point | null) {
+  function calculateSolo(pointOrigin: Point | null, pointDestination: Point | null) {
     console.log('calculate start');
     if (!pointOrigin || !pointDestination) return;
     console.log('calculate not returned');
@@ -345,6 +346,22 @@
       queryClient.invalidateQueries({ queryKey: ['savedTrips'] });
     },
   });
+
+  $: totalFees = $savedTripsQuery.data
+    ? $savedTripsQuery.data.reduce(
+        (acc, val) =>
+          acc +
+          calculate(
+            points.find((p) => p.id === val.pointOriginId) ?? null,
+            points.find((p) => p.id === val.pointDestinationId) ?? null,
+            val.vehicleClass,
+            points,
+            tollMatrix,
+            connections
+          ).tollFee,
+        0
+      )
+    : 0;
 </script>
 
 <svelte:head>
@@ -423,7 +440,7 @@
             ? 'calculate-3'
             : 'calculate'} rounded-md bg-green-300 py-3 font-bold text-green-800 transition duration-100 hover:bg-green-400 dark:bg-green-800 dark:text-green-200 dark:hover:bg-green-700"
           on:click={() => {
-            calculate(pointOrigin, pointDestination);
+            calculateSolo(pointOrigin, pointDestination);
           }}>Calculate</button>
         <button
           class="rounded-md bg-gray-200 py-3 font-bold text-gray-600 transition duration-100 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
@@ -603,7 +620,7 @@
           </Table.Header>
           <Table.Body>
             {#each $savedTripsQuery.data as trip}
-              <SavedTripRow {trip} {points} />
+              <SavedTripRow {trip} {points} {tollMatrix} {connections} />
             {/each}
 
             <Table.Row
@@ -613,7 +630,7 @@
               <Table.Cell />
               <Table.Cell />
               <Table.Cell class="py-3 text-right">
-                {formatNumber(999)}
+                {formatNumber(totalFees ?? 0)}
               </Table.Cell>
             </Table.Row>
           </Table.Body>

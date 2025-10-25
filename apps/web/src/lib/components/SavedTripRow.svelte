@@ -4,11 +4,20 @@
   import Button from '$lib/components/ui/button/button.svelte';
   import { EllipsisVerticalIcon } from 'lucide-svelte';
   import { formatNumber } from '$lib/utils';
-  import type { Point, SavedTrip } from '$lib/data/schema';
+  import type {
+    ConnectionWithPoints,
+    Point,
+    PointWithExpresswayAndNetwork,
+    SavedTrip,
+    TollMatrixWithPoints,
+  } from '$lib/data/schema';
   import { createMutation, useQueryClient } from '@tanstack/svelte-query';
+  import { calculate } from '$lib/calculate';
 
   export let trip: SavedTrip;
-  export let points: Point[];
+  export let points: PointWithExpresswayAndNetwork[];
+  export let tollMatrix: TollMatrixWithPoints[];
+  export let connections: ConnectionWithPoints[];
 
   const queryClient = useQueryClient();
 
@@ -31,6 +40,15 @@
       queryClient.invalidateQueries({ queryKey: ['savedTrips'] });
     },
   });
+
+  const { tollFee, easyTripTotal, autoSweepTotal } = calculate(
+    points.find((p) => p.id === trip.pointOriginId) ?? null,
+    points.find((p) => p.id === trip.pointDestinationId) ?? null,
+    trip.vehicleClass,
+    points,
+    tollMatrix,
+    connections
+  );
 </script>
 
 <Table.Row class="hover:bg-background">
@@ -60,6 +78,6 @@
     Class {trip.vehicleClass}
   </Table.Cell>
   <Table.Cell class="text-right">
-    {formatNumber(999)}
+    {formatNumber(tollFee)}
   </Table.Cell>
 </Table.Row>
