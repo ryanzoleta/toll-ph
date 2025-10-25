@@ -129,23 +129,32 @@ async function fetchExpressways() {
 async function fetchTollMatrix() {
   console.time('Fetching toll matrix took');
 
-  const cachedMatrix = await redis.get('load:toll_matrix');
+  // console.time('Fetching toll matrix from upstash took');
+  // const cachedMatrix = await redis.get('load:toll_matrix');
+  // console.timeEnd('Fetching toll matrix from upstash took');
 
   const entryPoint = alias(point, 'entry_point');
   const exitPoint = alias(point, 'exit_point');
 
-  const matrix: TollMatrixWithPoints[] = cachedMatrix
-    ? (JSON.parse(cachedMatrix) as TollMatrixWithPoints[])
-    : await db
-        .select()
-        .from(tollMatrix)
-        .innerJoin(entryPoint, eq(tollMatrix.entryPointId, entryPoint.id))
-        .innerJoin(exitPoint, eq(tollMatrix.exitPointId, exitPoint.id));
+  let matrix: TollMatrixWithPoints[] = [];
+
+  // if (cachedMatrix) {
+  //   console.log('Using cached toll matrix');
+  //   matrix = JSON.parse(cachedMatrix) as TollMatrixWithPoints[];
+  // } else {
+  // console.log('Fetching toll matrix from database');
+  matrix = await db
+    .select()
+    .from(tollMatrix)
+    .innerJoin(entryPoint, eq(tollMatrix.entryPointId, entryPoint.id))
+    .innerJoin(exitPoint, eq(tollMatrix.exitPointId, exitPoint.id));
+  // }
+
   console.timeEnd('Fetching toll matrix took');
 
-  if (!cachedMatrix) {
-    await redis.set('load:toll_matrix', JSON.stringify(matrix), 'EX', 60 * 60 * 24);
-  }
+  // if (!cachedMatrix) {
+  //   await redis.set('load:toll_matrix', JSON.stringify(matrix), 'EX', 60 * 60 * 24);
+  // }
 
   return matrix;
 }
