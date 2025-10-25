@@ -34,12 +34,6 @@
     await authClient.signOut();
     window.location.href = '/';
   }
-
-  async function checkout() {
-    await authClient.checkout({
-      slug: 'pro',
-    });
-  }
 </script>
 
 <header>
@@ -72,7 +66,7 @@
             <Loader2 class="h-4 w-4 animate-spin" />
           {/if}
           Sign Out</Button>
-        <Button on:click={checkout} class="hidden md:block">Subscribe Now</Button>
+        <Button href="/paywall" class="hidden md:block">Subscribe Now</Button>
       {:else if showSignIn}
         <Button href="/signin" variant="outline">Sign in</Button>
       {:else if showSignUp}

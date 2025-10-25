@@ -10,7 +10,7 @@ const polarClient = new Polar({
   // Use 'sandbox' if you're using the Polar Sandbox environment
   // Remember that access tokens, products, etc. are completely separated between environments.
   // Access tokens obtained in Production are for instance not usable in the Sandbox environment.
-  server: 'production',
+  server: 'sandbox',
 });
 
 export const auth = betterAuth({
@@ -44,11 +44,11 @@ export const auth = betterAuth({
         checkout({
           products: [
             {
-              productId: '4051276a-a36b-4334-8a9c-03e2ab75f271', // ID of Product from Polar Dashboard
+              productId: '8e4daea6-402d-4bb6-8f4e-23efb7737ed6', // ID of Product from Polar Dashboard
               slug: 'pro-monthly', // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
             },
             {
-              productId: '01b0cb52-7fe4-42e8-874d-88f606f18823', // ID of Product from Polar Dashboard
+              productId: '85ebcde8-8e51-4402-96ad-d36d503feec2', // ID of Product from Polar Dashboard
               slug: 'pro-annual', // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
             },
           ],

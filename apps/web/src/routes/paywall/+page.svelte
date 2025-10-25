@@ -13,6 +13,12 @@
   const user = (data.session.user as User) ?? null;
 
   const remainingTrialDays = getRemainingTrialDays(user);
+
+  async function checkout(slug: string) {
+    await authClient.checkout({
+      slug,
+    });
+  }
 </script>
 
 <HeaderPro {session} {user} />
@@ -44,7 +50,11 @@
               $2 <span class="text-lg font-light italic text-slate-400">per month</span>
             </p>
           </div>
-          <Button variant="default" size="sm" class="w-full">Subscribe</Button>
+          <Button
+            variant="default"
+            size="sm"
+            class="w-full"
+            on:click={() => checkout('pro-monthly')}>Subscribe</Button>
         </div>
 
         <p class="text-slate-500">or</p>
@@ -59,7 +69,8 @@
               $12 <span class="text-lg font-light italic text-slate-400">per year</span>
             </p>
           </div>
-          <Button variant="default" size="sm" class="w-full">Subscribe</Button>
+          <Button variant="default" size="sm" class="w-full" on:click={() => checkout('pro-annual')}
+            >Subscribe</Button>
         </div>
       </div>
     </div>
