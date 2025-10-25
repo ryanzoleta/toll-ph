@@ -363,7 +363,6 @@
         pointDestinationInput = '';
         tollFee = 0;
         tollSegments = [];
-        vehicleClass = { value: 1, label: 'Class 1' };
       }}>Clear</button>
   </div>
 
