@@ -494,11 +494,17 @@
           <Table.Header>
             <Table.Row
               class="border-t bg-slate-100 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-900">
-              <Table.Head class="w-10" />
-              <Table.Head>Entry</Table.Head>
-              <Table.Head>Exit</Table.Head>
-              <Table.Head>Class</Table.Head>
-              <Table.Head class="text-right">Fee</Table.Head>
+              <Table.Head class="w-[5%]" />
+              <Table.Head class="w-[20%]">Entry</Table.Head>
+              <Table.Head class="w-[20%]" />
+              <Table.Head class="w-[20%]" />
+              <Table.Head class="w-[20%]">Exit</Table.Head>
+              <Table.Head class="w-[20%]" />
+              <Table.Head class="w-[10%]">Class</Table.Head>
+              <Table.Head class="flex-1">RFID</Table.Head>
+              <Table.Head class="w-[10%] text-right">Fee</Table.Head>
+
+              <Table.Head class="w-[5%]" />
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -512,9 +518,14 @@
               <Table.Cell class="py-3">Total</Table.Cell>
               <Table.Cell />
               <Table.Cell />
-              <Table.Cell class="py-3 text-right">
+              <Table.Cell />
+              <Table.Cell />
+              <Table.Cell />
+              <Table.Cell />
+              <Table.Cell class="h-10 py-3 text-right">
                 {formatNumber(totalFees ?? 0)}
               </Table.Cell>
+              <Table.Cell />
             </Table.Row>
           </Table.Body>
         </Table.Root>

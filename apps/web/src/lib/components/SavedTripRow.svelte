@@ -2,7 +2,13 @@
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import * as Table from '$lib/components/ui/table';
   import Button from '$lib/components/ui/button/button.svelte';
-  import { EllipsisVerticalIcon } from 'lucide-svelte';
+  import {
+    ArrowRightIcon,
+    ChevronDownIcon,
+    ChevronRightIcon,
+    ChevronUpIcon,
+    EllipsisVerticalIcon,
+  } from 'lucide-svelte';
   import { formatNumber } from '$lib/utils';
   import type {
     ConnectionWithPoints,
@@ -13,6 +19,9 @@
   } from '$lib/data/schema';
   import { createMutation, useQueryClient } from '@tanstack/svelte-query';
   import { calculate } from '$lib/calculate';
+  import type { TollSegment } from '$lib/types';
+  import EasyTrip from './ui/EasyTrip.svelte';
+  import AutoSweep from './ui/AutoSweep.svelte';
 
   export let trip: SavedTrip;
   export let points: PointWithExpresswayAndNetwork[];
@@ -41,7 +50,12 @@
     },
   });
 
-  const { tollFee, easyTripTotal, autoSweepTotal } = calculate(
+  let tollFee = 0;
+  let easyTripTotal = 0;
+  let autoSweepTotal = 0;
+  let tollSegments: TollSegment[] = [];
+
+  const result = calculate(
     points.find((p) => p.id === trip.pointOriginId) ?? null,
     points.find((p) => p.id === trip.pointDestinationId) ?? null,
     trip.vehicleClass,
@@ -49,10 +63,84 @@
     tollMatrix,
     connections
   );
+
+  $: tollFee = result.tollFee;
+  $: easyTripTotal = result.easyTripTotal;
+  $: autoSweepTotal = result.autoSweepTotal;
+  $: tollSegments = result.tollSegments ?? [];
+
+  let showSegments = false;
 </script>
 
 <Table.Row class="hover:bg-background">
   <Table.Cell class="py-3">
+    <Button
+      variant="ghost"
+      size="icon"
+      on:click={() => {
+        showSegments = !showSegments;
+      }}>
+      {#if showSegments}
+        <ChevronDownIcon class="h-5 w-5" />
+      {:else}
+        <ChevronRightIcon class="h-5 w-5" />
+      {/if}
+    </Button>
+  </Table.Cell>
+  <Table.Cell>
+    {points.find((p) => p.id === trip.pointOriginId)?.name}
+  </Table.Cell>
+  <Table.Cell class="text-slate-400 dark:text-slate-600">
+    {points.find((p) => p.id === trip.pointOriginId)?.expresswayId}
+  </Table.Cell>
+  <Table.Cell>
+    <ArrowRightIcon class="h-5 w-5 text-slate-400 dark:text-slate-600" />
+  </Table.Cell>
+  <Table.Cell>
+    {points.find((p) => p.id === trip.pointDestinationId)?.name}
+  </Table.Cell>
+  <Table.Cell class="text-slate-400 dark:text-slate-600">
+    {points.find((p) => p.id === trip.pointDestinationId)?.expresswayId}
+  </Table.Cell>
+  <Table.Cell>
+    <div class="flex flex-row items-center gap-1">
+      {#if trip.vehicleClass === 1}
+        <div
+          class="rounded-lg bg-teal-300 px-2 py-1 text-center font-mono text-xs text-teal-700 dark:bg-teal-900 dark:text-teal-400">
+          <p>1</p>
+        </div>
+      {:else if trip.vehicleClass === 2}
+        <div
+          class="rounded-lg bg-rose-300 px-2 py-1 font-mono text-xs text-rose-700 dark:bg-rose-900 dark:text-rose-400">
+          2
+        </div>
+      {:else if trip.vehicleClass === 3}
+        <div
+          class="rounded-lg bg-purple-300 px-2 py-1 font-mono text-xs text-purple-700 dark:bg-purple-900 dark:text-purple-400">
+          3
+        </div>
+      {/if}
+    </div>
+  </Table.Cell>
+  <Table.Cell>
+    <div class="flex flex-row items-center gap-1">
+      {#if tollSegments.some((s) => s.exitPoint.rfid === 'AUTOSWEEP') && !tollSegments.some((s) => s.exitPoint.rfid === 'EASYTRIP')}
+        <AutoSweep />
+      {:else if tollSegments.some((s) => s.exitPoint.rfid === 'EASYTRIP') && !tollSegments.some((s) => s.exitPoint.rfid === 'AUTOSWEEP')}
+        <EasyTrip />
+      {:else}
+        <div
+          class="rounded-lg bg-yellow-300 px-2 py-1 font-mono text-xs text-yellow-700 dark:bg-yellow-900 dark:text-yellow-400">
+          <p>Both</p>
+        </div>
+      {/if}
+    </div>
+  </Table.Cell>
+  <Table.Cell class="text-right">
+    {formatNumber(tollFee)}
+  </Table.Cell>
+
+  <Table.Cell class="text-right">
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
         <Button variant="ghost" size="icon"><EllipsisVerticalIcon class="h-5 w-5" /></Button>
@@ -68,16 +156,42 @@
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   </Table.Cell>
-  <Table.Cell>
-    {points.find((p) => p.id === trip.pointOriginId)?.name}
-  </Table.Cell>
-  <Table.Cell>
-    {points.find((p) => p.id === trip.pointDestinationId)?.name}
-  </Table.Cell>
-  <Table.Cell>
-    Class {trip.vehicleClass}
-  </Table.Cell>
-  <Table.Cell class="text-right">
-    {formatNumber(tollFee)}
-  </Table.Cell>
 </Table.Row>
+
+{#if showSegments}
+  {#each tollSegments as segment}
+    <Table.Row
+      class="border-t-0 bg-slate-100 hover:bg-slate-100 dark:border-b-slate-800 dark:bg-slate-900 dark:hover:bg-slate-900">
+      <Table.Cell class="py-3" />
+      <Table.Cell class="text-slate-400 dark:text-slate-600">
+        {points.find((p) => p.id === segment.entryPoint.id)?.name}
+      </Table.Cell>
+      <Table.Cell class="text-slate-400 dark:text-slate-600">
+        {points.find((p) => p.id === segment.entryPoint.id)?.expresswayId}
+      </Table.Cell>
+      <Table.Cell>
+        <ArrowRightIcon class="h-5 w-5 text-slate-400 dark:text-slate-600" />
+      </Table.Cell>
+      <Table.Cell class="text-slate-400 dark:text-slate-600">
+        {points.find((p) => p.id === segment.exitPoint.id)?.name}
+      </Table.Cell>
+      <Table.Cell class="text-slate-400 dark:text-slate-600">
+        {points.find((p) => p.id === segment.exitPoint.id)?.expresswayId}
+      </Table.Cell>
+      <Table.Cell />
+      <Table.Cell>
+        <div class="flex flex-row items-center gap-1">
+          {#if segment.entryPoint.rfid === 'AUTOSWEEP'}
+            <AutoSweep />
+          {:else}
+            <EasyTrip />
+          {/if}
+        </div>
+      </Table.Cell>
+      <Table.Cell class="h-10 text-right">
+        {formatNumber(segment.fee)}
+      </Table.Cell>
+      <Table.Cell />
+    </Table.Row>
+  {/each}
+{/if}
