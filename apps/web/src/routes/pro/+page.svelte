@@ -3,7 +3,6 @@
   import Trip from '$lib/components/ui/Trip.svelte';
   import { formatAmountToCurrency, formatNumber } from '$lib/utils.js';
   import Button from '$lib/components/ui/button/button.svelte';
-  import Header from '$lib/components/ui/Header.svelte';
   import type { Point, SavedTrip } from '$lib/data/schema.js';
   import type { TollSegment, TripResult } from '$lib/types.js';
   import { onMount } from 'svelte';
@@ -15,8 +14,6 @@
   import HeaderPro from '$lib/components/HeaderPro.svelte';
   import type { User } from '$lib/data/schema';
   import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query';
-  import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-  import { EllipsisVerticalIcon } from 'lucide-svelte';
   import * as Table from '$lib/components/ui/table';
   import SavedTripRow from '$lib/components/SavedTripRow.svelte';
   import { calculate, getExternalConnections, getReachables } from '$lib/calculate.js';
@@ -94,43 +91,6 @@
     autoSweepTotal = result.autoSweepTotal;
     savedResult = false;
   }
-
-  // function getReachables(pointId: number) {
-  //   const returnValue = [
-  //     ...tollMatrix.filter((tm) => tm.entry_point.id === pointId).map((tm) => tm.exit_point),
-  //     ...tollMatrix
-  //       .filter((tm) => tm.exit_point.id === pointId && tm.toll_matrix.reversible)
-  //       .map((tm) => tm.entry_point),
-  //   ];
-
-  //   // this is crazy, but this is needed to allow southbound connections to NAIAX (e.g., Skyway Buendia to NAIAX)
-  //   if (pointId === 1) {
-  //     const point1 = points.find((p) => p.id === 1);
-  //     if (point1) {
-  //       returnValue.push(point1);
-  //     }
-  //   }
-
-  //   return returnValue;
-  // }
-
-  // function getExternalConnections(reachablePointIds: number[]) {
-  //   const conn = connections
-  //     .filter((c) => reachablePointIds.includes(c.point.id))
-  //     .map((c) => ({
-  //       reachableConnectedPoint: c.point,
-  //       externalConnectedPoint: c.connecting_point,
-  //     }));
-
-  //   const connReversed = connections
-  //     .filter((c) => reachablePointIds.includes(c.connecting_point.id))
-  //     .map((c) => ({
-  //       reachableConnectedPoint: c.connecting_point,
-  //       externalConnectedPoint: c.point,
-  //     }));
-
-  //   return [...conn, ...connReversed];
-  // }
 
   $: originReachables = getReachables(pointOrigin?.id ?? 0, tollMatrix, points);
   $: originReachablesPointIds = originReachables.map((c) => c.id);
