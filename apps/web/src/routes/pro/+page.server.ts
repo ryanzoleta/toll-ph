@@ -12,12 +12,14 @@ import {
   tollNetwork,
   savedTrip as savedTripsTable,
   savedTrip,
+  User,
 } from '$lib/data/schema';
 import { redirect, RequestEvent } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { REDIS_URL } from '$env/static/private';
 import Redis from 'ioredis';
+import { getRemainingTrialDays } from '$lib/payments';
 
 const redis = new Redis(REDIS_URL);
 
@@ -28,6 +30,12 @@ export async function load(event: RequestEvent) {
 
   if (!session) {
     throw redirect(302, '/signin');
+  }
+
+  const user = session.user as User;
+  const remainingTrialDays = getRemainingTrialDays(user);
+  if (remainingTrialDays <= 0) {
+    throw redirect(302, '/paywall');
   }
 
   console.time('Loading pro page took');

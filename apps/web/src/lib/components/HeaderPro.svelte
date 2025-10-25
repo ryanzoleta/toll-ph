@@ -8,8 +8,7 @@
   import Coffee from '$lib/components/ui/Coffee.svelte';
   import { authClient } from '$lib/auth-client';
   import type { Session, User } from '$lib/data/schema';
-  import { differenceInDays } from 'date-fns';
-  import { getRemainingTrialDays } from '$lib/utils';
+  import { getRemainingTrialDays } from '$lib/payments';
 
   export let session: any | null = null;
   export let user: User | null = null;

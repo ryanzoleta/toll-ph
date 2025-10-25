@@ -1,8 +1,9 @@
 <script lang="ts">
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
   import Trip from '$lib/components/ui/Trip.svelte';
-  import { formatAmountToCurrency, formatNumber, getRemainingTrialDays } from '$lib/utils.js';
+  import { formatAmountToCurrency, formatNumber } from '$lib/utils.js';
   import Button from '$lib/components/ui/button/button.svelte';
+  import { getRemainingTrialDays } from '$lib/payments';
   import type { Point, SavedTrip } from '$lib/data/schema.js';
   import type { TollSegment, TripResult } from '$lib/types.js';
   import { onMount } from 'svelte';
@@ -300,7 +301,8 @@
           <p>Your trial will end in {getRemainingTrialDays(user)} days</p>
         </div>
 
-        <Button variant="link" class="text-base text-orange-500">Subscribe Now</Button>
+        <Button variant="link" class="text-base text-orange-500" href="/paywall"
+          >Subscribe Now</Button>
       </div>
 
       <div class="flex flex-col gap-5">
