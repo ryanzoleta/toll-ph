@@ -52,7 +52,7 @@ export const auth = betterAuth({
               slug: 'pro-annual', // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
             },
           ],
-          successUrl: '/success?checkout_id={CHECKOUT_ID}',
+          successUrl: `${process.env.BETTER_AUTH_URL}/pro`,
           authenticatedUsersOnly: true,
           returnUrl: `${process.env.BETTER_AUTH_URL}/pro`,
         }),

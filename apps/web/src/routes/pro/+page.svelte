@@ -19,6 +19,7 @@
   import SavedTripRow from '$lib/components/SavedTripRow.svelte';
   import { calculate, getExternalConnections, getReachables } from '$lib/calculate.js';
   import { Loader2Icon, TriangleAlertIcon } from 'lucide-svelte';
+  import { authClient } from '$lib/auth-client.js';
 
   export let data;
 
@@ -286,7 +287,7 @@
     content="Philippines, Expressways, Toll, NLEX, SLEX, SCTEX, TPLEX, CALAX, CAVITEX, NAIAX, calculator, Baguio, Toll Pinas, Toll Pilipinas, Toll Guru" />
 </svelte:head>
 
-<HeaderPro {session} {user} />
+<HeaderPro {session} {user} isPro={data.isPro} />
 
 <main class="flex w-full flex-1 flex-col items-center">
   <div class="flex h-full w-full flex-1 flex-col md:flex-row">
@@ -294,16 +295,18 @@
       class=" flex w-full flex-col gap-5 border-b border-slate-200 px-5 py-5 dark:border-slate-800 sm:px-8 md:w-1/2 md:border-b-0 md:border-r md:px-5 lg:px-10 xl:w-1/3">
       <h2 class="text-2xl font-bold">Calculator</h2>
 
-      <div
-        class="flex flex-col items-start justify-between gap-2 rounded-lg border border-orange-300 bg-orange-100 px-4 py-4 text-orange-800 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-200 sm:flex-row md:flex-col md:items-center xl:flex-row">
-        <div class="flex flex-row items-center gap-2">
-          <TriangleAlertIcon class="h-6 w-6 text-orange-500" />
-          <p>Your trial will end in {getRemainingTrialDays(user)} days</p>
-        </div>
+      {#if !data.isPro}
+        <div
+          class="flex flex-col items-start justify-between gap-2 rounded-lg border border-orange-300 bg-orange-100 px-4 py-4 text-orange-800 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-200 sm:flex-row md:flex-col md:items-center xl:flex-row">
+          <div class="flex flex-row items-center gap-2">
+            <TriangleAlertIcon class="h-6 w-6 text-orange-500" />
+            <p>Your trial will end in {getRemainingTrialDays(user)} days</p>
+          </div>
 
-        <Button variant="link" class="self-end text-base text-orange-500" href="/paywall"
-          >Subscribe Now</Button>
-      </div>
+          <Button variant="link" class="self-end text-base text-orange-500" href="/paywall"
+            >Subscribe Now</Button>
+        </div>
+      {/if}
 
       <div class="flex flex-col gap-5">
         <div class="flex flex-col gap-2">

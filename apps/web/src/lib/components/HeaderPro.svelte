@@ -12,6 +12,7 @@
 
   export let session: any | null = null;
   export let user: User | null = null;
+  export let isPro: boolean = false;
 
   export let showSignIn = false;
   export let showSignUp = false;
@@ -66,7 +67,10 @@
             <Loader2 class="h-4 w-4 animate-spin" />
           {/if}
           Sign Out</Button>
-        <Button href="/paywall" class="hidden md:block">Subscribe Now</Button>
+
+        {#if !isPro}
+          <Button href="/paywall" class="hidden md:block">Subscribe Now</Button>
+        {/if}
       {:else if showSignIn}
         <Button href="/signin" variant="outline">Sign in</Button>
       {:else if showSignUp}

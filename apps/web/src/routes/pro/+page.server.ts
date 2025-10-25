@@ -17,7 +17,7 @@ import {
 import { redirect, RequestEvent } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
-import { REDIS_URL } from '$env/static/private';
+import { POLAR_TOLL_PH_PRO_BENEFIT_ID, REDIS_URL } from '$env/static/private';
 import Redis from 'ioredis';
 import { getRemainingTrialDays } from '$lib/payments';
 
@@ -33,6 +33,13 @@ export async function load(event: RequestEvent) {
   }
 
   const user = session.user as User;
+
+  const benefits = await auth.api.benefits({ headers: event.request.headers });
+  const proBenefit = benefits.result.items.find(
+    (benefit: any) => benefit.benefitId === POLAR_TOLL_PH_PRO_BENEFIT_ID
+  );
+  const isPro = proBenefit ? true : false;
+
   const remainingTrialDays = getRemainingTrialDays(user);
   if (remainingTrialDays <= 0) {
     throw redirect(302, '/paywall');
@@ -58,6 +65,7 @@ export async function load(event: RequestEvent) {
     connections,
     session,
     savedTrips,
+    isPro,
   };
 }
 

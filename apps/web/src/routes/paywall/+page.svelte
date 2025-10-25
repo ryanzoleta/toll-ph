@@ -3,9 +3,10 @@
   import { authClient } from '$lib/auth-client';
   import { redirect } from '@sveltejs/kit';
   import type { User } from '$lib/data/schema.js';
-  import { getRemainingTrialDays } from '$lib/payments.js';
+  import { checkout, getRemainingTrialDays, isSubscribed } from '$lib/payments.js';
   import Button from '$lib/components/ui/button/button.svelte';
   import { TruckIcon, TablePropertiesIcon, CircleDollarSignIcon } from 'lucide-svelte';
+  import { createQuery } from '@tanstack/svelte-query';
 
   export let data;
 
@@ -14,12 +15,19 @@
 
   const remainingTrialDays = getRemainingTrialDays(user);
 
-  async function checkout(slug: string) {
-    await authClient.checkout({
-      slug,
-    });
-  }
+  const customerStatusQuery = createQuery({
+    queryKey: ['customerStatus'],
+    queryFn: async () => {
+      return await isSubscribed(user);
+    },
+  });
+
+  $: console.log('customerStatusQuery', $customerStatusQuery.data);
 </script>
+
+<svelte:head>
+  <title>Toll PH Pro - Subscribe</title>
+</svelte:head>
 
 <HeaderPro {session} {user} />
 
