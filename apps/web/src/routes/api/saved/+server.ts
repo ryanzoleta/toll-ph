@@ -2,7 +2,7 @@ import { error, RequestEvent } from '@sveltejs/kit';
 import { auth } from '$lib/auth';
 import { db } from '$lib/data/db';
 import { SavedTrip, savedTrip as savedTripsTable } from '$lib/data/schema';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 export async function GET(event: RequestEvent) {
   const session = await auth.api.getSession({

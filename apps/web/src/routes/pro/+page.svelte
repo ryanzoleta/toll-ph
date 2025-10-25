@@ -341,6 +341,26 @@
       queryClient.invalidateQueries({ queryKey: ['savedTrips'] });
     },
   });
+
+  const deleteSavedTrip = createMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/saved/${id}`, {
+        method: 'DELETE',
+      });
+      return response.json();
+    },
+    onMutate: async (id: number) => {
+      await queryClient.cancelQueries({ queryKey: ['savedTrips'] });
+      const previousTransactions = queryClient.getQueryData<SavedTrip[]>(['savedTrips']);
+      queryClient.setQueryData<SavedTrip[]>(['savedTrips'], (old) => {
+        return old?.filter((t) => t.id !== id) ?? [];
+      });
+      return { previousTransactions };
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['savedTrips'] });
+    },
+  });
 </script>
 
 <svelte:head>
@@ -591,6 +611,11 @@
             <p>{points.find((p) => p.id === trip.pointOriginId)?.name}</p>
             <p>{points.find((p) => p.id === trip.pointDestinationId)?.name}</p>
             <p>{vehicleClassList.find((v) => v.value === trip.vehicleClass)?.label}</p>
+
+            <Button
+              on:click={() => {
+                $deleteSavedTrip.mutate(trip.id);
+              }}>Delete</Button>
           </div>
         {/each}
       {/if}
