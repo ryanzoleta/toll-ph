@@ -157,6 +157,7 @@ export const savedTrip = pgTable('saved_trip', {
     .references(() => point.id)
     .notNull(),
   vehicleClass: integer('vehicle_class').notNull(),
+  sequence: integer('sequence').default(1),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .$onUpdate(() => /* @__PURE__ */ new Date())
