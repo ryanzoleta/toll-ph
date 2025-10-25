@@ -592,7 +592,8 @@
       {:else if $savedTripsQuery.data}
         <Table.Root class="border-b">
           <Table.Header>
-            <Table.Row class="border-t bg-slate-900 hover:bg-slate-900">
+            <Table.Row
+              class="border-t bg-slate-100 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-900">
               <Table.Head class="w-10" />
               <Table.Head>Entry</Table.Head>
               <Table.Head>Exit</Table.Head>
@@ -606,7 +607,7 @@
             {/each}
 
             <Table.Row
-              class="text-foreground border-b border-t bg-slate-900 font-bold hover:bg-slate-900">
+              class="text-foreground border-b border-t bg-slate-100 font-bold hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-900">
               <Table.Cell />
               <Table.Cell class="py-3">Total</Table.Cell>
               <Table.Cell />
