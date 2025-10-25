@@ -161,17 +161,17 @@
     <div class="flex flex-row items-center gap-1">
       {#if trip.vehicleClass === 1}
         <div
-          class="rounded-lg bg-teal-300 px-2 py-1 text-center font-mono text-xs text-teal-700 dark:bg-teal-900 dark:text-teal-400">
+          class="rounded-lg bg-gray-300 px-2 py-1 text-center font-mono text-xs text-gray-700 dark:bg-gray-900 dark:text-gray-400">
           <p>1</p>
         </div>
       {:else if trip.vehicleClass === 2}
         <div
-          class="rounded-lg bg-rose-300 px-2 py-1 font-mono text-xs text-rose-700 dark:bg-rose-900 dark:text-rose-400">
+          class="text-gray700 rounded-lg bg-gray-300 px-2 py-1 font-mono text-xs dark:bg-gray-900 dark:text-gray-400">
           2
         </div>
       {:else if trip.vehicleClass === 3}
         <div
-          class="rounded-lg bg-purple-300 px-2 py-1 font-mono text-xs text-purple-700 dark:bg-purple-900 dark:text-purple-400">
+          class="rounded-lg bg-gray-300 px-2 py-1 font-mono text-xs text-gray-700 dark:bg-gray-900 dark:text-gray-400">
           3
         </div>
       {/if}
