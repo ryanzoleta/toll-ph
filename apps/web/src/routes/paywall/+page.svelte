@@ -20,7 +20,9 @@
 <main class="flex flex-1 flex-col items-center space-y-5 px-6 py-10">
   <div class="flex w-full max-w-xl flex-col gap-10">
     {#if remainingTrialDays > 0}
-      <h1 class="text-center text-4xl font-light">Subscribe to Toll.ph Pro</h1>
+      <h1 class="flex flex-row items-center justify-center gap-2 text-center text-4xl font-light">
+        Subscribe to Toll PH Pro
+      </h1>
     {:else}
       <h1 class="text-center text-4xl font-light">
         Your free trial has ended, subscribe to continue using pro features
@@ -29,7 +31,7 @@
 
     <div class="flex flex-col gap-2">
       <p class="text-center text-sm text-slate-500">
-        Get access to all pro features for a month or a year.
+        Get unlimited access to all pro features for a month or a year
       </p>
     </div>
 
