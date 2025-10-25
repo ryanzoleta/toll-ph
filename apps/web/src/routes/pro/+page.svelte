@@ -15,6 +15,8 @@
   import HeaderPro from '$lib/components/HeaderPro.svelte';
   import type { User } from '$lib/data/schema';
   import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query';
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+  import { EllipsisVerticalIcon } from 'lucide-svelte';
 
   export let data;
 
@@ -608,14 +610,23 @@
       {:else if $savedTripsQuery.data}
         {#each $savedTripsQuery.data as trip}
           <div class="flex flex-row justify-between">
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger>
+                <Button variant="outline" size="icon"><EllipsisVerticalIcon /></Button>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content>
+                <DropdownMenu.Item>Move Up</DropdownMenu.Item>
+                <DropdownMenu.Item>Move Down</DropdownMenu.Item>
+                <DropdownMenu.Item
+                  class="text-red-500 hover:text-red-500 data-[highlighted]:bg-red-500/10 data-[highlighted]:text-red-500"
+                  on:click={() => {
+                    $deleteSavedTrip.mutate(trip.id);
+                  }}>Delete</DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Root>
             <p>{points.find((p) => p.id === trip.pointOriginId)?.name}</p>
             <p>{points.find((p) => p.id === trip.pointDestinationId)?.name}</p>
             <p>{vehicleClassList.find((v) => v.value === trip.vehicleClass)?.label}</p>
-
-            <Button
-              on:click={() => {
-                $deleteSavedTrip.mutate(trip.id);
-              }}>Delete</Button>
           </div>
         {/each}
       {/if}
