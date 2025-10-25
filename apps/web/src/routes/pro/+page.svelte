@@ -1,7 +1,7 @@
 <script lang="ts">
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
   import Trip from '$lib/components/ui/Trip.svelte';
-  import { formatAmountToCurrency } from '$lib/utils.js';
+  import { formatAmountToCurrency, formatNumber } from '$lib/utils.js';
   import Button from '$lib/components/ui/button/button.svelte';
   import Header from '$lib/components/ui/Header.svelte';
   import type { Point, SavedTrip } from '$lib/data/schema.js';
@@ -17,6 +17,7 @@
   import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { EllipsisVerticalIcon } from 'lucide-svelte';
+  import * as Table from '$lib/components/ui/table';
 
   export let data;
 
@@ -602,33 +603,69 @@
       {/if}
     </div>
 
-    <div class="flex-1 px-10 py-5">
+    <div class="flex-1 space-y-5 px-10 py-5">
       <h2 class="text-2xl font-bold">Saved Trips</h2>
 
       {#if $savedTripsQuery.isLoading}
         <p>Loading...</p>
       {:else if $savedTripsQuery.data}
-        {#each $savedTripsQuery.data as trip}
-          <div class="flex flex-row justify-between">
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger>
-                <Button variant="outline" size="icon"><EllipsisVerticalIcon /></Button>
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Content>
-                <DropdownMenu.Item>Move Up</DropdownMenu.Item>
-                <DropdownMenu.Item>Move Down</DropdownMenu.Item>
-                <DropdownMenu.Item
-                  class="text-red-500 hover:text-red-500 data-[highlighted]:bg-red-500/10 data-[highlighted]:text-red-500"
-                  on:click={() => {
-                    $deleteSavedTrip.mutate(trip.id);
-                  }}>Delete</DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu.Root>
-            <p>{points.find((p) => p.id === trip.pointOriginId)?.name}</p>
-            <p>{points.find((p) => p.id === trip.pointDestinationId)?.name}</p>
-            <p>{vehicleClassList.find((v) => v.value === trip.vehicleClass)?.label}</p>
-          </div>
-        {/each}
+        <Table.Root class="border-b">
+          <Table.Header>
+            <Table.Row class="border-t bg-slate-900 hover:bg-slate-900">
+              <Table.Head class="w-10" />
+              <Table.Head>Entry</Table.Head>
+              <Table.Head>Exit</Table.Head>
+              <Table.Head>Class</Table.Head>
+              <Table.Head class="text-right">Fee</Table.Head>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {#each $savedTripsQuery.data as trip}
+              <Table.Row class="hover:bg-background">
+                <Table.Cell class="py-3">
+                  <DropdownMenu.Root>
+                    <DropdownMenu.Trigger>
+                      <Button variant="ghost" size="icon"
+                        ><EllipsisVerticalIcon class="h-5 w-5" /></Button>
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Content>
+                      <DropdownMenu.Item>Move Up</DropdownMenu.Item>
+                      <DropdownMenu.Item>Move Down</DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        class="text-red-500 hover:text-red-500 data-[highlighted]:bg-red-500/10 data-[highlighted]:text-red-500"
+                        on:click={() => {
+                          $deleteSavedTrip.mutate(trip.id);
+                        }}>Delete</DropdownMenu.Item>
+                    </DropdownMenu.Content>
+                  </DropdownMenu.Root>
+                </Table.Cell>
+                <Table.Cell>
+                  {points.find((p) => p.id === trip.pointOriginId)?.name}
+                </Table.Cell>
+                <Table.Cell>
+                  {points.find((p) => p.id === trip.pointDestinationId)?.name}
+                </Table.Cell>
+                <Table.Cell>
+                  {vehicleClassList.find((v) => v.value === trip.vehicleClass)?.label}
+                </Table.Cell>
+                <Table.Cell class="text-right">
+                  {formatNumber(999)}
+                </Table.Cell>
+              </Table.Row>
+            {/each}
+
+            <Table.Row
+              class="text-foreground border-b border-t bg-slate-900 font-bold hover:bg-slate-900">
+              <Table.Cell />
+              <Table.Cell class="py-3">Total</Table.Cell>
+              <Table.Cell />
+              <Table.Cell />
+              <Table.Cell class="py-3 text-right">
+                {formatNumber(999)}
+              </Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table.Root>
       {/if}
     </div>
   </div>

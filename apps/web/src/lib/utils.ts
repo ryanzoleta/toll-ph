@@ -97,6 +97,14 @@ export function formatAmountToCurrency(amount: number, currencySymbol?: string):
   return `₱${currencyNumber}`;
 }
 
+export function formatNumber(amount: number): string {
+  const userLang = navigator.language ?? 'en-US';
+  return new Intl.NumberFormat(userLang, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
 const TRIAL_DAYS = 30;
 
 export function getRemainingTrialDays(user: User): number {
