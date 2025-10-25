@@ -1,7 +1,7 @@
 <script lang="ts">
   import { toggleMode } from 'mode-watcher';
   import Button from '$lib/components/ui/button/button.svelte';
-  import { Sun, Moon, Loader2 } from 'lucide-svelte';
+  import { Sun, Moon, Loader2, TriangleAlertIcon } from 'lucide-svelte';
   import AppStore from '$lib/assets/images/appstore.svg';
   import PlayStore from '$lib/assets/images/playstore.png';
   import { onMount } from 'svelte';
@@ -54,26 +54,25 @@
       </a>
     </div>
 
-    <div class="flex flex-row items-center gap-3">
-      <a
+    <div class="flex flex-row items-center gap-1 md:gap-3">
+      <!-- <a
         href="/matrix"
         class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
-        >Matrix</a>
+        >Matrix</a> -->
+
+      <Button variant="link">Matrix</Button>
 
       {#if session && user}
-        <Button on:click={checkout}>
-          Subscribe Now ({getRemainingTrialDays(user)} days left in trial)
-        </Button>
-
         <Button
           on:click={logout}
-          variant="outline"
+          variant="link"
           disabled={loading}
           class="flex flex-row items-center gap-2">
           {#if loading}
             <Loader2 class="h-4 w-4 animate-spin" />
           {/if}
-          Logout</Button>
+          Sign Out</Button>
+        <Button on:click={checkout} class="hidden md:block">Subscribe Now</Button>
       {:else if showSignIn}
         <Button href="/signin" variant="outline">Sign in</Button>
       {:else if showSignUp}
