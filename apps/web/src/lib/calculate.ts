@@ -50,7 +50,10 @@ function queryTollMatrix(
   return parseFloat(matrix?.toll_matrix.fee ?? '0');
 }
 
-function getExternalConnections(reachablePointIds: number[], connections: ConnectionWithPoints[]) {
+export function getExternalConnections(
+  reachablePointIds: number[],
+  connections: ConnectionWithPoints[]
+) {
   const conn = connections
     .filter((c) => reachablePointIds.includes(c.point.id))
     .map((c) => ({
@@ -68,7 +71,11 @@ function getExternalConnections(reachablePointIds: number[], connections: Connec
   return [...conn, ...connReversed];
 }
 
-function getReachables(pointId: number, tollMatrix: TollMatrixWithPoints[], points: Point[]) {
+export function getReachables(
+  pointId: number,
+  tollMatrix: TollMatrixWithPoints[],
+  points: Point[]
+) {
   const returnValue = [
     ...tollMatrix.filter((tm) => tm.entry_point.id === pointId).map((tm) => tm.exit_point),
     ...tollMatrix
@@ -213,5 +220,6 @@ export function calculate(
     tollFee,
     easyTripTotal,
     autoSweepTotal,
+    tollSegments,
   };
 }

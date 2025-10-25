@@ -19,7 +19,7 @@
   import { EllipsisVerticalIcon } from 'lucide-svelte';
   import * as Table from '$lib/components/ui/table';
   import SavedTripRow from '$lib/components/SavedTripRow.svelte';
-  import { calculate } from '$lib/calculate.js';
+  import { calculate, getExternalConnections, getReachables } from '$lib/calculate.js';
 
   export let data;
 
@@ -67,15 +67,6 @@
       vehicleClass: vehicleClass.value,
     });
 
-    // savedTrips = [
-    //   ...savedTrips,
-    //   {
-    //     totalFee: tollFee,
-    //     tollSegments,
-    //     vehicleClass: vehicleClass.value,
-    //   },
-    // ];
-
     savedResult = true;
   }
 
@@ -83,153 +74,85 @@
     savedTrips = savedTrips.filter((t) => t !== trip);
   }
 
-  function queryTollMatrix(origin: Point, destination: Point) {
-    let matrix = tollMatrix.find(
-      (tm) =>
-        tm.entry_point.id === origin.id &&
-        tm.exit_point.id === destination.id &&
-        tm.toll_matrix.vehicleClass === vehicleClass.value
-    );
-
-    if (matrix !== null && matrix !== undefined) return parseFloat(matrix?.toll_matrix.fee ?? '0');
-
-    matrix = tollMatrix.find(
-      (tm) =>
-        tm.entry_point.id === destination.id &&
-        tm.exit_point.id === origin.id &&
-        tm.toll_matrix.reversible &&
-        tm.toll_matrix.vehicleClass === vehicleClass.value
-    );
-    return parseFloat(matrix?.toll_matrix.fee ?? '0');
-  }
-
   function calculateSolo(pointOrigin: Point | null, pointDestination: Point | null) {
     console.log('calculate start');
     if (!pointOrigin || !pointDestination) return;
     console.log('calculate not returned');
 
-    tollSegments = [];
-    tollFee = 0;
-    easyTripTotal = 0;
-    autoSweepTotal = 0;
+    const result = calculate(
+      pointOrigin,
+      pointDestination,
+      vehicleClass.value,
+      points,
+      tollMatrix,
+      connections
+    );
+
+    tollSegments = result.tollSegments ?? [];
+    tollFee = result.tollFee;
+    easyTripTotal = result.easyTripTotal;
+    autoSweepTotal = result.autoSweepTotal;
     savedResult = false;
-
-    if (pointOrigin.tollNetworkId === pointDestination.tollNetworkId) {
-      tollSegments = [
-        {
-          entryPoint: { ...pointOrigin },
-          exitPoint: { ...pointDestination },
-          fee: queryTollMatrix(pointOrigin, pointDestination),
-        },
-      ];
-
-      tollFee = queryTollMatrix(pointOrigin, pointDestination);
-    } else {
-      let currentDestination = pointDestination;
-
-      for (let i = 0; i < externalConnections.length; i++) {
-        const conn = { ...externalConnections[i] };
-
-        if (currentDestination.tollNetworkId === pointOrigin.tollNetworkId) {
-          const fee = queryTollMatrix(pointOrigin, currentDestination);
-          tollSegments = [
-            {
-              entryPoint: { ...pointOrigin },
-              exitPoint: { ...currentDestination },
-              fee,
-            },
-            ...tollSegments,
-          ];
-          tollFee += fee;
-
-          break;
-        } else {
-          const connReachables = getReachables(conn.externalConnectedPoint.id);
-          const connReachableIds = connReachables.map((c) => c.id);
-
-          if (connReachableIds.includes(currentDestination.id)) {
-            const fee = queryTollMatrix(conn.externalConnectedPoint, currentDestination);
-            tollSegments = [
-              {
-                entryPoint: { ...conn.externalConnectedPoint },
-                exitPoint: { ...currentDestination },
-                fee,
-              },
-              ...tollSegments,
-            ];
-            tollFee += fee;
-            currentDestination = { ...conn.reachableConnectedPoint };
-
-            i = -1;
-          }
-        }
-      }
-
-      for (let segment of tollSegments) {
-        if (segment.entryPoint.rfid === 'AUTOSWEEP') {
-          autoSweepTotal += segment.fee;
-        } else {
-          easyTripTotal += segment.fee;
-        }
-      }
-    }
   }
 
-  function getReachables(pointId: number) {
-    const returnValue = [
-      ...tollMatrix.filter((tm) => tm.entry_point.id === pointId).map((tm) => tm.exit_point),
-      ...tollMatrix
-        .filter((tm) => tm.exit_point.id === pointId && tm.toll_matrix.reversible)
-        .map((tm) => tm.entry_point),
-    ];
+  // function getReachables(pointId: number) {
+  //   const returnValue = [
+  //     ...tollMatrix.filter((tm) => tm.entry_point.id === pointId).map((tm) => tm.exit_point),
+  //     ...tollMatrix
+  //       .filter((tm) => tm.exit_point.id === pointId && tm.toll_matrix.reversible)
+  //       .map((tm) => tm.entry_point),
+  //   ];
 
-    // this is crazy, but this is needed to allow southbound connections to NAIAX (e.g., Skyway Buendia to NAIAX)
-    if (pointId === 1) {
-      const point1 = points.find((p) => p.id === 1);
-      if (point1) {
-        returnValue.push(point1);
-      }
-    }
+  //   // this is crazy, but this is needed to allow southbound connections to NAIAX (e.g., Skyway Buendia to NAIAX)
+  //   if (pointId === 1) {
+  //     const point1 = points.find((p) => p.id === 1);
+  //     if (point1) {
+  //       returnValue.push(point1);
+  //     }
+  //   }
 
-    return returnValue;
-  }
+  //   return returnValue;
+  // }
 
-  function getExternalConnections(reachablePointIds: number[]) {
-    const conn = connections
-      .filter((c) => reachablePointIds.includes(c.point.id))
-      .map((c) => ({
-        reachableConnectedPoint: c.point,
-        externalConnectedPoint: c.connecting_point,
-      }));
+  // function getExternalConnections(reachablePointIds: number[]) {
+  //   const conn = connections
+  //     .filter((c) => reachablePointIds.includes(c.point.id))
+  //     .map((c) => ({
+  //       reachableConnectedPoint: c.point,
+  //       externalConnectedPoint: c.connecting_point,
+  //     }));
 
-    const connReversed = connections
-      .filter((c) => reachablePointIds.includes(c.connecting_point.id))
-      .map((c) => ({
-        reachableConnectedPoint: c.connecting_point,
-        externalConnectedPoint: c.point,
-      }));
+  //   const connReversed = connections
+  //     .filter((c) => reachablePointIds.includes(c.connecting_point.id))
+  //     .map((c) => ({
+  //       reachableConnectedPoint: c.connecting_point,
+  //       externalConnectedPoint: c.point,
+  //     }));
 
-    return [...conn, ...connReversed];
-  }
+  //   return [...conn, ...connReversed];
+  // }
 
-  $: originReachables = getReachables(pointOrigin?.id ?? 0);
+  $: originReachables = getReachables(pointOrigin?.id ?? 0, tollMatrix, points);
   $: originReachablesPointIds = originReachables.map((c) => c.id);
 
   let externalConnections: ReturnType<typeof getExternalConnections> = [];
   let externalReachables: Point[] = [];
 
   $: {
-    externalConnections = getExternalConnections(originReachablesPointIds);
+    externalConnections = getExternalConnections(originReachablesPointIds, connections);
     let tempExternalConnections = [...externalConnections];
 
     while (tempExternalConnections.length > 0) {
       const l = [...tempExternalConnections];
       tempExternalConnections = [];
       for (const conn of [...l]) {
-        const connReachables = getReachables(conn.externalConnectedPoint.id);
+        const connReachables = getReachables(conn.externalConnectedPoint.id, tollMatrix, points);
         const connReachableIds = connReachables.map((c) => c.id);
 
-        const connExternalConnections = getExternalConnections(connReachableIds).filter((c) => {
+        const connExternalConnections = getExternalConnections(
+          connReachableIds,
+          connections
+        ).filter((c) => {
           return !externalConnections.some(
             (ec) => ec.externalConnectedPoint.id === c.externalConnectedPoint.id
           );
@@ -240,7 +163,7 @@
     }
 
     externalReachables = externalConnections
-      .map((c) => getReachables(c.externalConnectedPoint.id))
+      .map((c) => getReachables(c.externalConnectedPoint.id, tollMatrix, points))
       .reduce((acc, val) => acc.concat(val), []);
   }
 
