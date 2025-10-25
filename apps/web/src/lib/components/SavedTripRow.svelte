@@ -151,6 +151,7 @@
         <DropdownMenu.Item
           class="text-red-500 hover:text-red-500 data-[highlighted]:bg-red-500/10 data-[highlighted]:text-red-500"
           on:click={() => {
+            showSegments = false;
             $deleteSavedTrip.mutate(trip.id);
           }}>Delete</DropdownMenu.Item>
       </DropdownMenu.Content>

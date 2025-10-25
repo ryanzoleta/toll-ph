@@ -17,6 +17,7 @@
   import * as Table from '$lib/components/ui/table';
   import SavedTripRow from '$lib/components/SavedTripRow.svelte';
   import { calculate, getExternalConnections, getReachables } from '$lib/calculate.js';
+  import { Loader2Icon } from 'lucide-svelte';
 
   export let data;
 
@@ -488,7 +489,9 @@
       <h2 class="text-2xl font-bold">Saved Trips</h2>
 
       {#if $savedTripsQuery.isLoading}
-        <p>Loading...</p>
+        <div class="flex h-full flex-row items-center justify-center">
+          <Loader2Icon class="h-10 w-10 animate-spin text-slate-500" />
+        </div>
       {:else if $savedTripsQuery.data}
         <Table.Root class="border-b">
           <Table.Header>
@@ -496,14 +499,13 @@
               class="border-t bg-slate-100 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-900">
               <Table.Head class="w-[5%]" />
               <Table.Head class="w-[20%]">Entry</Table.Head>
-              <Table.Head class="w-[20%]" />
-              <Table.Head class="w-[20%]" />
+              <Table.Head class="w-[10%]" />
+              <Table.Head class="w-[5%]" />
               <Table.Head class="w-[20%]">Exit</Table.Head>
-              <Table.Head class="w-[20%]" />
+              <Table.Head class="w-[10%]" />
               <Table.Head class="w-[10%]">Class</Table.Head>
-              <Table.Head class="flex-1">RFID</Table.Head>
+              <Table.Head class="w-[10%]">RFID</Table.Head>
               <Table.Head class="w-[10%] text-right">Fee</Table.Head>
-
               <Table.Head class="w-[5%]" />
             </Table.Row>
           </Table.Header>
