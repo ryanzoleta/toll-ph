@@ -295,6 +295,7 @@
 
   $: if (vehicleClass.value > 1) {
     vehicleClass = { value: 1, label: 'Class 1' };
+    showPaywall = true;
   }
 
   let showPaywall = false;
