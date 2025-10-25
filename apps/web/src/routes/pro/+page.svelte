@@ -1,7 +1,7 @@
 <script lang="ts">
   import PointSelector from '$lib/components/ui/PointSelector.svelte';
   import Trip from '$lib/components/ui/Trip.svelte';
-  import { formatAmountToCurrency, formatNumber } from '$lib/utils.js';
+  import { formatAmountToCurrency, formatNumber, getRemainingTrialDays } from '$lib/utils.js';
   import Button from '$lib/components/ui/button/button.svelte';
   import type { Point, SavedTrip } from '$lib/data/schema.js';
   import type { TollSegment, TripResult } from '$lib/types.js';
@@ -17,7 +17,7 @@
   import * as Table from '$lib/components/ui/table';
   import SavedTripRow from '$lib/components/SavedTripRow.svelte';
   import { calculate, getExternalConnections, getReachables } from '$lib/calculate.js';
-  import { Loader2Icon } from 'lucide-svelte';
+  import { Loader2Icon, TriangleAlertIcon } from 'lucide-svelte';
 
   export let data;
 
@@ -290,8 +290,18 @@
 <main class="flex w-full flex-1 flex-col items-center">
   <div class="flex h-full w-full flex-1 flex-col md:flex-row">
     <div
-      class="flex w-full flex-col gap-5 overflow-y-scroll border-slate-200 px-10 py-5 dark:border-slate-800 md:w-1/2 md:border-r lg:w-1/3">
+      class="flex w-full flex-col gap-5 overflow-y-scroll border-slate-200 px-5 py-5 dark:border-slate-800 md:w-1/2 md:border-r md:px-10 lg:w-1/3">
       <h2 class="text-2xl font-bold">Calculator</h2>
+
+      <div
+        class="flex flex-row items-center justify-between gap-2 rounded-lg border border-orange-300 bg-orange-100 px-4 py-2 text-orange-800 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-200">
+        <div class="flex flex-row items-center gap-2">
+          <TriangleAlertIcon class="hidden h-6 w-6 text-orange-500 md:block" />
+          <p>Your trial will end in {getRemainingTrialDays(user)} days</p>
+        </div>
+
+        <Button variant="link" class="text-base text-orange-500">Subscribe Now</Button>
+      </div>
 
       <div class="flex flex-col gap-5">
         <div class="flex flex-col gap-2">
