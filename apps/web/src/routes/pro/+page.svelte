@@ -211,19 +211,46 @@
             vehicleClass,
           }),
         })
-      ).json()) as Omit<SavedTrip, 'id' | 'createdAt' | 'updatedAt'>;
+      ).json()) as Omit<SavedTrip, 'id' | 'createdAt' | 'updatedAt' | 'sequence'>;
       return response;
     },
-    onMutate: async (savedTrip: Omit<SavedTrip, 'id' | 'createdAt' | 'updatedAt' | 'userId'>) => {
+    onMutate: async (
+      savedTrip: Omit<SavedTrip, 'id' | 'createdAt' | 'updatedAt' | 'userId' | 'sequence'>
+    ) => {
       await queryClient.cancelQueries({ queryKey: ['savedTrips'] });
       const previousTransactions = queryClient.getQueryData<SavedTrip[]>(['savedTrips']);
-      queryClient.setQueryData<Omit<SavedTrip, 'id' | 'createdAt' | 'updatedAt' | 'userId'>[]>(
-        ['savedTrips'],
-        (old) => {
-          return [...(old ?? []), savedTrip];
-        }
-      );
+      queryClient.setQueryData<
+        Omit<SavedTrip, 'id' | 'createdAt' | 'updatedAt' | 'userId' | 'sequence'>[]
+      >(['savedTrips'], (old) => {
+        return [...(old ?? []), savedTrip];
+      });
 
+      return { previousTransactions };
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['savedTrips'] });
+    },
+  });
+
+  const updateSavedTrip = createMutation({
+    mutationFn: async ({ id, sequence }: { id: number; sequence: number }) => {
+      const response = (await (
+        await fetch(`/api/saved/${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ sequence }),
+        })
+      ).json()) as SavedTrip;
+      return response;
+    },
+    onMutate: async ({ id, sequence }: { id: number; sequence: number }) => {
+      await queryClient.cancelQueries({ queryKey: ['savedTrips'] });
+      const previousTransactions = queryClient.getQueryData<SavedTrip[]>(['savedTrips']);
+      queryClient.setQueryData<SavedTrip[]>(['savedTrips'], (old) => {
+        return old?.map((t) => (t.id === id ? { ...t, sequence } : t)) ?? [];
+      });
       return { previousTransactions };
     },
     onSettled: () => {

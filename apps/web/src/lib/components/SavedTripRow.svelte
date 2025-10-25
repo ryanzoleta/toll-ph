@@ -70,6 +70,61 @@
   $: tollSegments = result.tollSegments ?? [];
 
   let showSegments = false;
+
+  const moveUpSavedTrip = createMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/saved/${id}/moveup`, {
+        method: 'POST',
+      });
+      return response.json();
+    },
+    onMutate: async (id: number) => {
+      await queryClient.cancelQueries({ queryKey: ['savedTrips'] });
+      const previousTransactions = queryClient.getQueryData<SavedTrip[]>(['savedTrips']);
+      queryClient.setQueryData<SavedTrip[]>(['savedTrips'], (old) => {
+        const tripToMoveUp = old?.find((t) => t.id === id);
+        return (
+          (old?.map((t) =>
+            t.id === id
+              ? { ...t, sequence: t.sequence - 1 }
+              : t.sequence === (tripToMoveUp?.sequence ?? 0) - 1
+              ? { ...t, sequence: t.sequence + 1 }
+              : t
+          ) as SavedTrip[]) ?? []
+        ).sort((a, b) => a.sequence - b.sequence);
+      });
+      return { previousTransactions };
+    },
+  });
+
+  const moveDownSavedTrip = createMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/saved/${id}/movedown`, {
+        method: 'POST',
+      });
+      return response.json();
+    },
+    onMutate: async (id: number) => {
+      await queryClient.cancelQueries({ queryKey: ['savedTrips'] });
+      const previousTransactions = queryClient.getQueryData<SavedTrip[]>(['savedTrips']);
+      queryClient.setQueryData<SavedTrip[]>(['savedTrips'], (old) => {
+        const tripToMoveDown = old?.find((t) => t.id === id);
+        return (
+          (old?.map((t) =>
+            t.id === id
+              ? { ...t, sequence: t.sequence + 1 }
+              : t.sequence === (tripToMoveDown?.sequence ?? 0) + 1
+              ? { ...t, sequence: t.sequence - 1 }
+              : t
+          ) as SavedTrip[]) ?? []
+        ).sort((a, b) => a.sequence - b.sequence);
+      });
+      return { previousTransactions };
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['savedTrips'] });
+    },
+  });
 </script>
 
 <Table.Row class="hover:bg-background">
@@ -146,8 +201,16 @@
         <Button variant="ghost" size="icon"><EllipsisVerticalIcon class="h-5 w-5" /></Button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
-        <DropdownMenu.Item>Move Up</DropdownMenu.Item>
-        <DropdownMenu.Item>Move Down</DropdownMenu.Item>
+        <DropdownMenu.Item
+          on:click={() => {
+            showSegments = false;
+            $moveUpSavedTrip.mutate(trip.id);
+          }}>Move Up</DropdownMenu.Item>
+        <DropdownMenu.Item
+          on:click={() => {
+            showSegments = false;
+            $moveDownSavedTrip.mutate(trip.id);
+          }}>Move Down</DropdownMenu.Item>
         <DropdownMenu.Item
           class="text-red-500 hover:text-red-500 data-[highlighted]:bg-red-500/10 data-[highlighted]:text-red-500"
           on:click={() => {
