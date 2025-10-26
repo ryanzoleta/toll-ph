@@ -55,9 +55,10 @@
         class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
         >Matrix</a> -->
 
-      <Button variant="link">Matrix</Button>
+      <Button variant="link" href="/matrix">Matrix</Button>
 
       {#if session && user}
+        <Button variant="link" href="/account">Account</Button>
         <Button
           on:click={logout}
           variant="link"

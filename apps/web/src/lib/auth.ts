@@ -56,7 +56,9 @@ export const auth = betterAuth({
           authenticatedUsersOnly: true,
           returnUrl: `${process.env.BETTER_AUTH_URL}/pro`,
         }),
-        portal(),
+        portal({
+          returnUrl: `${process.env.BETTER_AUTH_URL}/pro`,
+        }),
       ],
     }),
   ],
