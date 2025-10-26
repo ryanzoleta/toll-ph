@@ -24,9 +24,11 @@ import { getRemainingTrialDays } from '$lib/payments';
 const redis = new Redis(REDIS_URL);
 
 export async function load(event: RequestEvent) {
+  console.time('Authenticating took');
   const session = await auth.api.getSession({
     headers: event.request.headers,
   });
+  console.timeEnd('Authenticating took');
 
   if (!session) {
     throw redirect(302, '/signin');
