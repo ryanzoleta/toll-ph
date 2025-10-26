@@ -131,9 +131,9 @@
   }
 
   $: reachables = [...originReachables, ...externalReachables]
-    .map((c) => points.find((p) => p.id === c.id) ?? c)
+    .map((c) => points.find((p: Point) => p.id === c.id) ?? c)
     .reduce((acc, val) => {
-      if (!acc.find((p) => p.id === val.id)) acc.push(val);
+      if (!acc.find((p: Point) => p.id === val.id)) acc.push(val);
       return acc;
     }, [] as Point[]);
 
@@ -265,8 +265,8 @@
         (acc, val) =>
           acc +
           calculate(
-            points.find((p) => p.id === val.pointOriginId) ?? null,
-            points.find((p) => p.id === val.pointDestinationId) ?? null,
+            points.find((p: Point) => p.id === val.pointOriginId) ?? null,
+            points.find((p: Point) => p.id === val.pointDestinationId) ?? null,
             val.vehicleClass,
             points,
             tollMatrix,
