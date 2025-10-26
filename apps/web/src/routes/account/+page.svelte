@@ -62,7 +62,7 @@
               <p class="text-slate-500">Email and Password</p>
             </div>
 
-            <Button variant="outline" on:click={logout}>Change Password</Button>
+            <Button variant="outline" href="/account/password">Change Password</Button>
           {/if}
         </div>
       </Card.Content>
