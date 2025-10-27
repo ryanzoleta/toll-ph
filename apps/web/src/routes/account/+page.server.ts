@@ -6,14 +6,17 @@ import { RequestEvent, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 
 export async function load(event: RequestEvent) {
+  console.time('Authenticating took');
   const session = await auth.api.getSession({
     headers: event.request.headers,
   });
+  console.timeEnd('Authenticating took');
 
   if (!session) {
     throw redirect(302, '/signin');
   }
 
+  console.time('Fetching account took');
   const accountResult = await db
     .select()
     .from(accountTable)
@@ -24,12 +27,15 @@ export async function load(event: RequestEvent) {
   }
 
   const account = accountResult[0];
+  console.timeEnd('Fetching account took');
 
+  console.time('Fetching benefits took');
   const benefits = await auth.api.benefits({ headers: event.request.headers });
   const proBenefit = benefits.result.items.find(
     (benefit: any) => benefit.benefitId === POLAR_TOLL_PH_PRO_BENEFIT_ID
   );
   const isPro = proBenefit ? true : false;
+  console.timeEnd('Fetching benefits took');
 
   return {
     session,
