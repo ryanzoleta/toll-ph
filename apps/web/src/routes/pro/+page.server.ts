@@ -19,6 +19,7 @@ import { alias } from 'drizzle-orm/pg-core';
 import { POLAR_TOLL_PH_PRO_BENEFIT_ID, REDIS_URL } from '$env/static/private';
 import Redis from 'ioredis';
 import { getRemainingTrialDays } from '$lib/payments';
+import { server_isSubscribed } from '$lib/payments_server';
 
 const redis = new Redis(REDIS_URL);
 
@@ -37,11 +38,7 @@ export async function load(event: RequestEvent) {
   const user = session.user as User;
 
   console.time('Fetching benefits took');
-  const benefits = await auth.api.benefits({ headers: event.request.headers });
-  const proBenefit = benefits.result.items.find(
-    (benefit: any) => benefit.benefitId === POLAR_TOLL_PH_PRO_BENEFIT_ID
-  );
-  const isPro = proBenefit ? true : false;
+  const isPro = await server_isSubscribed(event, user.id);
   console.timeEnd('Fetching benefits took');
 
   const remainingTrialDays = getRemainingTrialDays(user);
