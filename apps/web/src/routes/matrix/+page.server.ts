@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 
 export async function load() {
-  console.log('Loading matrix data...');
+  console.time('Loading matrix data took');
   const entryPoint = alias(point, 'entryPoint');
   const exitPoint = alias(point, 'exitPoint');
   const entryExpressway = alias(expressway, 'entryExpressway');
@@ -26,6 +26,8 @@ export async function load() {
   const tollNetworks = await db.select().from(tollNetwork);
 
   const expressways = await db.select().from(expressway);
+
+  console.timeEnd('Loading matrix data took');
 
   return {
     tollMatrix: tollMatrixResults,

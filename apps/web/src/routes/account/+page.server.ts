@@ -2,10 +2,12 @@ import { POLAR_TOLL_PH_PRO_BENEFIT_ID } from '$env/static/private';
 import { auth } from '$lib/auth';
 import { db } from '$lib/data/db';
 import { account as accountTable } from '$lib/data/schema';
+import { server_isSubscribed } from '$lib/payments_server';
 import { RequestEvent, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 
 export async function load(event: RequestEvent) {
+  console.time('Loading account page took');
   console.time('Authenticating took');
   const session = await auth.api.getSession({
     headers: event.request.headers,
@@ -30,12 +32,10 @@ export async function load(event: RequestEvent) {
   console.timeEnd('Fetching account took');
 
   console.time('Fetching benefits took');
-  const benefits = await auth.api.benefits({ headers: event.request.headers });
-  const proBenefit = benefits.result.items.find(
-    (benefit: any) => benefit.benefitId === POLAR_TOLL_PH_PRO_BENEFIT_ID
-  );
-  const isPro = proBenefit ? true : false;
+  const isPro = await server_isSubscribed(event, session.user.id);
   console.timeEnd('Fetching benefits took');
+
+  console.timeEnd('Loading account page took');
 
   return {
     session,

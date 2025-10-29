@@ -32,8 +32,6 @@
     },
   });
 
-  $: console.log('customerStatusQuery', $customerStatusQuery.data);
-
   async function logout() {
     await authClient.signOut();
     window.location.href = '/';

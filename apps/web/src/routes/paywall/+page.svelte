@@ -21,8 +21,6 @@
       return await isSubscribed(user);
     },
   });
-
-  $: console.log('customerStatusQuery', $customerStatusQuery.data);
 </script>
 
 <svelte:head>
