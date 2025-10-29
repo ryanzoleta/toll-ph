@@ -2,6 +2,7 @@ import type { InferSelectModel } from 'drizzle-orm';
 import {
   boolean,
   decimal,
+  index,
   integer,
   pgEnum,
   pgTable,
@@ -145,24 +146,30 @@ export const verification = pgTable('verification', {
     .notNull(),
 });
 
-export const savedTrip = pgTable('saved_trip', {
-  id: serial('id').primaryKey(),
-  userId: text('user_id')
-    .notNull()
-    .references(() => user.id, { onDelete: 'cascade' }),
-  pointOriginId: integer('point_origin_id')
-    .references(() => point.id)
-    .notNull(),
-  pointDestinationId: integer('point_destination_id')
-    .references(() => point.id)
-    .notNull(),
-  vehicleClass: integer('vehicle_class').notNull(),
-  sequence: integer('sequence').default(1).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at')
-    .$onUpdate(() => /* @__PURE__ */ new Date())
-    .notNull(),
-});
+export const savedTrip = pgTable(
+  'saved_trip',
+  {
+    id: serial('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    pointOriginId: integer('point_origin_id')
+      .references(() => point.id)
+      .notNull(),
+    pointDestinationId: integer('point_destination_id')
+      .references(() => point.id)
+      .notNull(),
+    vehicleClass: integer('vehicle_class').notNull(),
+    sequence: integer('sequence').default(1).notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (t) => ({
+    savedTripUserIdIdx: index('saved_trip_user_id_idx').on(t.userId),
+  })
+);
 
 export type SavedTrip = InferSelectModel<typeof savedTrip>;
 

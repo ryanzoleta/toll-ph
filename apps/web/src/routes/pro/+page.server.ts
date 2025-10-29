@@ -11,7 +11,6 @@ import {
   tollMatrix,
   tollNetwork,
   savedTrip as savedTripsTable,
-  savedTrip,
   User,
 } from '$lib/data/schema';
 import { redirect, RequestEvent } from '@sveltejs/kit';
@@ -24,6 +23,7 @@ import { getRemainingTrialDays } from '$lib/payments';
 const redis = new Redis(REDIS_URL);
 
 export async function load(event: RequestEvent) {
+  console.time('Loading pro page took');
   console.time('Authenticating took');
   const session = await auth.api.getSession({
     headers: event.request.headers,
@@ -46,8 +46,6 @@ export async function load(event: RequestEvent) {
   if (remainingTrialDays <= 0) {
     throw redirect(302, '/paywall');
   }
-
-  console.time('Loading pro page took');
 
   const dataFetchResults = await Promise.all([
     fetchPoints(),
