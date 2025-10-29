@@ -18,7 +18,7 @@
   import * as Table from '$lib/components/ui/table';
   import SavedTripRow from '$lib/components/SavedTripRow.svelte';
   import { calculate, getExternalConnections, getReachables } from '$lib/calculate.js';
-  import { Loader2Icon, TriangleAlertIcon } from 'lucide-svelte';
+  import { ArrowDownUpIcon, Loader2Icon, TriangleAlertIcon } from 'lucide-svelte';
   import { authClient } from '$lib/auth-client.js';
 
   export let data;
@@ -358,7 +358,21 @@
         </div>
 
         <div class="flex flex-col gap-2">
-          <h3 class="font-bold text-slate-700 dark:text-slate-300">Destination</h3>
+          <div class="flex flex-row items-end justify-between">
+            <h3 class="font-bold text-slate-700 dark:text-slate-300">Destination</h3>
+            <Button
+              variant="ghost"
+              size="icon"
+              class="rounded-full"
+              on:click={() => {
+                const temp = pointOrigin;
+                pointOrigin = pointDestination;
+                pointDestination = temp;
+                calculateSolo(pointOrigin, pointDestination);
+              }}>
+              <ArrowDownUpIcon class="h-5 w-5 text-slate-500" />
+            </Button>
+          </div>
           <PointSelector
             bind:input={pointDestinationInput}
             points={reachables}
