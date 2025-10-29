@@ -85,8 +85,11 @@
           </div>
 
           {#if data.isPro}
-            <Button variant="outline" on:click={() => redirect(302, '/paywall')}
-              >Cancel Subscription</Button>
+            <Button
+              variant="outline"
+              on:click={() => {
+                authClient.customer.portal();
+              }}>Manage Subscription</Button>
           {:else if remainingTrialDays > 0}
             <Button variant="outline" on:click={() => redirect(302, '/paywall')}
               >Subscribe to Pro</Button>
