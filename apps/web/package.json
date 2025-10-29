@@ -46,7 +46,8 @@
     "pg": "^8.12.0",
     "sortablejs": "^1.15.2",
     "tailwind-merge": "^2.3.0",
-    "tailwind-variants": "^0.2.1"
+    "tailwind-variants": "^0.2.1",
+    "webhooks": "link:@polar-sh/sdk/webhooks"
   },
   "packageManager": "pnpm"
 }

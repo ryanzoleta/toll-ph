@@ -3,7 +3,7 @@
   import Trip from '$lib/components/ui/Trip.svelte';
   import { formatAmountToCurrency, formatNumber } from '$lib/utils.js';
   import Button from '$lib/components/ui/button/button.svelte';
-  import { getRemainingTrialDays } from '$lib/payments';
+  import { getRemainingTrialDays, isSubscribed } from '$lib/payments';
   import type { Point, SavedTrip } from '$lib/data/schema.js';
   import type { TollSegment, TripResult } from '$lib/types.js';
   import { onMount } from 'svelte';
@@ -275,6 +275,13 @@
         0
       )
     : 0;
+
+  const isProQuery = createQuery({
+    queryKey: ['isPro', user.id],
+    queryFn: async () => {
+      return await isSubscribed(user);
+    },
+  });
 </script>
 
 <svelte:head>
@@ -295,17 +302,19 @@
       class=" flex w-full flex-col gap-5 border-b border-slate-200 px-5 py-5 dark:border-slate-800 sm:px-8 md:w-1/2 md:border-b-0 md:border-r md:px-5 lg:px-10 xl:w-1/3">
       <h2 class="text-2xl font-bold">Calculator</h2>
 
-      {#if !data.isPro}
-        <div
-          class="flex flex-col items-start justify-between gap-2 rounded-lg border border-orange-300 bg-orange-100 px-4 py-4 text-orange-800 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-200 sm:flex-row md:flex-col md:items-center xl:flex-row">
-          <div class="flex flex-row items-center gap-2">
-            <TriangleAlertIcon class="h-6 w-6 text-orange-500" />
-            <p>Your trial will end in {getRemainingTrialDays(user)} days</p>
-          </div>
+      {#if !$isProQuery.isLoading}
+        {#if !$isProQuery.data}
+          <div
+            class="flex flex-col items-start justify-between gap-2 rounded-lg border border-orange-300 bg-orange-100 px-4 py-4 text-orange-800 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-200 sm:flex-row md:flex-col md:items-center xl:flex-row">
+            <div class="flex flex-row items-center gap-2">
+              <TriangleAlertIcon class="h-6 w-6 text-orange-500" />
+              <p>Your trial will end in {getRemainingTrialDays(user)} days</p>
+            </div>
 
-          <Button variant="link" class="self-end text-base text-orange-500" href="/paywall"
-            >Subscribe Now</Button>
-        </div>
+            <Button variant="link" class="self-end text-base text-orange-500" href="/paywall"
+              >Subscribe Now</Button>
+          </div>
+        {/if}
       {/if}
 
       <div class="flex flex-col gap-5">
