@@ -36,11 +36,13 @@ export async function load(event: RequestEvent) {
 
   const user = session.user as User;
 
+  console.time('Fetching benefits took');
   const benefits = await auth.api.benefits({ headers: event.request.headers });
   const proBenefit = benefits.result.items.find(
     (benefit: any) => benefit.benefitId === POLAR_TOLL_PH_PRO_BENEFIT_ID
   );
   const isPro = proBenefit ? true : false;
+  console.timeEnd('Fetching benefits took');
 
   const remainingTrialDays = getRemainingTrialDays(user);
   if (remainingTrialDays <= 0) {
@@ -128,7 +130,6 @@ async function fetchExpressways() {
 
 async function fetchTollMatrix() {
   console.time('Fetching toll matrix took');
-
   // console.time('Fetching toll matrix from upstash took');
   // const cachedMatrix = await redis.get('load:toll_matrix');
   // console.timeEnd('Fetching toll matrix from upstash took');
