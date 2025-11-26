@@ -46,6 +46,9 @@
 
   function saveResult() {
     if (tollFee === 0) return;
+    posthog.capture('save', {
+      vehicleClass: vehicleClass.value,
+    });
 
     savedTrips = [
       ...savedTrips,
@@ -86,8 +89,8 @@
   function calculate(pointOrigin: Point | null, pointDestination: Point | null) {
     posthog.capture('calculate', {
       vehicleClass: vehicleClass.value,
-      pointOrigin,
-      pointDestination,
+      origin: `${pointOrigin?.expresswayId}_${pointOrigin?.name}`,
+      destination: `${pointDestination?.expresswayId}_${pointDestination?.name}`,
     });
 
     usageCount += 1;
