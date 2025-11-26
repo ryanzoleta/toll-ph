@@ -12,6 +12,7 @@
   import Sortable from 'sortablejs';
   import Coffee from '$lib/components/ui/Coffee.svelte';
   import { fade } from 'svelte/transition';
+  import posthog from 'posthog-js';
 
   export let data;
 
@@ -83,6 +84,12 @@
   }
 
   function calculate(pointOrigin: Point | null, pointDestination: Point | null) {
+    posthog.capture('calculate', {
+      vehicleClass: vehicleClass.value,
+      pointOrigin,
+      pointDestination,
+    });
+
     usageCount += 1;
     console.log('calculate start');
     if (!pointOrigin || !pointDestination) return;
