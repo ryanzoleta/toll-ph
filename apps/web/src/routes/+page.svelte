@@ -13,6 +13,8 @@
   import Coffee from '$lib/components/ui/Coffee.svelte';
   import { fade } from 'svelte/transition';
   import posthog from 'posthog-js';
+  import Larawan from '$lib/components/ui/Larawan.svelte';
+  import Promotions from '$lib/components/ui/Promotions.svelte';
 
   export let data;
 
@@ -548,9 +550,7 @@
         }}>Bacoor → Subic</button>
     </div>
   {:else if usageCount > 1}
-    <div>
-      <Coffee />
-    </div>
+    <Promotions />
   {/if}
 
   {#if savedTrips.length > 0}
