@@ -549,7 +549,7 @@
           }, 1);
         }}>Bacoor → Subic</button>
     </div>
-  {:else if usageCount > 1}
+  {:else if usageCount > 0}
     <Promotions />
   {/if}
 
