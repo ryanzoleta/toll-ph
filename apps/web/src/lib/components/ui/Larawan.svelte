@@ -19,7 +19,10 @@
       Generate professional and beautiful photos and portraits of yourself and your loved ones.
     </p>
 
-    <a href="https://apps.apple.com/ph/app/larawan-ai-photo-generator/id6755091135" target="_blank">
+    <a
+      href="https://apps.apple.com/ph/app/larawan-ai-photo-generator/id6755091135"
+      target="_blank"
+      class="plausible-event-name=larawan">
       <button
         class="w-full rounded-lg bg-slate-700 px-4 py-2 text-white hover:bg-slate-600 active:bg-slate-500"
         >Install Now</button>
