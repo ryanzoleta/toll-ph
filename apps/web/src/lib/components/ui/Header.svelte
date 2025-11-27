@@ -26,7 +26,7 @@
     <a href="/" class="text-3xl font-bold text-slate-950 dark:text-slate-300"><h1>toll.ph</h1></a>
   </div>
 
-  <div class="flex flex-row items-center gap-5">
+  <div class="flex flex-row items-center gap-3">
     <a
       href="/matrix"
       class="text-sm text-slate-500 transition-all duration-100 hover:text-slate-200 hover:underline"
@@ -47,6 +47,15 @@
         </a>
       {/if}
     {/if}
+
+    <a
+      href="https://www.buymeacoffee.com/ryanarnold"
+      target="_blank"
+      class="plausible-event-name=coffee hidden md:block"
+      ><img
+        src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+        alt="Buy Me A Coffee"
+        class="h-10" /></a>
 
     {#if showCalculatorButton}
       <Button href="/">Use the Calculator!</Button>
