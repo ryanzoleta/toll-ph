@@ -117,11 +117,11 @@ for sheet_name, df in all_sheets.items():
 
 
 conn = psycopg2.connect(
-    dbname="railway",
-    user="postgres",
-    password="YvLQDahSioySlJoaSFNpXOdrVTBIBKHK",
-    host="monorail.proxy.rlwy.net",  # usually "localhost" if running locally
-    port="40021",  # default PostgreSQL port
+    dbname="postgres",
+    user="27a9a1df1acfe63c881887de2647afa6a2b1e528cc8bc49076e8578856085595",
+    password="sk_0Gmj-JOgi_gXlgcBjFIVn",
+    host="db.prisma.io",  # usually "localhost" if running locally
+    port="5432",  # default PostgreSQL port
 )
 
 cur = conn.cursor()
@@ -136,9 +136,9 @@ for task in update_tasks:
 
     for record in records:
 
-        if record[2] == task.new_fee:
-            print(f"Skipping {task.entry_name} to {task.exit_name}")
-            continue
+        # if record[2] == task.new_fee:
+        #     print(f"Skipping {task.entry_name} to {task.exit_name}")
+        #     continue
 
         print(f"{task.entry_name} to {task.exit_name}: {record[2]} -> {task.new_fee}")
 

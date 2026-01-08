@@ -7,7 +7,7 @@
         class="text-xs text-slate-500 hover:underline">Toll Regulatory Board</a>
     </p>
 
-    <p class="text-center text-xs text-slate-500 md:text-left">Last updated: November 1, 2025</p>
+    <p class="text-center text-xs text-slate-500 md:text-left">Last updated: January 8, 2026</p>
   </div>
 
   <div class="flex flex-row justify-center gap-5 md:justify-start">
