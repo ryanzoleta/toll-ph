@@ -11,7 +11,12 @@
       <div class="flex flex-row gap-2">
         <p class="text-slate-500 dark:text-slate-400">Ad</p>
         <p class="text-slate-500 dark:text-slate-400">•</p>
-        <p class="font-bold">Larawan AI</p>
+        <p class="font-bold">
+          <a
+            href="https://apps.apple.com/ph/app/larawan-ai-photo-generator/id6755091135"
+            target="_blank"
+            class="hover:underline">Larawan AI</a>
+        </p>
       </div>
     </div>
 
