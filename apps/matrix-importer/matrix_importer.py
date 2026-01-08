@@ -82,6 +82,7 @@ class UpdateTask:
 update_tasks = []
 
 file_path = f"class{VEHICLE_CLASS}.xlsx"
+print(f"Processing file: {file_path}")
 
 df = pd.read_excel(file_path)
 
