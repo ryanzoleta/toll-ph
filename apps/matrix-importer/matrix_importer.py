@@ -1,11 +1,22 @@
 import pandas as pd
 import psycopg2
-import sys
+import argparse
 
-VEHICLE_CLASS = 3
-TO_PROCESS_SHEETS = ["NLEX_SCTEX"]
+parser = argparse.ArgumentParser(description="Import toll matrix data from Excel file")
+parser.add_argument(
+    "vehicle_class", type=int, help="Vehicle class number (e.g., 1, 2, 3)"
+)
+parser.add_argument(
+    "--sheets",
+    nargs="+",
+    required=True,
+    help="Sheet names to process (e.g., NLEX_SCTEX)",
+    dest="to_process_sheets",
+)
+args = parser.parse_args()
 
-print(sys.argv[0])
+VEHICLE_CLASS = args.vehicle_class
+TO_PROCESS_SHEETS = args.to_process_sheets
 
 
 class UpdateTask:
@@ -126,12 +137,10 @@ for task in update_tasks:
     for record in records:
 
         if record[2] == task.new_fee:
-            print(f'Skipping {task.entry_name} to {task.exit_name}')
+            print(f"Skipping {task.entry_name} to {task.exit_name}")
             continue
 
-        print(
-            f"{task.entry_name} to {task.exit_name}: {record[2]} -> {task.new_fee}"
-        )
+        print(f"{task.entry_name} to {task.exit_name}: {record[2]} -> {task.new_fee}")
 
         try:
             cur.execute(task.update_stmt())
