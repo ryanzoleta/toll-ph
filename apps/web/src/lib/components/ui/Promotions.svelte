@@ -17,9 +17,9 @@
 </script>
 
 <div>
-  {#if os === 'apple'}
+  <!-- {#if os === 'apple'}
     <Larawan />
-  {:else}
-    <Coffee />
-  {/if}
+  {:else} -->
+  <Coffee />
+  <!-- {/if} -->
 </div>
