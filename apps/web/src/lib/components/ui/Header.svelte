@@ -6,9 +6,13 @@
   import PlayStore from '$lib/assets/images/playstore.png';
   import { onMount } from 'svelte';
   import Coffee from '$lib/components/ui/Coffee.svelte';
+  import * as Dialog from '$lib/components/ui/dialog/index.js';
+  import GCash from '$lib/assets/images/gcash.jpg';
+  import DonationDialog from '../DonationDialog.svelte';
 
   export let showCalculatorButton = false;
   let os: 'apple' | 'android' | undefined = undefined;
+  let showDonationDialog = false;
 
   onMount(() => {
     const userAgent = window.navigator.userAgent.toLowerCase();
@@ -48,14 +52,19 @@
       {/if}
     {/if}
 
-    <a
+    <!-- <a
       href="https://www.buymeacoffee.com/ryanarnold"
       target="_blank"
       class="plausible-event-name=coffee hidden md:block"
       ><img
         src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
         alt="Buy Me A Coffee"
-        class="h-10" /></a>
+        class="h-10" /></a> -->
+
+    <Button
+      variant="outline"
+      class="plausible-event-name=donate hidden md:block"
+      on:click={() => (showDonationDialog = true)}>Donate</Button>
 
     {#if showCalculatorButton}
       <Button href="/">Use the Calculator!</Button>
@@ -70,3 +79,5 @@
     </Button>
   </div>
 </div>
+
+<DonationDialog bind:showDonationDialog />
