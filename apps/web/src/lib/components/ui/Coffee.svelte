@@ -20,7 +20,7 @@
         class="h-10" /></a>
   {:else}
     <div
-      class="hidden w-full flex-col gap-5 rounded-lg border border-slate-500 bg-slate-100 p-5 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 md:flex"
+      class="flex w-full flex-col gap-5 rounded-lg border border-slate-500 bg-slate-100 p-5 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
       in:fade>
       <div class="flex items-start justify-between">
         <p class="text-slate-800 dark:text-slate-500">
@@ -61,7 +61,7 @@
       <div class="flex flex-row items-center gap-5 md:hidden">
         <Button
           variant="outline"
-          on:click={() => (showDonationDialog = true)}
+          href="/donate"
           class="plausible-event-name=donate flex h-12 w-full flex-row items-center gap-3"
           ><img src={GCashLogo} alt="GCash" class="h-6" /> Donate</Button>
       </div>
