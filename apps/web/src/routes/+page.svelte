@@ -566,7 +566,7 @@
         {/key}
       </div>
 
-      <p class="mb-5 text-center text-sm text-slate-700">
+      <p class="mb-5 text-center text-sm text-slate-700 dark:text-slate-300">
         total amount: {formatAmountToCurrency(
           savedTrips.reduce((acc, val) => acc + val.totalFee, 0)
         )}
