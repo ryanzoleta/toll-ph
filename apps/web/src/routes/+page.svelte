@@ -36,7 +36,7 @@
   let usageCount = 0;
 
   onMount(() => {
-    savedTrips = JSON.parse(localStorage.getItem('savedTrips') ?? '[]');
+    savedTrips = refreshSavedTrips(JSON.parse(localStorage.getItem('savedTrips') ?? '[]'));
     localStorageLoaded = true;
   });
 
@@ -58,6 +58,8 @@
         totalFee: tollFee,
         tollSegments,
         vehicleClass: vehicleClass.value,
+        originPointId: pointOrigin?.id,
+        destinationPointId: pointDestination?.id,
       },
     ];
 
@@ -72,12 +74,12 @@
     savedTrips = [] as TripResult[];
   }
 
-  function queryTollMatrix(origin: Point, destination: Point) {
+  function queryTollMatrix(origin: Point, destination: Point, vehicleClassValue: number) {
     let matrix = data.tollMatrix.find(
       (tm) =>
         tm.entry_point.id === origin.id &&
         tm.exit_point.id === destination.id &&
-        tm.toll_matrix.vehicleClass === vehicleClass.value
+        tm.toll_matrix.vehicleClass === vehicleClassValue
     );
 
     if (matrix !== null && matrix !== undefined) return parseFloat(matrix?.toll_matrix.fee ?? '0');
@@ -87,9 +89,141 @@
         tm.entry_point.id === destination.id &&
         tm.exit_point.id === origin.id &&
         tm.toll_matrix.reversible &&
-        tm.toll_matrix.vehicleClass === vehicleClass.value
+        tm.toll_matrix.vehicleClass === vehicleClassValue
     );
     return parseFloat(matrix?.toll_matrix.fee ?? '0');
+  }
+
+  function getExpandedExternalConnections(origin: Point) {
+    let connections = getExternalConnections(getReachables(origin.id).map((c) => c.id));
+    let tempExternalConnections = [...connections];
+
+    while (tempExternalConnections.length > 0) {
+      const l = [...tempExternalConnections];
+      tempExternalConnections = [];
+      for (const conn of [...l]) {
+        const connReachables = getReachables(conn.externalConnectedPoint.id);
+        const connReachableIds = connReachables.map((c) => c.id);
+
+        const connExternalConnections = getExternalConnections(connReachableIds).filter((c) => {
+          return !connections.some(
+            (ec) => ec.externalConnectedPoint.id === c.externalConnectedPoint.id
+          );
+        });
+        connections = [...connections, ...connExternalConnections];
+        tempExternalConnections = [...tempExternalConnections, ...connExternalConnections];
+      }
+    }
+
+    return connections;
+  }
+
+  function calculateTripResult(
+    origin: Point,
+    destination: Point,
+    vehicleClassValue: number
+  ): TripResult {
+    let totalFee = 0;
+    let segments: TollSegment[] = [];
+
+    if (origin.tollNetworkId === destination.tollNetworkId) {
+      const fee = queryTollMatrix(origin, destination, vehicleClassValue);
+
+      segments = [
+        {
+          entryPoint: { ...origin },
+          exitPoint: { ...destination },
+          fee,
+        },
+      ];
+      totalFee = fee;
+    } else {
+      let currentDestination = destination;
+      const connections = getExpandedExternalConnections(origin);
+
+      for (let i = 0; i < connections.length; i++) {
+        const conn = { ...connections[i] };
+
+        if (currentDestination.tollNetworkId === origin.tollNetworkId) {
+          const fee = queryTollMatrix(origin, currentDestination, vehicleClassValue);
+          segments = [
+            {
+              entryPoint: { ...origin },
+              exitPoint: { ...currentDestination },
+              fee,
+            },
+            ...segments,
+          ];
+          totalFee += fee;
+
+          break;
+        } else {
+          const connReachables = getReachables(conn.externalConnectedPoint.id);
+          const connReachableIds = connReachables.map((c) => c.id);
+
+          if (connReachableIds.includes(currentDestination.id)) {
+            const fee = queryTollMatrix(
+              conn.externalConnectedPoint,
+              currentDestination,
+              vehicleClassValue
+            );
+            segments = [
+              {
+                entryPoint: { ...conn.externalConnectedPoint },
+                exitPoint: { ...currentDestination },
+                fee,
+              },
+              ...segments,
+            ];
+            totalFee += fee;
+            currentDestination = { ...conn.reachableConnectedPoint };
+
+            i = -1;
+          }
+        }
+      }
+    }
+
+    return {
+      totalFee,
+      tollSegments: segments,
+      vehicleClass: vehicleClassValue,
+      originPointId: origin.id,
+      destinationPointId: destination.id,
+    };
+  }
+
+  function refreshSavedTrips(trips: TripResult[]) {
+    return trips.map((trip) => {
+      const originPointId = trip.originPointId ?? trip.tollSegments?.[0]?.entryPoint?.id;
+      const destinationPointId =
+        trip.destinationPointId ?? trip.tollSegments?.[trip.tollSegments.length - 1]?.exitPoint?.id;
+      const origin = data.points.find((p) => p.id === originPointId);
+      const destination = data.points.find((p) => p.id === destinationPointId);
+
+      if (!origin || !destination || !trip.vehicleClass) return trip;
+
+      const refreshedTrip = calculateTripResult(origin, destination, trip.vehicleClass);
+
+      if (refreshedTrip.tollSegments.length === 0 || refreshedTrip.totalFee <= 0) return trip;
+
+      return refreshedTrip;
+    });
+  }
+
+  function getRfidTotals(segments: TollSegment[]) {
+    return segments.reduce(
+      (totals, segment) => {
+        if (segment.entryPoint.rfid === 'AUTOSWEEP') {
+          totals.autoSweepTotal += segment.fee;
+        } else {
+          totals.easyTripTotal += segment.fee;
+        }
+
+        return totals;
+      },
+      { autoSweepTotal: 0, easyTripTotal: 0 }
+    );
   }
 
   function calculate(pointOrigin: Point | null, pointDestination: Point | null) {
@@ -104,71 +238,17 @@
     if (!pointOrigin || !pointDestination) return;
     console.log('calculate not returned');
 
-    tollSegments = [];
-    tollFee = 0;
     easyTripTotal = 0;
     autoSweepTotal = 0;
     savedResult = false;
 
-    if (pointOrigin.tollNetworkId === pointDestination.tollNetworkId) {
-      tollSegments = [
-        {
-          entryPoint: { ...pointOrigin },
-          exitPoint: { ...pointDestination },
-          fee: queryTollMatrix(pointOrigin, pointDestination),
-        },
-      ];
+    const tripResult = calculateTripResult(pointOrigin, pointDestination, vehicleClass.value);
+    tollSegments = tripResult.tollSegments;
+    tollFee = tripResult.totalFee;
 
-      tollFee = queryTollMatrix(pointOrigin, pointDestination);
-    } else {
-      let currentDestination = pointDestination;
-
-      for (let i = 0; i < externalConnections.length; i++) {
-        const conn = { ...externalConnections[i] };
-
-        if (currentDestination.tollNetworkId === pointOrigin.tollNetworkId) {
-          const fee = queryTollMatrix(pointOrigin, currentDestination);
-          tollSegments = [
-            {
-              entryPoint: { ...pointOrigin },
-              exitPoint: { ...currentDestination },
-              fee,
-            },
-            ...tollSegments,
-          ];
-          tollFee += fee;
-
-          break;
-        } else {
-          const connReachables = getReachables(conn.externalConnectedPoint.id);
-          const connReachableIds = connReachables.map((c) => c.id);
-
-          if (connReachableIds.includes(currentDestination.id)) {
-            const fee = queryTollMatrix(conn.externalConnectedPoint, currentDestination);
-            tollSegments = [
-              {
-                entryPoint: { ...conn.externalConnectedPoint },
-                exitPoint: { ...currentDestination },
-                fee,
-              },
-              ...tollSegments,
-            ];
-            tollFee += fee;
-            currentDestination = { ...conn.reachableConnectedPoint };
-
-            i = -1;
-          }
-        }
-      }
-
-      for (let segment of tollSegments) {
-        if (segment.entryPoint.rfid === 'AUTOSWEEP') {
-          autoSweepTotal += segment.fee;
-        } else {
-          easyTripTotal += segment.fee;
-        }
-      }
-    }
+    const rfidTotals = getRfidTotals(tollSegments);
+    autoSweepTotal = rfidTotals.autoSweepTotal;
+    easyTripTotal = rfidTotals.easyTripTotal;
   }
 
   function getReachables(pointId: number) {

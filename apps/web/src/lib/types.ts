@@ -25,4 +25,6 @@ export type TripResult = {
   totalFee: number;
   tollSegments: TollSegment[];
   vehicleClass: number;
+  originPointId?: number;
+  destinationPointId?: number;
 };
