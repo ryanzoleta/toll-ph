@@ -20,7 +20,7 @@
         class="h-10" /></a>
   {:else}
     <div
-      class="flex w-full flex-col gap-5 rounded-lg border border-slate-500 bg-slate-100 p-5 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
+      class="flex w-full flex-col gap-5 rounded-lg border border-slate-200 bg-slate-100 p-5 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
       in:fade>
       <div class="flex items-start justify-between">
         <p class="text-slate-800 dark:text-slate-500">
