@@ -68,6 +68,10 @@
     savedTrips = savedTrips.filter((t) => t !== trip);
   }
 
+  function clearSavedTrips() {
+    savedTrips = [] as TripResult[];
+  }
+
   function queryTollMatrix(origin: Point, destination: Point) {
     let matrix = data.tollMatrix.find(
       (tm) =>
@@ -552,7 +556,14 @@
   {#if savedTrips.length > 0}
     <div class="flex flex-col gap-5">
       <div class="w-full border-b border-b-slate-200 dark:border-b-slate-800" />
-      <h3 class="text-center text-sm text-slate-700">saved trips</h3>
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300">Saved Trips</h3>
+        <button
+          class="rounded-md border border-slate-400 bg-transparent px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+          on:click={clearSavedTrips}>
+          Clear
+        </button>
+      </div>
 
       <div class="flex flex-col gap-5" bind:this={container}>
         {#key savedTrips}
