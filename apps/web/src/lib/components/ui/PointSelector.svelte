@@ -1,7 +1,10 @@
 <script lang="ts">
   import type { Point } from '$lib/data/schema';
   import { capitalize } from '$lib/utils';
+  import { createEventDispatcher } from 'svelte';
   import { fade } from 'svelte/transition';
+
+  const dispatch = createEventDispatcher<{ select: Point }>();
 
   export let points: Point[];
   // export let kind: 'ENTRY' | 'EXIT';
@@ -19,6 +22,16 @@
   export let setPoint: Point | null = null;
 
   let inputElement: HTMLElement;
+
+  export function focus() {
+    displaySearchResults = true;
+    inputElement?.focus();
+  }
+
+  function selectPoint(point: Point) {
+    setPoint = point;
+    dispatch('select', point);
+  }
 
   function escapeRegExp(str: string) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -80,13 +93,13 @@
     on:blur={() => {
       setTimeout(() => {
         if (selectedIndex > -1 && displaySearchResults && searchResults.length > 0) {
-          setPoint = searchResults[selectedIndex];
+          selectPoint(searchResults[selectedIndex]);
         }
 
         displaySearchResults = false;
 
         if (searchResults.length === 1) {
-          setPoint = searchResults[0];
+          selectPoint(searchResults[0]);
         }
       }, 200);
     }}
@@ -100,8 +113,9 @@
         e.preventDefault();
       } else if (e.key === 'Enter') {
         if (selectedIndex > -1) {
-          setPoint = searchResults[selectedIndex];
-          input = capitalize(setPoint.name) ?? '';
+          const point = searchResults[selectedIndex];
+          selectPoint(point);
+          input = capitalize(point.name) ?? '';
         }
       }
     }} />
@@ -134,7 +148,7 @@
             selectedIndex = -1;
           }}
           on:click={() => {
-            setPoint = point;
+            selectPoint(point);
           }}>
           <div class="flex place-items-center gap-2">
             <p class="font-bold">{capitalize(point.name)}</p>

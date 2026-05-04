@@ -6,7 +6,7 @@
   import Header from '$lib/components/ui/Header.svelte';
   import type { Point } from '$lib/data/schema.js';
   import type { TollSegment, TripResult } from '$lib/types.js';
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import * as Tooltip from '$lib/components/ui/tooltip';
   import * as Select from '$lib/components/ui/select';
   import Sortable from 'sortablejs';
@@ -26,6 +26,7 @@
 
   let pointOriginInput = '';
   let pointDestinationInput = '';
+  let pointDestinationSelector: { focus: () => void } | undefined;
 
   let tollSegments: TollSegment[] = [];
 
@@ -64,6 +65,11 @@
     ];
 
     savedResult = true;
+  }
+
+  async function focusDestinationSelector() {
+    await tick();
+    pointDestinationSelector?.focus();
   }
 
   function deleteTrip(trip: TripResult) {
@@ -427,12 +433,14 @@
         bind:input={pointOriginInput}
         points={data.points}
         placeholder="Enter point of origin"
+        on:select={focusDestinationSelector}
         bind:setPoint={pointOrigin} />
     </div>
 
     <div class="flex flex-col gap-2">
       <h3 class="font-bold text-slate-700 dark:text-slate-300">Destination</h3>
       <PointSelector
+        bind:this={pointDestinationSelector}
         bind:input={pointDestinationInput}
         points={reachables}
         placeholder="Enter point of destination"
