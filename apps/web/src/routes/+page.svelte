@@ -628,7 +628,7 @@
       <button
         class="bg-muted rounded-lg p-2 text-xs text-slate-400"
         on:click={() => {
-          const po = data.points.find((p) => p.name?.toLowerCase() === 'bacoor') ?? null;
+          const po = data.points.find((p) => p.name?.toLowerCase() === 'bacoor/zapote') ?? null;
           const pd = data.points.find((p) => p.name?.toLowerCase() === 'tipo/subic') ?? null;
           pointOrigin = po;
           pointDestination = pd;
