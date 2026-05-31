@@ -27,13 +27,13 @@
           Did you find this useful? If so, why not consider making a small donation?
         </p>
 
-        <button
+        <!-- <button
           class="hover:opacity-50"
           on:click={() => {
             $showDonation = false;
           }}>
           <X size={15} class="text-slate-800 dark:text-slate-500" />
-        </button>
+        </button> -->
       </div>
 
       <div class="hidden flex-row items-center gap-5 md:flex">
